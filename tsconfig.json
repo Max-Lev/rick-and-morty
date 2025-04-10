@@ -22,8 +22,7 @@
       "dom",
       "esnext.asynciterable",
       "es2020"
-    ],
-    "allowSyntheticDefaultImports": true
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
