@@ -1,0 +1,13 @@
+.spacer {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+::ng-deep {
+
+    .mat-badge-content,
+    .mat-badge-medium.mat-badge-overlap .mat-badge-content {
+        color: white;
+        background-color: red;
+    }
+}

@@ -1,4 +1,4 @@
-<h2>Rick and Morty Characters</h2>
+<!-- <h2>Rick and Morty Characters</h2>
 <ng-container *ngIf="characters().length; else loading">
   <div *ngFor="let c of characters()" class="character-card">
     <img [src]="c.image" alt="{{ c.name }}" />
@@ -12,4 +12,10 @@
   <p>Loading characters...</p>
 </ng-template>
 
-<button *ngIf="nextPage()" (click)="loadMore()">Load More</button>
+<button *ngIf="nextPage()" (click)="loadMore()">Load More</button> -->
+<!-- <app-characters></app-characters> -->
+
+
+<app-toolbar></app-toolbar>
+
+<app-characters></app-characters>

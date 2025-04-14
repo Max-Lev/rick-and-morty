@@ -8,20 +8,10 @@ import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client/core';
 
 export const appConfig: ApplicationConfig = {
-
   providers: [
     provideRouter(routes),
 
     provideHttpClient(), 
-    // provideApollo(() => {
-    //   const httpLink = inject(HttpLink);
- 
-    //   return {
-    //     link: httpLink.create({ uri: '/graphql' }),
-    //     cache: new InMemoryCache(),
-        
-    //   };
-    // }),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
       return {
@@ -31,6 +21,5 @@ export const appConfig: ApplicationConfig = {
         cache: new InMemoryCache(),
       };
     }),
-
   ]
 };

@@ -1,0 +1,21 @@
+<!-- <app-characters></app-characters>
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="51" class="example-viewport">
+  <div *cdkVirtualFor="let item of characters$();" class="example-item">
+    <div style="padding-bottom: 1rem;">{{item.id}} {{item.name}}</div>
+    <hr />
+  </div>
+</cdk-virtual-scroll-viewport> -->
+
+
+@defer (when isLoaded()) {
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="51" class="example-viewport">
+  <div *cdkVirtualFor="let item of characters$()" class="example-item">
+
+    <div style="padding-bottom: 1rem;">{{item.id}} {{item.name}}</div>
+    <hr />
+  </div>
+</cdk-virtual-scroll-viewport>
+}
+@placeholder {
+<div>Large component placeholder</div>
+}

@@ -1,39 +1,43 @@
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AfterViewInit, ChangeDetectorRef, computed, effect, inject, OnInit, signal} from '@angular/core';
+import { Component } from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { ToolbarComponent } from './core/components/toolbar/toolbar.component';
+import { CharactersComponent } from './components/characters/characters.component';
 import { CharactersService } from './core/providers/characters.service';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Character } from './core/models/characters.model';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
-    RouterOutlet,
-    NgIf,
-    AsyncPipe,
-    NgFor
+    CharactersComponent,
+    ToolbarComponent
+    // RouterOutlet
   ],
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+
+  // cdr = inject(ChangeDetectorRef);
 
   charactersService = inject(CharactersService);
-  characters = signal<Character[]>([]);
-  nextPage = signal<number | null>(1);
 
 
-  loadMore() {
-    const page = this.nextPage();
-    if (page === null) return;
-
-    this.charactersService.getCharacters(page).subscribe((data) => {
-      this.characters.update((prev) => [...prev, ...data.characters]);
-      this.nextPage.set(data.nextPage);
-    });
-  }
 
   ngOnInit(): void {
-    this.loadMore();
+    
   }
+
+  ngAfterViewInit() {
+    // setTimeout(() => {
+    //   this.loaded = true;
+    //   this.cdr.detectChanges();
+    // }, 3000);
+  }
+
+
+
+
+
 }
