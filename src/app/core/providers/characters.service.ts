@@ -18,14 +18,13 @@ export class CharactersService {
 
   getCharacters(page: number): Observable<{ characters: Character[]; nextPage: number | null }> {
     // this.isLoaded.set(false);
-    debugger;
     return this.apollo
       .query<CharacterQueryResponse>({
         query: GET_CHARACTERS,
         variables: { page },
       })
       .pipe(
-        auditTime(3000),
+        // auditTime(3000),
         map((res) => ({
           characters: res.data.characters.results,
           nextPage: res.data.characters.info.next,

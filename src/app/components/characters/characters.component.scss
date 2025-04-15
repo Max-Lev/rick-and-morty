@@ -9,10 +9,13 @@
   }
   
   .example-viewport {
-    height: 88.5%;
-    /* Adjust to fit your design */
+    // height: 88.5%;
+    // /* Adjust to fit your design */
     width: auto;
-    border: 1px solid #ccc;
+    // border: 1px solid #ccc;
+    // overflow: auto;
+    height: 100%; /* or explicitly set in px */
+    // max-height: 600px; /* or whatever fits your layout */
     overflow: auto;
   }
   
@@ -24,3 +27,13 @@
     padding: 0 10px;
     border-bottom: 1px solid #eee;
   }
+  
+
+  // .mat-row, .mat-header-row,
+  // .mat-mdc-row,.mdc-data-table__row,.dk-row {
+  //   height: 51px; // Match `itemSize`
+  // }
+  // .example-container {
+  //   height: 400px;
+  //   overflow: auto;
+  // }
