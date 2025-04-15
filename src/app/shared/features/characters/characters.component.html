@@ -1,7 +1,7 @@
 <!-- @defer (when isLoadedSignal$()) { -->
- @if(selectedViewSignal$()==='list'){
+@if(selectedViewSignal$()==='list'){
 
- 
+
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="list-viewport">
 
   <table mat-table [dataSource]="charactersSignal$()" class="mat-elevation-z8">
@@ -19,9 +19,9 @@
         }@else if(column.columnDef==='id' && isSelected(row)){
         ( {{column.cell(row)}} )
         }
-       @else if (column.columnDef === 'type') {
+        @else if (column.columnDef === 'type') {
         {{ column.cell(row) | isEmpty:row['type'] }}
-      }
+        }
         @else{
         {{column.cell(row)}}
         }
@@ -40,15 +40,13 @@
 @placeholder {
 <div>Large component placeholder</div>
 } -->
- }@else{
-  
-  <cdk-virtual-scroll-viewport  (scrolledIndexChange)="onScroll()" itemSize="65" class="grid-view">
+}@else{
+
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="50" class="grid-view">
   <div *cdkVirtualFor="let character of charactersSignal$()" class="grid-item">
-    <app-grid-view [character]="character"></app-grid-view>
-    <!-- <hr /> -->
+    <div style="border:1px solid white;border-radius: 25px;">
+      <app-grid-view [character]="character"></app-grid-view>
+    </div>
   </div>
 </cdk-virtual-scroll-viewport>
- }
-
-
-
+}
