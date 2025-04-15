@@ -1,13 +1,17 @@
 import {
   Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit
+  ChangeDetectorRef, OnInit,
+  Signal,
+  WritableSignal
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { Character } from '../../../core/models/characters.model';
 import { CharactersService } from '../../../core/providers/characters.service';
 import { MatTableModule } from '@angular/material/table';
 import { COLUMNS } from './columns.config';
-import { ICharacterColumns } from '../../models/character.model';
+import { Character, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
+import { SelectionService } from '../../providers/selection.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-characters',
@@ -23,17 +27,19 @@ import { ICharacterColumns } from '../../models/character.model';
 export class CharactersComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  private characters = signal<Character[]>([]);
+  private characters: WritableSignal<Character[]> = signal<Character[]>([]);
 
-  characters$ = computed(() => this.characters());
+  charactersSignal$ = computed(() => this.characters());
 
-  nextPage = signal<number | null>(1);
+  nextPageSignal$ = signal<number | null>(1);
 
-  isLoading = signal(false);
+  isLoadingSignal$ = signal(false);
 
   charactersService = inject(CharactersService);
 
-  isLoaded = computed(() => { return this.charactersService.isLoaded() });
+  selectionService = inject(SelectionService);
+
+  isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
 
   // cdr = inject(ChangeDetectorRef);
 
@@ -43,17 +49,18 @@ export class CharactersComponent implements OnInit {
 
   displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
 
-  clickedRows = signal(new Set<ICharacterColumns>());
+  pageSignal$ = signal<number>(1);
 
 
   constructor() {
     effect(() => {
-      console.log(this.clickedRows());
+      console.log(this.selectionService.getSelectedRows());
+      console.log(this.selectionService.selectedCount$());
     });
 
   }
   ngOnInit(): void {
-    this.loadMore();
+    this.loadCharacters();
   }
 
 
@@ -71,57 +78,44 @@ export class CharactersComponent implements OnInit {
     this.lastScrollOffset = offset;
 
     // Prevent loading if already in progress or nothing more to load
-    if (end >= total * 0.8 && this.nextPage() && !this.isLoading()) {
-      this.loadMore();
+    if (end >= total * 0.8 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+      this.loadCharacters();
     }
   }
 
-  loadMore(): void {
-    const page = this.nextPage();
-    if (page === null) return;
+  charactersResponse$: Signal<ICharactersResponse> = toSignal(
+    toObservable(this.pageSignal$).pipe(
+      tap(() => this.isLoadingSignal$.set(true)),
+      switchMap(page => this.charactersService.getCharacters(page)),
+      tap((response: ICharactersResponse) => {
+        const existing = this.characters();
+        const merged = [...existing, ...response.characters];
+        const uniq = new Map(merged.map(c => [c.id, c]));
+        this.characters.set([...uniq.values()]);
+        this.nextPageSignal$.set(response.nextPage);
+        this.isLoadingSignal$.set(false);
+        console.log(response);
+        return response
+      })
+    ),
+    {
+      initialValue: { characters: [], nextPage: null }
+    }
+  );
 
-    this.isLoading.set(true);
-
-    this.charactersService.getCharacters(page).subscribe((data: { characters: Character[], nextPage: number | null }) => {
-
-      const existing = this.characters();
-
-      const uniq = new Map<string, Character>();
-
-      [...existing, ...data.characters].forEach(item => uniq.set(item.id, item));
-
-      this.characters.set([...uniq.values()]);
-
-      this.nextPage.set(data.nextPage);
-
-      this.isLoading.set(false);
-      console.log(this.characters$())
-    });
+  loadCharacters(): void {
+    const next = this.nextPageSignal$();
+    if (next) this.pageSignal$.set(next);
   }
 
-
-  // selectedRow(row:ICharacterColumns): void {
-  //   console.log(row);
-  //   if(!this.clickedRows.has(row)){
-  //     this.clickedRows.add(row);
-  //   }else{
-  //     this.clickedRows.delete(row);
-  //   }
-  //   console.log(this.clickedRows.values())
-  // }
   selectedRow = (row: ICharacterColumns): void => {
-    this.clickedRows.update((set) => {
-      const updated = new Set(set);
-      if (updated.has(row)) {
-        updated.delete(row);
-      } else {
-        updated.add(row);
-      }
-      return updated;
-    });
+    this.selectionService.toggleRow(row);
   }
 
-  
+  isSelected(row: ICharacterColumns): boolean {
+    return this.selectionService.getSelectedRows().has(row);
+  }
+
 
 }
 

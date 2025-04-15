@@ -6,7 +6,11 @@
 
     <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
         
-        <mat-icon matBadge="150" [matBadgePosition]="'above before'">person_add_alt_1</mat-icon>
+        @if (selectedCount$() > 0) {
+            <mat-icon matBadge="{{selectedCount$()}}" [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
+        }@else{
+            <mat-icon>person_add_alt_1</mat-icon>
+        }
     </button>
 
     <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">

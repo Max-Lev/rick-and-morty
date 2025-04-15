@@ -1,7 +1,7 @@
-@defer (when isLoaded()) {
+@defer (when isLoadedSignal$()) {
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="viewport">
 
-  <table mat-table [dataSource]="characters$()" class="mat-elevation-z8 demo-table">
+  <table mat-table [dataSource]="charactersSignal$()" class="mat-elevation-z8 demo-table">
 
     @for (column of columns; track column) {
     <ng-container [matColumnDef]="column.columnDef">
@@ -17,7 +17,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns$();sticky: true">
     </tr>
     <tr class="lighter" mat-row *matRowDef="let row; columns: displayedColumns$();" (click)="selectedRow(row)"
-      [class.row-is-clicked]="clickedRows().has(row)"></tr>
+      [class.row-is-clicked]="isSelected(row)"></tr>
 
   </table>
 </cdk-virtual-scroll-viewport>

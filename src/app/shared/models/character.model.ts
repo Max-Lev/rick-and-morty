@@ -1,3 +1,4 @@
+
 export interface ICharacterColumns {
     id: number;
     name: string;
@@ -5,4 +6,28 @@ export interface ICharacterColumns {
     species: any;
     type: any;
     gender: any;
+}
+
+export interface Character {
+    id: string;
+    name: string;
+    status: string;
+    species: string;
+    gender: string;
+    image: string;
+  }
+
+ export interface CharacterQueryResponseDTO {
+    characters: {
+      info: {
+        next: number | null;
+        pages:number;
+      };
+      results: Character[];
+    };
+  }
+
+export interface ICharactersResponse{
+    characters: Character[];
+    nextPage: number | null;
 }
