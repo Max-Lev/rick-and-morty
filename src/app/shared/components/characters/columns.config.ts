@@ -1,9 +1,9 @@
-import { ICharacterColumns } from "../../shared/models/character.model";
+import { ICharacterColumns } from "../../models/character.model";
 
 export const COLUMNS = [
     {
-      columnDef: 'position',
-      header: 'No.',
+      columnDef: 'id',
+      header: 'ID.',
       cell: (element: ICharacterColumns) => `${element.id}`,
     },
     {

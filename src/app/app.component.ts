@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, computed, effect, inject, OnInit, sig
 import { Component } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ToolbarComponent } from './core/components/toolbar/toolbar.component';
-import { CharactersComponent } from './components/characters/characters.component';
+import { CharactersComponent } from './shared/components/characters/characters.component';
 import { CharactersService } from './core/providers/characters.service';
 
 @Component({

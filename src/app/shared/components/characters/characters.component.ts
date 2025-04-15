@@ -3,10 +3,11 @@ import {
   ChangeDetectorRef, OnInit
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { Character } from '../../core/models/characters.model';
-import { CharactersService } from '../../core/providers/characters.service';
+import { Character } from '../../../core/models/characters.model';
+import { CharactersService } from '../../../core/providers/characters.service';
 import { MatTableModule } from '@angular/material/table';
 import { COLUMNS } from './columns.config';
+import { ICharacterColumns } from '../../models/character.model';
 
 @Component({
   selector: 'app-characters',
@@ -17,7 +18,7 @@ import { COLUMNS } from './columns.config';
   ],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CharactersComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
@@ -40,11 +41,14 @@ export class CharactersComponent implements OnInit {
 
   columns = COLUMNS;
 
-  displayedColumns = this.columns.map(c => c.columnDef);
+  displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
+
+  clickedRows = signal(new Set<ICharacterColumns>());
+
 
   constructor() {
     effect(() => {
-
+      console.log(this.clickedRows());
     });
 
   }
@@ -94,6 +98,31 @@ export class CharactersComponent implements OnInit {
       console.log(this.characters$())
     });
   }
+
+
+  // selectedRow(row:ICharacterColumns): void {
+  //   console.log(row);
+  //   if(!this.clickedRows.has(row)){
+  //     this.clickedRows.add(row);
+  //   }else{
+  //     this.clickedRows.delete(row);
+  //   }
+  //   console.log(this.clickedRows.values())
+  // }
+  selectedRow = (row: ICharacterColumns): void => {
+    this.clickedRows.update((set) => {
+      const updated = new Set(set);
+      if (updated.has(row)) {
+        updated.delete(row);
+      } else {
+        updated.add(row);
+      }
+      return updated;
+    });
+  }
+
+  
+
 }
 
 
