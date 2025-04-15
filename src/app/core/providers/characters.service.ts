@@ -24,7 +24,8 @@ export class CharactersService {
         variables: { page },
       })
       .pipe(
-        // auditTime(3000),
+        // auditTime(1000),
+        // debounceTime(1000),
         map((res) => ({
           characters: res.data.characters.results,
           nextPage: res.data.characters.info.next,

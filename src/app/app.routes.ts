@@ -4,11 +4,14 @@ import { getCharactersResolver } from './core/resolvers/get-characters.resolver'
 
 export const routes: Routes = [
     {
-        path:'',loadComponent: ()=>import('./shared/features/characters/characters.component').then(m=>m.CharactersComponent),
+        path:'characters',loadComponent: ()=>import('./shared/features/characters/characters.component').then(m=>m.CharactersComponent),
         resolve:{
-            getCharactersResolver:getCharactersResolver
+            charactersResolver:getCharactersResolver
         },
         providers:[] // test/check injection 
         
+    },
+    {
+        path:'',redirectTo:'characters', pathMatch:'full'
     }
 ];

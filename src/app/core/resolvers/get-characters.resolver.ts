@@ -1,12 +1,10 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { CharactersService } from '../providers/characters.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ICharactersResponse } from '../../shared/models/character.model';
 
-export const getCharactersResolver: ResolveFn<boolean> = (route, state) => {
+export const getCharactersResolver: ResolveFn<ICharactersResponse> = () => {
   const charactersService = inject(CharactersService);
-  // const data = toSignal(charactersService.getCharacters(1));
-  // data();
-  debugger;
-  return true;
+  const data = charactersService.getCharacters(1);
+  return data;
 };

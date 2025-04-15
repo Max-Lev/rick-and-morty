@@ -1,0 +1,76 @@
+:host{
+    background: black;
+}
+
+.bEklxv {
+    width: 600px;
+    width: auto;
+    height: 220px;
+    display: flex;
+    overflow: hidden;
+    background: rgb(60, 62, 68);
+    border-radius: 0.5rem;
+    margin: 0.75rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.fkUcVI {
+    flex: 2 1 0%;
+    width: 100%;
+}
+
+.fkUcVI img {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    opacity: 1;
+    transition: opacity 0.5s;
+    object-position: center center;
+    object-fit: cover;
+}
+
+.ldvrky {
+    flex: 3 1 0%;
+    position: relative;
+    padding: 0.75rem;
+    color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+}
+
+.ldvrky .section:first-child {
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+}
+
+.ldvrky .section {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+.ldvrky .text-gray {
+    color: rgb(158, 158, 158);
+}
+.ldvrky a {
+    color: rgb(245, 245, 245);
+}
+.ldvrky .section:last-child {
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+}
+
+.ldvrky h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    &.lighter{
+        font-weight: lighter;
+    }
+  }
+  

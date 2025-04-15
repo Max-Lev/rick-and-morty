@@ -1,7 +1,10 @@
-@defer (when isLoadedSignal$()) {
-<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="viewport">
+<!-- @defer (when isLoadedSignal$()) { -->
+ @if(selectedViewSignal$()==='list'){
 
-  <table mat-table [dataSource]="charactersSignal$()" class="mat-elevation-z8 demo-table">
+ 
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="list-viewport">
+
+  <table mat-table [dataSource]="charactersSignal$()" class="mat-elevation-z8">
 
     @for (column of columns; track column) {
     <ng-container [matColumnDef]="column.columnDef">
@@ -33,13 +36,19 @@
 
   </table>
 </cdk-virtual-scroll-viewport>
-}
+<!-- }
 @placeholder {
 <div>Large component placeholder</div>
-}
+} -->
+ }@else{
+  
+  <cdk-virtual-scroll-viewport  (scrolledIndexChange)="onScroll()" itemSize="65" class="grid-view">
+  <div *cdkVirtualFor="let character of charactersSignal$()" class="grid-item">
+    <app-grid-view [character]="character"></app-grid-view>
+    <!-- <hr /> -->
+  </div>
+</cdk-virtual-scroll-viewport>
+ }
 
 
-<!-- <div *cdkVirtualFor="let item of characters$()" class="example-item">
-    <div style="padding-bottom: 1rem;">{{item.id}} {{item.name}}</div>
-    <hr />
-  </div> -->
+

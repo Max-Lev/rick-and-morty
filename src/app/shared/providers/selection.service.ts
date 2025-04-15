@@ -14,6 +14,8 @@ export class SelectionService {
   // Expose signal getter
   getSelectedRows = () => this.selectedRows();
 
+  selectedViewSignal$ = signal<string>('grid'); 
+
   // Add/remove toggle logic
   toggleRow(row: ICharacterColumns) {
     this.selectedRows.update((set) => {
@@ -30,4 +32,5 @@ export class SelectionService {
   clearSelection() {
     this.selectedRows.set(new Set());
   }
+
 }
