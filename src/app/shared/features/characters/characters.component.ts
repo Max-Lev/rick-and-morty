@@ -12,13 +12,17 @@ import { Character, ICharacterColumns, ICharactersResponse } from '../../models/
 import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, switchMap, tap } from 'rxjs/operators';
+import { JsonPipe } from '@angular/common';
+import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 
 @Component({
   selector: 'app-characters',
   standalone: true,
   imports: [
     ScrollingModule,
-    MatTableModule
+    MatTableModule,
+    JsonPipe,
+    IsEmptyPipe
   ],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
@@ -49,7 +53,7 @@ export class CharactersComponent implements OnInit {
 
   displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
 
-  pageSignal$ = signal<number>(1);
+  pageSignal$ = signal<number | null>(1);
 
 
   constructor() {
@@ -60,7 +64,7 @@ export class CharactersComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.loadCharacters();
+    
   }
 
 
@@ -68,7 +72,7 @@ export class CharactersComponent implements OnInit {
     const end = this.viewport.getRenderedRange().end;
     const total = this.viewport.getDataLength();
     const offset = this.viewport.measureScrollOffset();
-    console.log('end, ', end, 'total, ', total, 'offset, ', offset);
+    // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
     // SCROLL GUARD: Scroll direction = down only
     if (offset < this.lastScrollOffset) {
       this.lastScrollOffset = offset;
@@ -86,7 +90,7 @@ export class CharactersComponent implements OnInit {
   charactersResponse$: Signal<ICharactersResponse> = toSignal(
     toObservable(this.pageSignal$).pipe(
       tap(() => this.isLoadingSignal$.set(true)),
-      switchMap(page => this.charactersService.getCharacters(page)),
+      switchMap(page => this.charactersService.getCharacters(page as number)),
       tap((response: ICharactersResponse) => {
         const existing = this.characters();
         const merged = [...existing, ...response.characters];
