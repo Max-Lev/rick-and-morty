@@ -31,3 +31,9 @@ export interface ICharactersResponse{
     characters: Character[];
     nextPage: number | null;
 }
+
+export enum STATUS_ENUM{
+    'Alive' = 1, 
+    'Dead' = 2,
+    'unknown' = 3
+}
