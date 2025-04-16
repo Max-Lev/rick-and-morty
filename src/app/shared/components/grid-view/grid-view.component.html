@@ -4,10 +4,11 @@
     </div>
     <div class="characterCard__ContentWrapper-sc-1ejywvi-2 ldvrky lighter">
         <div class="section">
+            <div>Selected: {{character | json}}</div>
             <a href='https://rickandmortyapi.com/api/character/{{character.id}}' rel="noopener noreferrer" target="_blank"
                 class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">
                 <!-- <span>( {{character.id}} )</span> -->
-                <h2 class="lighter">{{character.id}} {{character.name}}</h2>
+                <h2 [class.row-is-clicked]="isSelected(character)" class="lighter">{{character.id}} {{character.name}}</h2>
             </a>
             <span class="status"><span class="status__icon"></span>{{character.status}}</span>
         </div>

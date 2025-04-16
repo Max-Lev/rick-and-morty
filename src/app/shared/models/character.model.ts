@@ -15,6 +15,7 @@ export interface Character {
     species: string;
     gender: string;
     image: string;
+    selected?: boolean;
   }
 
  export interface CharacterQueryResponseDTO {

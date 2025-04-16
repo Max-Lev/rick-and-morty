@@ -27,7 +27,10 @@ export class CharactersService {
         // auditTime(1000),
         // debounceTime(1000),
         map((res) => ({
-          characters: res.data.characters.results,
+          characters: res.data.characters.results.map((character) => ({
+            selected: false,
+            ...character,
+          })),
           nextPage: res.data.characters.info.next,
         })),
         tap(() => this.isLoaded.set(true))

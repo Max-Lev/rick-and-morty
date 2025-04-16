@@ -1,13 +1,22 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Character, ICharactersResponse } from '../../models/character.model';
+import { SelectionService } from '../../providers/selection.service';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-grid-view',
-  imports: [],
+  imports: [
+    JsonPipe
+  ],
   standalone:true,
   templateUrl: './grid-view.component.html',
   styleUrl: './grid-view.component.scss'
 })
 export class GridViewComponent {
   @Input() character!:Character;
+  selectionService = inject(SelectionService);
+
+  isSelected(row: Character): boolean {
+    return this.selectionService.getSelectedRows().has(row);
+  }
 }

@@ -15,9 +15,11 @@
 
     @if(selectedViewSignal$()==='list'){
         <button (click)="toggleView('grid')" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon><span class="material-icons-outlined">
-                format_list_bulleted
-                </span></mat-icon>
+            <mat-icon>
+                <span class="material-icons-outlined">
+                    format_list_numbered
+                    </span>
+            </mat-icon>
         </button>
     }@else {
         <button (click)="toggleView('list')" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">

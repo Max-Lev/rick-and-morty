@@ -4,7 +4,8 @@ import {
   Signal,
   WritableSignal,
   Input,
-  input
+  input,
+  AfterViewInit
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
@@ -16,6 +17,8 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, tap } from 'rxjs/operators';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
+import { CommonModule } from '@angular/common';
+import { ColorPipe } from '../../pipes/color.pipe';
 
 @Component({
   selector: 'app-characters',
@@ -24,13 +27,15 @@ import { GridViewComponent } from '../../components/grid-view/grid-view.componen
     ScrollingModule,
     MatTableModule,
     IsEmptyPipe,
-    GridViewComponent
+    ColorPipe,
+    GridViewComponent,
+    CommonModule
   ],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CharactersComponent implements OnInit {
+export class CharactersComponent implements OnInit,AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
   private characters: WritableSignal<Character[]> = signal<Character[]>([]);
@@ -67,12 +72,26 @@ export class CharactersComponent implements OnInit {
     });
     effect(() => {
       console.log('selectedViewSignal$: ', this.selectedViewSignal$());
+      console.log('this.selectionService.getSelectedRows(): ', this.selectionService.getSelectedRows());
+      this.selectionService.getSelectedRows().entries();
     });
   }
 
   ngOnInit(): void {
     this.getResolvedData();
   }
+
+  // @ViewChild(CdkVirtualScrollViewport)_viewport!: CdkVirtualScrollViewport;
+
+ngAfterViewInit() {
+  this.viewport.elementScrolled().subscribe(event => {
+    this.onScroll()
+  });
+}
+
+_onScroll($event:any){
+  console.log($event)
+}
 
   onScroll(): void {
     const end = this.viewport.getRenderedRange().end;
@@ -88,7 +107,9 @@ export class CharactersComponent implements OnInit {
     this.lastScrollOffset = offset;
 
     // Prevent loading if already in progress or nothing more to load
-    if (end >= total * 0.5 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+    // if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+    if (end >= total && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+      console.log('end, ', end, 'total, ', total, 'offset, ', offset);
       this.loadCharacters();
     }
   }
@@ -127,11 +148,15 @@ export class CharactersComponent implements OnInit {
     if (next) this.pageSignal$.set(next);
   }
 
-  selectedRow = (row: ICharacterColumns): void => {
+  selectedRow = (row: Character ): void => {
+    console.log(row)
     this.selectionService.toggleRow(row);
   }
+  selectedRowCharacter = (character: Character ): void => {
+    console.log(character)
+  }
 
-  isSelected(row: ICharacterColumns): boolean {
+  isSelected(row: Character): boolean {
     return this.selectionService.getSelectedRows().has(row);
   }
 

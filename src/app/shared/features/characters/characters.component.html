@@ -1,8 +1,9 @@
 <!-- @defer (when isLoadedSignal$()) { -->
 @if(selectedViewSignal$()==='list'){
 
-
-<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="list-viewport">
+  {{this.selectionService.getSelectedRows().size| json}}
+<!-- <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="1000" class="list-viewport"> -->
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="_onScroll($event)" itemSize="1000" class="list-viewport">
 
   <table mat-table [dataSource]="charactersSignal$()" class="mat-elevation-z8">
 
@@ -19,8 +20,17 @@
         }@else if(column.columnDef==='id' && isSelected(row)){
         ( {{column.cell(row)}} )
         }
+        @else if (column.columnDef === 'status') {
+        <div [style.color]="row['status'] | color">{{ column.cell(row)}}</div>
+        }
+        @else if (column.columnDef === 'species') {
+        <div [style.color]="row['species'] | color">{{ column.cell(row)}}</div>
+        }
         @else if (column.columnDef === 'type') {
-        {{ column.cell(row) | isEmpty:row['type'] }}
+        <div [style.color]="row['type'] | color:'type'">{{ column.cell(row) | isEmpty:row['type'] }}</div>
+        }
+        @else if (column.columnDef === 'gender') {
+        <div [style.color]="row['gender'] | color:row">{{ column.cell(row)}}</div>
         }
         @else{
         {{column.cell(row)}}
@@ -33,19 +43,20 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns$();sticky: true"></tr>
     <tr class="lighter" mat-row *matRowDef="let row; columns: displayedColumns$();" (click)="selectedRow(row)"
       [class.row-is-clicked]="isSelected(row)"></tr>
-
   </table>
 </cdk-virtual-scroll-viewport>
 <!-- }
 @placeholder {
 <div>Large component placeholder</div>
 } -->
-}@else{
 
-<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll()" itemSize="50" class="grid-view">
+}@else{
+  {{this.selectionService.getSelectedRows().size | json}}
+  
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="_onScroll($event)" itemSize="75" class="grid-view">
   <div *cdkVirtualFor="let character of charactersSignal$()" class="grid-item">
-    <div style="border:1px solid white;border-radius: 25px;">
-      <app-grid-view [character]="character"></app-grid-view>
+    <div style="border:1px solid white;border-radius: 25px;" [class.row-is-clicked]="isSelected(character)">
+      <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view>
     </div>
   </div>
 </cdk-virtual-scroll-viewport>
