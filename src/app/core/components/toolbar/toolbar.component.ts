@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -16,7 +16,8 @@ import { SelectionService } from '../../../shared/providers/selection.service';
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
-  styleUrl: './toolbar.component.scss'
+  styleUrl: './toolbar.component.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent {
 
@@ -26,6 +27,8 @@ export class ToolbarComponent {
 
   selectedViewSignal$ = this.selectionService.selectedViewSignal$; 
 
+  cdr = inject(ChangeDetectorRef);
+
   constructor(){
     effect(()=>{
       // console.log(this.selectedSignal$())
@@ -34,7 +37,7 @@ export class ToolbarComponent {
   }
 
   toggleView(view:string){
-    this.selectionService.selectedViewSignal$.set(view)
+    this.selectionService.selectedViewSignal$.set(view);
   }
 
 }

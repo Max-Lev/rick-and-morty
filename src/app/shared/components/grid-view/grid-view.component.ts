@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Character, ICharactersResponse } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { JsonPipe } from '@angular/common';
@@ -12,7 +12,10 @@ import { JsonPipe } from '@angular/common';
   templateUrl: './grid-view.component.html',
   styleUrl: './grid-view.component.scss'
 })
-export class GridViewComponent {
+export class GridViewComponent implements OnChanges {
+  ngOnChanges(changes: SimpleChanges): void {
+    
+  }
   @Input() character!:Character;
   selectionService = inject(SelectionService);
 

@@ -1,8 +1,14 @@
 :host{
     // background: black;
+    .grid-view-container {
+        border: 1px solid white;
+        border-radius: 25px;
+        display: flex;
+        background: black;
+    }
 }
 
-.bEklxv {
+.article-wrapper {
     width: 600px;
     width: auto;
     height: 220px;
@@ -15,6 +21,7 @@
     margin: 0.75rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
     // border: 1px solid white;
+    flex-basis: 85%;
 }
 
 .fkUcVI {

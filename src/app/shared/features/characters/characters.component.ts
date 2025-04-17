@@ -35,14 +35,14 @@ import { ColorPipe } from '../../pipes/color.pipe';
   styleUrl: './characters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CharactersComponent implements OnInit,AfterViewInit {
+export class CharactersComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
   private characters: WritableSignal<Character[]> = signal<Character[]>([]);
 
-  charactersSignal$ = computed(() => this.characters());
+  charactersComputed$ = computed(() => this.characters());
 
-  nextPageSignal$ = signal<number | null>(1);
+  nextPageSignal$ = signal<number>(1);
 
   isLoadingSignal$ = signal(false);
 
@@ -52,7 +52,7 @@ export class CharactersComponent implements OnInit,AfterViewInit {
 
   isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
 
-  // cdr = inject(ChangeDetectorRef);
+  cdr = inject(ChangeDetectorRef);
 
   lastScrollOffset = 0;
 
@@ -64,16 +64,23 @@ export class CharactersComponent implements OnInit,AfterViewInit {
 
   @Input() charactersResolver!: ICharactersResponse;
 
+  //INITIAL VIEW LOAD CONFIG
   selectedViewSignal$ = this.selectionService.selectedViewSignal$;
+  // selectedViewSignal$2 = computed(()=>{
+  //   console.log('change view: ',this.scrollIndexSignal$())
+  //   return this.selectionService.selectedViewSignal$();
+  // });
   
+  // DYNAMIC SCROLL HIGHT
+  itemSizeSignal$ = signal<number>(200);
+  itemSizeComputed$ = computed(() => this.itemSizeSignal$());
+  scrollIndexSignal$ = signal<number>(0);
+  setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1)
+
+
   constructor() {
     effect(() => {
-      console.log('charactersSignal$: ', this.charactersSignal$());
-    });
-    effect(() => {
-      console.log('selectedViewSignal$: ', this.selectedViewSignal$());
-      console.log('this.selectionService.getSelectedRows(): ', this.selectionService.getSelectedRows());
-      this.selectionService.getSelectedRows().entries();
+      console.log('charactersComputed$ total: ', this.charactersComputed$());
     });
   }
 
@@ -81,36 +88,60 @@ export class CharactersComponent implements OnInit,AfterViewInit {
     this.getResolvedData();
   }
 
-  // @ViewChild(CdkVirtualScrollViewport)_viewport!: CdkVirtualScrollViewport;
+  ngAfterViewInit() {
 
-ngAfterViewInit() {
-  this.viewport.elementScrolled().subscribe(event => {
-    this.onScroll()
-  });
-}
+  }
 
-_onScroll($event:any){
-  console.log($event)
-}
+  trackById(index: number, item: Character) {
+    return item.id;
+  }
 
-  onScroll(): void {
-    const end = this.viewport.getRenderedRange().end;
-    const total = this.viewport.getDataLength();
-    const offset = this.viewport.measureScrollOffset();
-    // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
-    // SCROLL GUARD: Scroll direction = down only
-    if (offset < this.lastScrollOffset) {
+  onScroll(index: number): void {
+
+    console.log('this.pageSignal$()', this.pageSignal$());
+    console.log('this.nextPageSignal$()', this.nextPageSignal$());
+
+    if ((this.nextPageSignal$() - this.pageSignal$()!) === 1 && index > 0) {
+      // if ((this.nextPageSignal$() - 1) === 1) {
+      const end = this.viewport.getRenderedRange().end;
+      const total = this.viewport.getDataLength();
+      const offset = this.viewport.measureScrollOffset();
+      console.log(this.viewport.measureScrollOffset('top'),this.viewport.measureScrollOffset('bottom'));
+      console.log('measureRenderedContentSize height: ',this.viewport.measureRenderedContentSize());
+      console.log('measureViewportSize: ',this.viewport.measureViewportSize('vertical'))
+      console.log(this.viewport.measureBoundingClientRectWithScrollOffset('top'))
+      console.log(this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
+      this.setItemSize(index);
+      console.log(this.viewport.getViewportSize());
+      // console.log(this.viewport.data);
+      // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
+      // SCROLL GUARD: Scroll direction = down only
+      if (offset < this.lastScrollOffset) {
+        this.lastScrollOffset = offset;
+        return;
+      }
+
+      this.setScrollIndex();
+      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$())
+      // console.log('lastScrollOffset$: ', this.lastScrollOffset)
+
       this.lastScrollOffset = offset;
-      return;
+
+      // Prevent loading if already in progress or nothing more to load
+      if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+        // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
+        if ((this.pageSignal$() as number - this.scrollIndexSignal$() > 1)) {
+          return;
+        }
+        this.loadCharacters();
+      }
     }
+  }
 
-    this.lastScrollOffset = offset;
-
-    // Prevent loading if already in progress or nothing more to load
-    // if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
-    if (end >= total && this.nextPageSignal$() && !this.isLoadingSignal$()) {
-      console.log('end, ', end, 'total, ', total, 'offset, ', offset);
-      this.loadCharacters();
+  setItemSize(index: number) {
+    if (index > 0) {
+      // this.itemSizeSignal$.set(1000);
+      this.itemSizeSignal$.set(1100);
     }
   }
 
@@ -124,7 +155,7 @@ _onScroll($event:any){
     const merged = [...existing, ...charactersData.characters];
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
-    this.nextPageSignal$.set(charactersData.nextPage);
+    this.nextPageSignal$.set(charactersData.nextPage as number);
     this.isLoadingSignal$.set(false);
   }
 
@@ -148,11 +179,11 @@ _onScroll($event:any){
     if (next) this.pageSignal$.set(next);
   }
 
-  selectedRow = (row: Character ): void => {
+  selectedRow = (row: Character): void => {
     console.log(row)
     this.selectionService.toggleRow(row);
   }
-  selectedRowCharacter = (character: Character ): void => {
+  selectedRowCharacter = (character: Character): void => {
     console.log(character)
   }
 
@@ -164,199 +195,3 @@ _onScroll($event:any){
 }
 
 
-/**
- * import {
-  Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit,
-  Signal,
-  WritableSignal,
-  Input,
-  input
-} from '@angular/core';
-import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { CharactersService } from '../../../core/providers/characters.service';
-import { MatTableModule } from '@angular/material/table';
-import { COLUMNS } from './columns.config';
-import { Character, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
-import { SelectionService } from '../../providers/selection.service';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap } from 'rxjs/operators';
-import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
-
-@Component({
-  selector: 'app-characters',
-  standalone: true,
-  imports: [
-    ScrollingModule,
-    MatTableModule,
-    IsEmptyPipe
-  ],
-  templateUrl: './characters.component.html',
-  styleUrl: './characters.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class CharactersComponent implements OnInit {
-  @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
-
-  private characters: WritableSignal<Character[]> = signal<Character[]>([]);
-
-  charactersSignal$ = computed(() => this.characters());
-
-  nextPageSignal$ = signal<number | null>(1);
-
-  isLoadingSignal$ = signal(false);
-
-  charactersService = inject(CharactersService);
-
-  selectionService = inject(SelectionService);
-
-  isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
-
-  // cdr = inject(ChangeDetectorRef);
-
-  lastScrollOffset = 0;
-
-  columns = COLUMNS;
-
-  displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
-
-  pageSignal$ = signal<number | null>(1);
-
-  // @Input() charactersResolver!: ICharactersResponse;
-  // charactersResolver = input<ICharactersResponse>({characters:[],nextPage:0});
-  charactersResolver = input<ICharactersResponse>();
-  private lastResolvedPage: number | null = null;
-  // Purely derives what merged list should look like — no side effects
-  // readonly resolvedCharacters = computed(() => {
-  //   const resolver = this.charactersResolver();
-  //   const existing = this.characters();
-
-  //   if (!resolver) return existing;
-
-  //   const merged = [...existing, ...resolver.characters];
-  //   const uniq = new Map(merged.map(c => [c.id, c]));
-  //   return [...uniq.values()];
-  // });
-  readonly resolvedCharacters = computed(() => {
-    const resolver = this.charactersResolver();
-    if (!resolver) return [];
-  
-    const uniq = new Map(resolver.characters.map(c => [c.id, c]));
-    return [...uniq.values()];
-  });
-
-  constructor() {
-
-    // effect(() => {
-    //   const resolver = this.charactersResolver();
-    //   if (!resolver || resolver.nextPage === this.lastResolvedPage) return;
-
-    //   this.lastResolvedPage = resolver.nextPage;
-    //   this.mergeCharacters(resolver);
-    // });
-    // effect(() => {
-    //   const resolver = this.charactersResolver();
-    //   if (!resolver) return;
-
-    //   const merged = this.resolvedCharacters();
-    //   this.characters.set(merged);
-    //   this.nextPageSignal$.set(resolver.nextPage);
-    //   this.isLoadingSignal$.set(false);
-    // });
-    effect(() => {
-      const resolver = this.charactersResolver();
-      if (!resolver || resolver.nextPage === this.lastResolvedPage) return;
-    
-      this.lastResolvedPage = resolver.nextPage;
-    
-      const existing = this.characters();
-      const merged = [...existing, ...resolver.characters];
-      const uniq = new Map(merged.map(c => [c.id, c]));
-      this.characters.set([...uniq.values()]);
-      this.nextPageSignal$.set(resolver.nextPage);
-      this.isLoadingSignal$.set(false);
-    });
-
-    effect(() => {
-      console.log('charactersSignal$: ', this.charactersSignal$());
-    });
-  }
-
-  ngOnInit(): void {
-    // this.getResolvedData();
-  }
-
-  onScroll(): void {
-    const end = this.viewport.getRenderedRange().end;
-    const total = this.viewport.getDataLength();
-    const offset = this.viewport.measureScrollOffset();
-    // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
-    // SCROLL GUARD: Scroll direction = down only
-    if (offset < this.lastScrollOffset) {
-      this.lastScrollOffset = offset;
-      return;
-    }
-
-    this.lastScrollOffset = offset;
-
-    // Prevent loading if already in progress or nothing more to load
-    if (end >= total * 0.8 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
-      this.loadCharacters();
-    }
-  }
-
-  // getResolvedData(): void {
-  //   if (!this.charactersResolver) return;
-  //   this.mergeCharacters(this.charactersResolver());
-  // }
-
-  // mergeCharacters = (charactersData: ICharactersResponse) => {
-  //   const existing = this.characters();
-  //   const merged = [...existing, ...charactersData.characters];
-  //   const uniq = new Map(merged.map(c => [c.id, c]));
-  //   this.characters.set([...uniq.values()]);
-  //   this.nextPageSignal$.set(charactersData.nextPage);
-  //   this.isLoadingSignal$.set(false);
-  // }
-
-  charactersResponse$: Signal<ICharactersResponse> = toSignal(
-    toObservable(this.pageSignal$).pipe(
-      tap(() => this.isLoadingSignal$.set(true)),
-      switchMap(page => this.charactersService.getCharacters(page as number)),
-      tap((response: ICharactersResponse) => {
-        // this.mergeCharacters(response);
-        const merged = [...this.characters(), ...response.characters];
-        const uniq = new Map(merged.map(c => [c.id, c]));
-        this.characters.set([...uniq.values()]);
-        this.nextPageSignal$.set(response.nextPage);
-        this.isLoadingSignal$.set(false);
-        console.log('response: ', response);
-        return response;
-
-
-      })
-    ),
-    {
-      initialValue: { characters: [], nextPage: null }
-    }
-  );
-
-  loadCharacters(): void {
-    const next = this.nextPageSignal$();
-    if (next) this.pageSignal$.set(next);
-  }
-
-  selectedRow = (row: ICharacterColumns): void => {
-    this.selectionService.toggleRow(row);
-  }
-
-  isSelected(row: ICharacterColumns): boolean {
-    return this.selectionService.getSelectedRows().has(row);
-  }
-
-
-}
-
-
-
- */

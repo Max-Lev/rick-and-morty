@@ -1,43 +1,30 @@
-<article class="characterCard__Wrapper-sc-1ejywvi-0 bEklxv">
-    <div class="characterCard__ImgWrapper-sc-1ejywvi-1 fkUcVI">
-        <img src={{character.image}} alt="Baby Wizard">
-    </div>
-    <div class="characterCard__ContentWrapper-sc-1ejywvi-2 ldvrky lighter">
-        <div class="section">
-            <div>Selected: {{character | json}}</div>
-            <a href='https://rickandmortyapi.com/api/character/{{character.id}}' rel="noopener noreferrer" target="_blank"
-                class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">
-                <!-- <span>( {{character.id}} )</span> -->
-                <h2 [class.row-is-clicked]="isSelected(character)" class="lighter">{{character.id}} {{character.name}}</h2>
-            </a>
-            <span class="status"><span class="status__icon"></span>{{character.status}}</span>
+<section class="grid-view-container" >
+    <article class="characterCard__Wrapper-sc-1ejywvi-0 article-wrapper">
+        <div class="characterCard__ImgWrapper-sc-1ejywvi-1 fkUcVI">
+            <img src={{character.image}} alt="Baby Wizard">
         </div>
-
-        <div class="section">
-            <span class="text-gray">Last known location:</span>
-            <a href="https://rickandmortyapi.com/api/location/20" rel="noopener noreferrer" target="_blank"
-                class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Earth (Replacement Dimension)</a>
+        <div class="characterCard__ContentWrapper-sc-1ejywvi-2 ldvrky lighter">
+            <div class="section">
+                <!-- <div>Selected: {{character | json}}</div> -->
+                <a href='https://rickandmortyapi.com/api/character/{{character.id}}' rel="noopener noreferrer" target="_blank"
+                    class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">
+                    <!-- <span>( {{character.id}} )</span> -->
+                    <h2 [class.row-is-clicked]="isSelected(character)" class="lighter">{{character.id}} {{character.name}}</h2>
+                </a>
+                <span class="status"><span class="status__icon"></span>{{character.status}}</span>
+            </div>
+    
+            <div class="section">
+                <span class="text-gray">Last known location:</span>
+                <a href="https://rickandmortyapi.com/api/location/20" rel="noopener noreferrer" target="_blank"
+                    class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Earth (Replacement Dimension)</a>
+            </div>
+            <div class="section">
+                <span class="text-gray">First seen in:</span>
+                <a href="https://rickandmortyapi.com/api/episode/15" rel="noopener noreferrer" target="_blank"
+                    class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Total Rickall</a>
+            </div>
         </div>
-        <div class="section">
-            <span class="text-gray">First seen in:</span>
-            <a href="https://rickandmortyapi.com/api/episode/15" rel="noopener noreferrer" target="_blank"
-                class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Total Rickall</a>
-        </div>
-    </div>
-</article>
-<!-- <article class="characterCard__Wrapper-sc-1ejywvi-0 bEklxv">
-    <div class="characterCard__ImgWrapper-sc-1ejywvi-1 fkUcVI"><img
-            src="https://rickandmortyapi.com/api/character/avatar/31.jpeg" alt="Baby Wizard"></div>
-    <div class="characterCard__ContentWrapper-sc-1ejywvi-2 ldvrky">
-        <div class="section"><a href="https://rickandmortyapi.com/api/character/31" rel="noopener noreferrer"
-                target="_blank" class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">
-                <h2>Baby Wizard</h2>
-            </a><span class="status"><span class="status__icon"></span> Dead - Alien</span></div>
-        <div class="section"><span class="text-gray">Last known location:</span><a
-                href="https://rickandmortyapi.com/api/location/20" rel="noopener noreferrer" target="_blank"
-                class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Earth (Replacement Dimension)</a></div>
-        <div class="section"><span class="text-gray">First seen in:</span><a
-                href="https://rickandmortyapi.com/api/episode/15" rel="noopener noreferrer" target="_blank"
-                class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Total Rickall</a></div>
-    </div>
-</article> -->
+    </article>
+    
+</section>
