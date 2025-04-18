@@ -14,8 +14,8 @@ export class SelectionService {
   // Expose signal getter
   getSelectedRows = () => this.selectedRows();
 
-  selectedViewSignal$ = signal<string>('grid'); 
-  // selectedViewSignal$ = signal<string>('list'); 
+  // selectedViewSignal$ = signal<string>('grid'); 
+  selectedViewSignal$ = signal<string>('list'); 
 
   // Add/remove toggle logic
   toggleRow(row: Character) {

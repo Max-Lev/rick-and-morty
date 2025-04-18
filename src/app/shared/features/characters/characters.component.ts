@@ -1,33 +1,24 @@
 import {
   Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit,
-  Signal,
-  WritableSignal,
-  Input,
-  input,
-  AfterViewInit
+  ChangeDetectorRef, OnInit, Signal, WritableSignal, Input, AfterViewInit
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
-import { MatTableModule } from '@angular/material/table';
 import { COLUMNS } from './columns.config';
-import { Character, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
+import { Character, ColumnConfig, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
+import { switchMap, tap } from 'rxjs/operators';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { CommonModule } from '@angular/common';
-import { ColorPipe } from '../../pipes/color.pipe';
+import { ListViewComponent } from '../../components/list-view/list-view.component';
 
 @Component({
   selector: 'app-characters',
   standalone: true,
   imports: [
     ScrollingModule,
-    MatTableModule,
-    IsEmptyPipe,
-    ColorPipe,
+    ListViewComponent,
     GridViewComponent,
     CommonModule
   ],
@@ -52,7 +43,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   lastScrollOffset = 0;
 
-  columns = COLUMNS;
+  columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
 
   displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
 

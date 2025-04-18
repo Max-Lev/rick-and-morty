@@ -6,7 +6,7 @@ import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'app-grid-view',
   imports: [
-    JsonPipe
+    
   ],
   standalone:true,
   templateUrl: './grid-view.component.html',

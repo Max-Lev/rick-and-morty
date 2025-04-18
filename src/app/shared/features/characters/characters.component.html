@@ -2,45 +2,8 @@
 @if(selectedViewSignal$()==='list'){
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"
   class="list-viewport">
-  <table mat-table [dataSource]="characters()" class="mat-elevation-z8">
-
-    @for (column of columns; track column) {
-    <ng-container [matColumnDef]="column.columnDef">
-
-      <th mat-header-cell *matHeaderCellDef>
-        {{column.header}}
-      </th>
-
-      <td mat-cell *matCellDef="let row">
-        @if(column.columnDef==='id' && !isSelected(row)){
-        {{column.cell(row)}}
-        }@else if(column.columnDef==='id' && isSelected(row)){
-        ( {{column.cell(row)}} )
-        }
-        @else if (column.columnDef === 'status') {
-        <div [style.color]="row['status'] | color">{{ column.cell(row)}}</div>
-        }
-        @else if (column.columnDef === 'species') {
-        <div [style.color]="row['species'] | color">{{ column.cell(row)}}</div>
-        }
-        @else if (column.columnDef === 'type') {
-        <div [style.color]="row['type'] | color:'type'">{{ column.cell(row) | isEmpty:row['type'] }}</div>
-        }
-        @else if (column.columnDef === 'gender') {
-        <div [style.color]="row['gender'] | color:row">{{ column.cell(row)}}</div>
-        }
-        @else{
-        {{column.cell(row)}}
-        }
-      </td>
-
-    </ng-container>
-    }
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns$();sticky: true"></tr>
-    <tr class="lighter" mat-row *matRowDef="let row; columns: displayedColumns$();" (click)="selectedRow(row)"
-      [class.row-is-clicked]="isSelected(row)"></tr>
-  </table>
+  <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns$()">
+  </app-list-view>
 
 </cdk-virtual-scroll-viewport>
 <!-- }

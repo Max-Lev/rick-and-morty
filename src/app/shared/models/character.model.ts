@@ -1,3 +1,8 @@
+export interface ColumnConfig<T> {
+  columnDef: string;
+  header: string;
+  cell: (element: T) => string;
+}
 
 export interface ICharacterColumns {
     id: number;
