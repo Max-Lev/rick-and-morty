@@ -1,42 +1,34 @@
-import { Component, inject, input, Input, OnChanges, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, inject, input, Input, OnChanges, Signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { Character, ColumnConfig, ICharacterColumns } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatTableModule } from '@angular/material/table';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-list-view',
   imports: [
     IsEmptyPipe,
     ColorPipe,
-    MatTableModule,
+    MatTableModule
   ],
   providers: [
-    SelectionService
+    SelectionService,
   ],
   standalone: true,
   templateUrl: './list-view.component.html',
   styleUrl: './list-view.component.scss'
 })
 export class ListViewComponent implements OnChanges {
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-    console.log(this.displayedColumns)
-    console.log(this.characters)
-  }
 
-  @Input({required:true}) columns:any = []
-  // @Input() columns!:ColumnConfig<ICharacterColumns>[];
+  @Input({ required: true }) columns: any = [];
 
-  // characters = input.required<Character[]>({});
+  characters = input.required<Character[]>();
   // characters$ = toObservable(this.characters);
-
-  // displayedColumns$ = input.required<string[]>();
-
-  @Input() characters!: Character[];
-  @Input() displayedColumns!: string[];
+  displayedColumns = input.required<string[]>();
+  // displayedColumns$ = toObservable(this.displayedColumns);
 
   selectionService = inject(SelectionService);
 
@@ -47,5 +39,10 @@ export class ListViewComponent implements OnChanges {
     console.log(row)
     this.selectionService.toggleRow(row);
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+
+  }
+
 
 }

@@ -20,7 +20,8 @@ import { ListViewComponent } from '../../components/list-view/list-view.componen
     ScrollingModule,
     ListViewComponent,
     GridViewComponent,
-    CommonModule
+    CommonModule,
+  
   ],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
@@ -29,7 +30,7 @@ import { ListViewComponent } from '../../components/list-view/list-view.componen
 export class CharactersComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  characters: WritableSignal<Character[]> = signal<Character[]>([]);
+  characters = signal<Character[]>([]);
 
   isLoadingSignal$ = signal(false);
 
@@ -45,7 +46,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
 
-  displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
+  displayedColumns = computed(() => this.columns.map(c => c.columnDef));
 
   @Input() charactersResolver!: ICharactersResponse;
 

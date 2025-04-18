@@ -1,8 +1,10 @@
 <!-- @defer (when isLoadedSignal$()) { -->
+ 
 @if(selectedViewSignal$()==='list'){
+  
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"
   class="list-viewport">
-  <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns$()">
+  <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns()">
   </app-list-view>
 
 </cdk-virtual-scroll-viewport>
