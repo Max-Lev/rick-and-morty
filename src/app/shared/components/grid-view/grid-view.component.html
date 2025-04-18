@@ -1,59 +1,50 @@
-<section class="grid-view-container" (click)="selectedRow(character)">
-    <article class="characterCard__Wrapper-sc-1ejywvi-0 article-wrapper">
-        <div class="characterCard__ImgWrapper-sc-1ejywvi-1 pic">
+<section class="grid-view-container" 
+[class.selected]="isSelected(character)"
+(click)="selectedRow(character)">
+    <!-- <article class="article-wrapper"> -->
+    <article class="card">
+        <div class="pic">
             <img src={{character.image}} alt="Baby Wizard">
         </div>
-        <div class="characterCard__ContentWrapper-sc-1ejywvi-2 ldvrky lighter">
+        <div class="card-content lighter">
             <div class="section">
                 <!-- <div>Selected: {{character | json}}</div> -->
-                <a href='https://rickandmortyapi.com/api/character/{{character.id}}' rel="noopener noreferrer"
-                    target="_blank" class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">
+                <span>
+                    <!-- href='https://rickandmortyapi.com/api/character/{{character.id}}' -->
                     <!-- <span>( {{character.id}} )</span> -->
-                    <h2 class="lighter">{{character.id}} {{character.name}}</h2>
-                </a>
-                <span class="status"><span class="status__icon"></span>{{character.status}}</span>
+                    <!-- <h2 class="lighter">{{character.id}}. {{character.name}}</h2> -->
+                    <h2>{{character.id}}. {{character.name}}</h2>
+                </span>
+                <span class="status">
+                   <div class="status-indicator" [style.background]="character.status | color:'status'"></div> 
+                   <span [style.color]="character.status | color:'status'">{{character.status}}</span>
+                </span>
             </div>
 
             <div class="section">
                 <span class="text-gray">Last known location:</span>
                 <a href="https://rickandmortyapi.com/api/location/20" rel="noopener noreferrer" target="_blank"
-                    class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Earth (Replacement Dimension)</a>
+                    class="">Earth (Replacement Dimension)</a>
             </div>
             <div class="section">
                 <span class="text-gray">First seen in:</span>
                 <a href="https://rickandmortyapi.com/api/episode/15" rel="noopener noreferrer" target="_blank"
-                    class="externalLink__ExternalLink-sc-1lixk38-0 ffGNdR">Total Rickall</a>
+                    class="">Total Rickall</a>
             </div>
         </div>
 
     </article>
 
-    <!-- [class.row-is-clicked]="isSelected(character)" -->
+    <!-- <div class="selected-indicator" *ngIf="isSelected(character)">
+        <mat-icon class="checkmark">check_circle</mat-icon>
+      </div> -->
     @if(isSelected(character)){
 
 
     <section class="selected-container">
         <mat-icon>
-            <span class="material-icons-outlined">
-                check_circle
-                </span>
-            <!-- <span class="material-icons-outlined">
-                library_add_check
-            </span> -->
+            <span class="material-icons-outlined">check_circle</span>
         </mat-icon>
-        <!-- <mat-icon>
-            <span class="material-icons-outlined">
-                check_circle_outline
-                </span>
-        </mat-icon>
-        <mat-icon>
-            <span class="material-icons-outlined">check</span>
-        </mat-icon>
-        <mat-icon>
-            <span class="material-icons-outlined">
-                done_all
-                </span>
-        </mat-icon> -->
     </section>
     }
 

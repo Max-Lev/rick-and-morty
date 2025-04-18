@@ -2,11 +2,15 @@ import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatIcon } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
+import { ColorPipe } from '../../pipes/color.pipe';
 
 @Component({
   selector: 'app-grid-view',
   imports: [
-    MatIcon
+    MatIcon,
+    ColorPipe
+
   ],
   standalone:true,
   templateUrl: './grid-view.component.html',
