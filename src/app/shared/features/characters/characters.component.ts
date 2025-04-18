@@ -14,7 +14,7 @@ import { COLUMNS } from './columns.config';
 import { Character, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { CommonModule } from '@angular/common';
@@ -38,11 +38,7 @@ import { ColorPipe } from '../../pipes/color.pipe';
 export class CharactersComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
 
-  private characters: WritableSignal<Character[]> = signal<Character[]>([]);
-
-  charactersComputed$ = computed(() => this.characters());
-
-  nextPageSignal$ = signal<number>(1);
+  characters: WritableSignal<Character[]> = signal<Character[]>([]);
 
   isLoadingSignal$ = signal(false);
 
@@ -50,7 +46,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   selectionService = inject(SelectionService);
 
-  isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
+  // isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
 
   cdr = inject(ChangeDetectorRef);
 
@@ -60,28 +56,26 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   displayedColumns$ = computed(() => this.columns.map(c => c.columnDef));
 
-  pageSignal$ = signal<number | null>(1);
-
   @Input() charactersResolver!: ICharactersResponse;
 
   //INITIAL VIEW LOAD CONFIG
   selectedViewSignal$ = this.selectionService.selectedViewSignal$;
-  // selectedViewSignal$2 = computed(()=>{
-  //   console.log('change view: ',this.scrollIndexSignal$())
-  //   return this.selectionService.selectedViewSignal$();
-  // });
-  
   // DYNAMIC SCROLL HIGHT
   itemSizeSignal$ = signal<number>(200);
-  itemSizeComputed$ = computed(() => this.itemSizeSignal$());
+
   scrollIndexSignal$ = signal<number>(0);
   setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1)
 
 
+  paginationSignal$ = signal<{ page: number, nextPage: number | null }>({ page: 1, nextPage: null });
+  readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
+
   constructor() {
     effect(() => {
-      console.log('charactersComputed$ total: ', this.charactersComputed$());
-    });
+      console.log('characters length: ', this.characters().length)
+      console.log('currentPageSignal$ ', this.currentPageSignal$())
+      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$())
+    })
   }
 
   ngOnInit(): void {
@@ -98,23 +92,14 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   onScroll(index: number): void {
 
-    console.log('this.pageSignal$()', this.pageSignal$());
-    console.log('this.nextPageSignal$()', this.nextPageSignal$());
+    const { page, nextPage } = this.paginationSignal$();
+    if (nextPage && index > 0 && nextPage > page) {
 
-    if ((this.nextPageSignal$() - this.pageSignal$()!) === 1 && index > 0) {
-      // if ((this.nextPageSignal$() - 1) === 1) {
       const end = this.viewport.getRenderedRange().end;
       const total = this.viewport.getDataLength();
       const offset = this.viewport.measureScrollOffset();
-      console.log(this.viewport.measureScrollOffset('top'),this.viewport.measureScrollOffset('bottom'));
-      console.log('measureRenderedContentSize height: ',this.viewport.measureRenderedContentSize());
-      console.log('measureViewportSize: ',this.viewport.measureViewportSize('vertical'))
-      console.log(this.viewport.measureBoundingClientRectWithScrollOffset('top'))
-      console.log(this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
       this.setItemSize(index);
-      console.log(this.viewport.getViewportSize());
-      // console.log(this.viewport.data);
-      // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
+
       // SCROLL GUARD: Scroll direction = down only
       if (offset < this.lastScrollOffset) {
         this.lastScrollOffset = offset;
@@ -122,17 +107,13 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       }
 
       this.setScrollIndex();
-      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$())
-      // console.log('lastScrollOffset$: ', this.lastScrollOffset)
 
       this.lastScrollOffset = offset;
 
       // Prevent loading if already in progress or nothing more to load
-      if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
-        // console.log('end, ', end, 'total, ', total, 'offset, ', offset);
-        if ((this.pageSignal$() as number - this.scrollIndexSignal$() > 1)) {
-          return;
-        }
+      // if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
+      const { page, nextPage } = this.paginationSignal$();
+      if (end >= total * 0.9 && nextPage && page && !this.isLoadingSignal$()) {
         this.loadCharacters();
       }
     }
@@ -140,7 +121,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   setItemSize(index: number) {
     if (index > 0) {
-      // this.itemSizeSignal$.set(1000);
       this.itemSizeSignal$.set(1100);
     }
   }
@@ -155,28 +135,32 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const merged = [...existing, ...charactersData.characters];
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
-    this.nextPageSignal$.set(charactersData.nextPage as number);
     this.isLoadingSignal$.set(false);
   }
 
+  // ✅ A clean page-only signal
+  // ✅ Response stream that only triggers on `page` changes
   charactersResponse$: Signal<ICharactersResponse> = toSignal(
-    toObservable(this.pageSignal$).pipe(
+    toObservable(this.currentPageSignal$).pipe(
       tap(() => this.isLoadingSignal$.set(true)),
-      switchMap(page => this.charactersService.getCharacters(page as number)),
+      switchMap(page => this.charactersService.getCharacters(page)),
       tap((response: ICharactersResponse) => {
-        this.mergeCharacters(response);
-        console.log('response: ', response);
-        return response;
+        this.mergeCharacters(response); // safely merges
+        this.paginationSignal$.update(p => ({
+          ...p,
+          nextPage: response.nextPage ?? null // ⚠️ Only this updates, page stays same
+        }));
+        this.isLoadingSignal$.set(false);
       })
     ),
-    {
-      initialValue: { characters: [], nextPage: null }
-    }
+    { initialValue: { characters: [], nextPage: null } }
   );
 
   loadCharacters(): void {
-    const next = this.nextPageSignal$();
-    if (next) this.pageSignal$.set(next);
+    const { nextPage } = this.paginationSignal$();
+    if (nextPage) {
+      this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
+    }
   }
 
   selectedRow = (row: Character): void => {

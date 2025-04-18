@@ -1,8 +1,8 @@
 <!-- @defer (when isLoadedSignal$()) { -->
 @if(selectedViewSignal$()==='list'){
-<!-- @if(selectedViewSignal$2()==='list'){ -->
-<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeComputed$()}}" class="list-viewport">
-  <table mat-table [dataSource]="charactersComputed$()" class="mat-elevation-z8">
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"
+  class="list-viewport">
+  <table mat-table [dataSource]="characters()" class="mat-elevation-z8">
 
     @for (column of columns; track column) {
     <ng-container [matColumnDef]="column.columnDef">
@@ -50,10 +50,8 @@
 
 }@else{
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view">
-  <div *cdkVirtualFor="let character of charactersComputed$()" class="grid-item">
-    <!-- <div class="grid-view-container"  [class.row-is-clicked]="isSelected(character)"> -->
-      <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view>
-    <!-- </div> -->
+  <div *cdkVirtualFor="let character of characters()" class="grid-item">
+    <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view>
   </div>
 </cdk-virtual-scroll-viewport>
 }
