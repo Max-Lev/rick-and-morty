@@ -1,5 +1,4 @@
 <!-- @defer (when isLoadedSignal$()) { -->
- 
 @if(selectedViewSignal$()==='list'){
   
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"

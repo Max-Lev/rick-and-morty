@@ -6,7 +6,7 @@ import { Character, ICharacterColumns } from '../models/character.model';
 })
 export class SelectionService {
 
-  private selectedRows = signal<Set<Character>>(new Set());
+   selectedRows = signal<Set<Character>>(new Set());
 
   // Computed for count
   selectedCount$: Signal<number> = computed(() => this.selectedRows().size);
@@ -15,26 +15,31 @@ export class SelectionService {
   getSelectedRows = () => this.selectedRows();
 
   // selectedViewSignal$ = signal<string>('grid'); 
-  selectedViewSignal$ = signal<string>('list'); 
+  selectedViewSignal$ = signal<string>('list');
+
+  data = signal<number>(0)
 
   // Add/remove toggle logic
   toggleRow(row: Character) {
     this.selectedRows.update((set) => {
       const updated = new Set(set);
-      // debugger;
-      if (updated.has(row)) {
+      if(updated.has(row)){
         updated.delete(row);
-        console.log(updated);
-      } else {
-        // row = {...row, ...{selected: true}};
-        
+      }else{
+        row.selected = true;
+        // row = {...row, selected: true};
         updated.add(row);
-        console.log(updated);
-        // debugger;
-
       }
+
+      // console.log(updated);
       return updated;
     });
+    console.log(this.selectedRows());
+  }
+
+  getSelectedData() {
+    console.log(this.selectedRows());
+    return this.selectedRows;
   }
 
   clearSelection() {

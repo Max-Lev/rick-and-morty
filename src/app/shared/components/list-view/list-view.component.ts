@@ -1,11 +1,9 @@
-import { Component, inject, input, Input, OnChanges, Signal, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, inject, input, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
-import { Character, ColumnConfig, ICharacterColumns } from '../../models/character.model';
+import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatTableModule } from '@angular/material/table';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-list-view',
@@ -13,9 +11,6 @@ import { AsyncPipe } from '@angular/common';
     IsEmptyPipe,
     ColorPipe,
     MatTableModule
-  ],
-  providers: [
-    SelectionService,
   ],
   standalone: true,
   templateUrl: './list-view.component.html',
@@ -38,6 +33,7 @@ export class ListViewComponent implements OnChanges {
   selectedRow = (row: Character): void => {
     console.log(row)
     this.selectionService.toggleRow(row);
+    this.selectionService.data.set(1);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

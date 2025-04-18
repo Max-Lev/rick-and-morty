@@ -1,7 +1,6 @@
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Character, ICharactersResponse } from '../../models/character.model';
+import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-grid-view',

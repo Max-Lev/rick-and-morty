@@ -1,6 +1,6 @@
 import {
   Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit, Signal, WritableSignal, Input, AfterViewInit
+  ChangeDetectorRef, OnInit, Signal, Input, AfterViewInit
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
@@ -10,7 +10,6 @@ import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, tap } from 'rxjs/operators';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
-import { CommonModule } from '@angular/common';
 import { ListViewComponent } from '../../components/list-view/list-view.component';
 
 @Component({
@@ -20,8 +19,7 @@ import { ListViewComponent } from '../../components/list-view/list-view.componen
     ScrollingModule,
     ListViewComponent,
     GridViewComponent,
-    CommonModule,
-  
+
   ],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
@@ -38,8 +36,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   selectionService = inject(SelectionService);
 
-  // isLoadedSignal$ = computed(() => { return this.charactersService.isLoaded() });
-
   cdr = inject(ChangeDetectorRef);
 
   lastScrollOffset = 0;
@@ -53,20 +49,23 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   //INITIAL VIEW LOAD CONFIG
   selectedViewSignal$ = this.selectionService.selectedViewSignal$;
   // DYNAMIC SCROLL HIGHT
-  itemSizeSignal$ = signal<number>(200);
+  itemSizeSignal$ = signal<number>(150);
 
   scrollIndexSignal$ = signal<number>(0);
   setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1)
 
-
   paginationSignal$ = signal<{ page: number, nextPage: number | null }>({ page: 1, nextPage: null });
   readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
 
+  selectedCount$ = this.selectionService.getSelectedData();
+  
   constructor() {
     effect(() => {
       console.log('characters length: ', this.characters().length)
-      console.log('currentPageSignal$ ', this.currentPageSignal$())
-      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$())
+      // console.log('currentPageSignal$ ', this.currentPageSignal$())
+      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
+      console.log('selectedCount$: ', this.selectedCount$());
+      
     })
   }
 
@@ -78,36 +77,40 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   }
 
-  trackById(index: number, item: Character) {
-    return item.id;
-  }
-
   onScroll(index: number): void {
 
     const { page, nextPage } = this.paginationSignal$();
+
+    const viewportSize = this.getViewportSize();
+
     if (nextPage && index > 0 && nextPage > page) {
 
-      const end = this.viewport.getRenderedRange().end;
-      const total = this.viewport.getDataLength();
-      const offset = this.viewport.measureScrollOffset();
+      if (!viewportSize) return;
+      const { end, total } = viewportSize;
+
       this.setItemSize(index);
 
-      // SCROLL GUARD: Scroll direction = down only
-      if (offset < this.lastScrollOffset) {
-        this.lastScrollOffset = offset;
-        return;
-      }
-
       this.setScrollIndex();
-
-      this.lastScrollOffset = offset;
-
       // Prevent loading if already in progress or nothing more to load
-      // if (end >= total * 0.9 && this.nextPageSignal$() && !this.isLoadingSignal$()) {
-      const { page, nextPage } = this.paginationSignal$();
       if (end >= total * 0.9 && nextPage && page && !this.isLoadingSignal$()) {
         this.loadCharacters();
       }
+
+    }
+  }
+
+  getViewportSize() {
+    const end = this.viewport.getRenderedRange().end;
+    const total = this.viewport.getDataLength();
+    const offset = this.viewport.measureScrollOffset();
+    // SCROLL GUARD: Scroll direction = down only
+    if (offset < this.lastScrollOffset) {
+      this.lastScrollOffset = offset;
+      return;
+    }
+    this.lastScrollOffset = offset;
+    return {
+      end, total, offset
     }
   }
 
@@ -119,10 +122,10 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   getResolvedData(): void {
     if (!this.charactersResolver) return;
-    this.mergeCharacters(this.charactersResolver);
+    this.setCharactersData(this.charactersResolver);
   }
 
-  mergeCharacters = (charactersData: ICharactersResponse) => {
+  setCharactersData = (charactersData: ICharactersResponse) => {
     const existing = this.characters();
     const merged = [...existing, ...charactersData.characters];
     const uniq = new Map(merged.map(c => [c.id, c]));
@@ -137,7 +140,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       tap(() => this.isLoadingSignal$.set(true)),
       switchMap(page => this.charactersService.getCharacters(page)),
       tap((response: ICharactersResponse) => {
-        this.mergeCharacters(response); // safely merges
+        this.setCharactersData(response); // safely merges
         this.paginationSignal$.update(p => ({
           ...p,
           nextPage: response.nextPage ?? null // ⚠️ Only this updates, page stays same
