@@ -1,11 +1,12 @@
 import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-grid-view',
   imports: [
-    
+    MatIcon
   ],
   standalone:true,
   templateUrl: './grid-view.component.html',
@@ -17,6 +18,11 @@ export class GridViewComponent implements OnChanges {
   }
   @Input() character!:Character;
   selectionService = inject(SelectionService);
+
+  selectedRow = (row: Character): void => {
+    console.log(row)
+    this.selectionService.toggleRow(row);
+  }
 
   isSelected(row: Character): boolean {
     return this.selectionService.getSelectedRows().has(row);
