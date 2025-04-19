@@ -5,6 +5,13 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { ToolbarMenuComponent } from '../toolbar-menu/toolbar-menu.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { SelectionService } from '../../../shared/providers/selection.service';
+import {
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+} from '@angular/material/dialog';
+import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -12,12 +19,16 @@ import { SelectionService } from '../../../shared/providers/selection.service';
     MatIconModule,
     MatToolbar,
     ToolbarMenuComponent,
-    MatBadgeModule
+    MatBadgeModule,
+    // FilterDialogComponent
+    // MatDialogActions,
+    // MatDialogClose,
+    // MatDialogContent,
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent {
 
@@ -25,19 +36,43 @@ export class ToolbarComponent {
 
   selectedCount = computed(() => this.selectionService.selectedCount$());
 
-  selectedViewSignal = this.selectionService.selectedViewSignal$; 
+  selectedViewSignal = this.selectionService.selectedViewSignal$;
 
   // cdr = inject(ChangeDetectorRef);
 
-  constructor(){
-    effect(()=>{
+  readonly dialog = inject(MatDialog);
+
+  constructor() {
+    effect(() => {
       // console.log(this.selectedSignal$())
       // console.log(this.selectedView())
-    })
+    });
+    setTimeout(() => {
+      this.openDialogHandler({value:'Filter By Status & Name'})
+    }, 0);
   }
 
-  toggleView(view:string){
+  toggleView(view: string) {
     this.selectionService.selectedViewSignal$.set(view);
+  }
+
+  openDialogHandler(action: { value: string }) {
+    console.log('openDialogHandler: ', action.value);
+    const dialogRef = this.dialog.open(FilterDialogComponent, { 
+      restoreFocus: false,
+      data:{
+        title:action.value
+      },
+      width:'50%',
+      height:'50%'
+    });
+
+    // Manually restore focus to the menu trigger since the element that
+    // opens the dialog won't be in the DOM any more when the dialog closes.
+    dialogRef.afterClosed().subscribe((val) => {
+      console.log('close: ',val)
+      // this.menuTrigger().focus()
+    });
   }
 
 }

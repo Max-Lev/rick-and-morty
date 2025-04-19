@@ -4,6 +4,7 @@ import { Subscription, map, expand, of, takeWhile, reduce, defer, Observable, ta
 import { GET_CHARACTERS } from "../schema/characters.schema";
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Character, CharacterQueryResponseDTO } from "../../shared/models/character.model";
+import { NAME_STATUS_QUERY } from "../schema/name-status.schema";
 
 
 @Injectable({
@@ -35,6 +36,23 @@ export class CharactersService {
         })),
         tap(() => this.isLoaded.set(true))
       );
+  }
+
+  findByNameStatus$ = signal<any>(null);
+  findByNameStatus(value: { name: string, status: string }): Observable<any> {
+    return this.apollo.query<CharacterQueryResponseDTO>({
+      query: NAME_STATUS_QUERY,
+      variables: {
+        name: value.name,
+        status: value.status
+      }
+    }).pipe(
+      map(res => {
+        console.log(res)
+        this.findByNameStatus$.set(res);
+        return res;
+      })
+    )
   }
 
 }

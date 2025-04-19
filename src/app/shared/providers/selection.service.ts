@@ -27,19 +27,11 @@ export class SelectionService {
         updated.delete(row);
       }else{
         row.selected = true;
-        // row = {...row, selected: true};
         updated.add(row);
       }
-
-      // console.log(updated);
       return updated;
     });
     console.log(this.selectedRows());
-  }
-
-  getSelectedData() {
-    console.log(this.selectedRows());
-    return this.selectedRows;
   }
 
   clearSelection() {

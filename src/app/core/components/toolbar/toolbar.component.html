@@ -1,6 +1,6 @@
 <mat-toolbar>
 
-    <app-toolbar-menu #menu></app-toolbar-menu>
+    <app-toolbar-menu #menu (openDialogAction)="openDialogHandler($event)"></app-toolbar-menu>
 
     <span class="spacer"></span>
 

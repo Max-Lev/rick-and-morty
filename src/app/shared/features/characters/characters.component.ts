@@ -57,14 +57,12 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   paginationSignal$ = signal<{ page: number, nextPage: number | null }>({ page: 1, nextPage: null });
   readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
 
-  selectedCount$ = this.selectionService.getSelectedData();
-  
   constructor() {
     effect(() => {
-      console.log('characters length: ', this.characters().length)
+      // console.log('characters length: ', this.characters().length)
       // console.log('currentPageSignal$ ', this.currentPageSignal$())
-      console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
-      console.log('selectedCount$: ', this.selectedCount$());
+      // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
+      // console.log('selectedCount$: ', this.selectedCount$());
       
     })
   }

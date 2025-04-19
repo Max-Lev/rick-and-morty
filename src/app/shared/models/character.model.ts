@@ -5,41 +5,36 @@ export interface ColumnConfig<T> {
 }
 
 export interface ICharacterColumns {
-    id: number;
-    name: string;
-    status: any;
-    species: any;
-    type: any;
-    gender: any;
+  id: number;
+  name: string;
+  status: any;
+  species: any;
+  type: any;
+  gender: any;
 }
 
 export interface Character {
-    id: string;
-    name: string;
-    status: string;
-    species: string;
-    gender: string;
-    image: string;
-    selected?: boolean;
-  }
+  id: string;
+  name: string;
+  status: string;
+  species: string;
+  gender: string;
+  image: string;
+  selected?: boolean;
+}
 
- export interface CharacterQueryResponseDTO {
-    characters: {
-      info: {
-        next: number | null;
-        pages:number;
-      };
-      results: Character[];
+export interface CharacterQueryResponseDTO {
+  characters: {
+    info: {
+      next: number | null;
+      pages: number;
     };
-  }
-
-export interface ICharactersResponse{
-    characters: Character[];
-    nextPage: number | null;
+    results: Character[];
+  };
 }
 
-export enum STATUS_ENUM{
-    'Alive' = 1, 
-    'Dead' = 2,
-    'unknown' = 3
+export interface ICharactersResponse {
+  characters: Character[];
+  nextPage: number | null;
 }
+
