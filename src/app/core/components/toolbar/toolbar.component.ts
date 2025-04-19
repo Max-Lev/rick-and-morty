@@ -23,11 +23,11 @@ export class ToolbarComponent {
 
   selectionService = inject(SelectionService);
 
-  selectedCount$ = computed(() => this.selectionService.selectedCount$());
+  selectedCount = computed(() => this.selectionService.selectedCount$());
 
-  selectedViewSignal$ = this.selectionService.selectedViewSignal$; 
+  selectedViewSignal = this.selectionService.selectedViewSignal$; 
 
-  cdr = inject(ChangeDetectorRef);
+  // cdr = inject(ChangeDetectorRef);
 
   constructor(){
     effect(()=>{

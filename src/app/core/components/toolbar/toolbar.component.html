@@ -6,27 +6,29 @@
 
     <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
 
-        @if (selectedCount$() > 0) {
-        <mat-icon matBadge="{{selectedCount$()}}" [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
+        @if (selectedCount() > 0) {
+        <mat-icon matBadge="{{selectedCount()}}" [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
         }@else{
         <mat-icon>person_add_alt_1</mat-icon>
         }
     </button>
 
-    @if(selectedViewSignal$()==='list'){
-        <button (click)="toggleView('grid')" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>
-                <span class="material-icons-outlined">
-                    format_list_numbered
-                    </span>
-            </mat-icon>
-        </button>
+    @if(selectedViewSignal()==='list'){
+    <button (click)="toggleView('grid')" mat-icon-button class="example-icon"
+        aria-label="Example icon-button with share icon">
+        <mat-icon>
+            <span class="material-icons-outlined">
+                format_list_numbered
+            </span>
+        </mat-icon>
+    </button>
     }@else {
-        <button (click)="toggleView('list')" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>grid_view</mat-icon>
-        </button>
+    <button (click)="toggleView('list')" mat-icon-button class="example-icon"
+        aria-label="Example icon-button with share icon">
+        <mat-icon>grid_view</mat-icon>
+    </button>
     }
-    
-    
+
+
 
 </mat-toolbar>

@@ -2,6 +2,10 @@
     <mat-icon>menu</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
+    @for (item of menuOptions; track $index) {
+        <button mat-menu-item (click)="item.action()">{{item.label}}</button>
+        <!-- <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button> -->
+    }
+    
 </mat-menu>
