@@ -28,12 +28,11 @@ export class ListViewComponent implements OnChanges {
   selectionService = inject(SelectionService);
 
   isSelected(row: Character): boolean {
-    return this.selectionService.getSelectedRows().has(row);
+    return this.selectionService.getSelectedRows().has(+row.id);
   }
   selectedRow = (row: Character): void => {
     console.log(row)
     this.selectionService.toggleRow(row);
-    this.selectionService.data.set(1);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

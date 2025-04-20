@@ -38,3 +38,13 @@ export interface ICharactersResponse {
   nextPage: number | null;
 }
 
+
+export interface IPagination {
+  page: number;
+  nextPage: number | null;
+  filterPayload?: IFilterPayload
+}
+export interface IFilterPayload{
+  name: string, 
+  status: string
+}

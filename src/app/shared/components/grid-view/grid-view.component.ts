@@ -12,15 +12,15 @@ import { ColorPipe } from '../../pipes/color.pipe';
     ColorPipe
 
   ],
-  standalone:true,
+  standalone: true,
   templateUrl: './grid-view.component.html',
   styleUrl: './grid-view.component.scss'
 })
 export class GridViewComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
-    
+
   }
-  @Input() character!:Character;
+  @Input() character!: Character;
   selectionService = inject(SelectionService);
 
   selectedRow = (row: Character): void => {
@@ -29,6 +29,24 @@ export class GridViewComponent implements OnChanges {
   }
 
   isSelected(row: Character): boolean {
-    return this.selectionService.getSelectedRows().has(row);
+    const selectedRowa = this.selectionService.getSelectedRows();
+    const selectedList: Character[] = Array.from(selectedRowa.values());
+
+    const selected = selectedList.some((c) => {
+      if (c.id === row.id) {
+        row.selected = true;
+        // console.log(selectedRowa)
+        // console.log(row)
+        return true;
+      } else {
+        return false;
+      }
+    })
+
+    // const selected = this.selectionService.getSelectedRows().has(row);
+    // if (selected) {
+    //   console.log('selected: ', row)
+    // }
+    return selected;
   }
 }

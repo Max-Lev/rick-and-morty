@@ -19,6 +19,7 @@ export class CharactersService {
   constructor() { }
 
   getCharacters(page: number,filter?:{name:string,status:string}): Observable<{ characters: Character[]; nextPage: number | null }> {
+    console.log('getCharacters: ',page);
     return this.apollo
       .query<CharacterQueryResponseDTO>({
         query: GET_CHARACTERS,
@@ -41,43 +42,6 @@ export class CharactersService {
         tap(() => this.isLoaded.set(true))
       );
   }
-
-
-
-  // findByNameStatus(value: { name: string; status: string }):
-  //   Observable<{ characters: Character[]; nextPage: number | null }> {
-  //   return this.apollo
-  //     .query<CharacterQueryResponseDTO>({
-  //       query: GET_CHARACTERS,
-  //       variables: value,
-  //     })
-  //     .pipe(
-  //       map((res) => ({
-  //         characters: res.data.characters.results.map((character) => ({
-  //           selected: false,
-  //           ...character,
-  //         })),
-  //         nextPage: res.data.characters.info.next,
-  //       })),
-  //       tap(() => this.isLoaded.set(true))
-  //     );
-  // }
-
-      // // findByNameStatus(value: { name: string; status: string }): Observable<{ characters: Character[] }> {
-    // debugger;
-    // return this.apollo.query<CharacterQueryResponseDTO>({
-    //   query: NAME_STATUS_QUERY,
-    //   variables: value
-    // }).pipe(
-    //   map(res => ({
-    //     characters: res.data.characters.results.map((character) => ({
-    //       selected: false,
-    //       ...character,
-    //     })),
-    //     nextPage: res.data.characters.info.next
-    //   })),
-    //   tap(() => this.isLoaded.set(true))
-    // );
 
 
 }

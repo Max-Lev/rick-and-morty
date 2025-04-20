@@ -7,9 +7,6 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { SelectionService } from '../../../shared/providers/selection.service';
 import {
   MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
 } from '@angular/material/dialog';
 import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
 @Component({
@@ -20,10 +17,6 @@ import { FilterDialogComponent } from '../../../shared/components/filter-dialog/
     MatToolbar,
     ToolbarMenuComponent,
     MatBadgeModule,
-    // FilterDialogComponent
-    // MatDialogActions,
-    // MatDialogClose,
-    // MatDialogContent,
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
@@ -50,6 +43,7 @@ export class ToolbarComponent {
     effect(() => {
       // console.log(this.selectedSignal$())
       // console.log(this.selectedView())
+      console.log(this.selectedCount())
     });
     setTimeout(() => {
       // this.openDialogHandler({value:'Filter By Status & Name'})

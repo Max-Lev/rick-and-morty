@@ -5,7 +5,7 @@ import {
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
 import { COLUMNS } from './columns.config';
-import { Character, ColumnConfig, ICharacterColumns, ICharactersResponse } from '../../models/character.model';
+import { Character, ColumnConfig, ICharacterColumns, ICharactersResponse, IFilterPayload, IPagination } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, switchMap, tap } from 'rxjs/operators';
@@ -54,54 +54,24 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   scrollIndexSignal$ = signal<number>(0);
   setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1)
 
-  paginationSignal$ = signal<{
-    page: number,
-    nextPage: number | null,
-    data?: { name: string, status: string }
-  }>({ page: 1, nextPage: null, data: { name: '', status: '' } });
-  readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
+  paginationSignal$ = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { name: '', status: '' } });
+  readonly currentPageSignal$ = computed(() => {
+    return this.paginationSignal$().page;
+  });
 
   filterSignal$ = this.selectionService.filterSignal$;
 
-  readonly currentParamsSignal$ = computed(() => ({
-    page: this.paginationSignal$().page,
-    filter: this.paginationSignal$().data ?? { name: '', status: '' }
-  }));
+  prevFilter = signal<IFilterPayload>({ name: '', status: '' });
 
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
     effect(() => {
-      console.log('characters length: ', this.characters(),this.characters().length)
+      console.log('characters length: ', this.characters(), this.characters().length)
       // console.log('currentPageSignal$ ', this.currentPageSignal$())
       // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
       // console.log('selectedCount$: ', this.selectedCount$());
     });
-    // Create a reactive effect that will run whenever the selectionService.filterSignal$() function is called
-
-    // effect(() => {
-    //   // Get the filter signal from the selection service
-    //   const filter: { name: string; status: string; } | null = this.selectionService.filterSignal$();
-    //   // If there is a filter
-    //   if (filter) {
-    //     // this.paginationSignal$.set({ page: 1, nextPage: null, data: { name: '', status: '' } });
-    //     this.paginationSignal$.update(page => ({ ...page, data: filter }));
-        
-    //     // this.charactersResponse$();
-    //     debugger;
-    //     // this.charactersService.getCharacters(filter).subscribe((data: ICharactersResponse) => {
-
-    //     // })
-    //   }
-    // });
-    // effect(() => {
-    //   const filter = this.selectionService.filterSignal$();
-    //   if (filter) {
-    //     debugger;
-    //     this.paginationSignal$.set({ page: 1, nextPage: null, data: filter });
-    //     this.characters.set([]); // reset characters for new filter
-    //   }
-    // });
 
   }
 
@@ -171,33 +141,30 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     this.isLoadingSignal$.set(false);
   }
 
-  isFilterActive = false;
-  prevFilter = {name:'',status:''};
+  
   charactersResponse$ = this.selectionService.filter$.pipe(
     debounceTime(300), // Optional debounce
-    tap((filter:any) => {
-      
-      const prevRegularPage = 1;
-      console.log('Filter changed:', filter);
-      // if((filter.name!=='' || filter.status!=='') && this.isFilterActive!==true){
-        
-        if(filter.name!==this.prevFilter.name || filter.status!==this.prevFilter.status){
-          
-          this.prevFilter = {name:filter.name, status:filter.status};
-          this.paginationSignal$.set({ page: 1, nextPage: null, data: filter });
-          this.characters.set([]);
+    tap((filter: IFilterPayload) => {
+
+      if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
+
+        this.prevFilter.update((v) => ({
+          ...v,
+          name: filter.name,
+          status: filter.status
+        }));
+
+        this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
+        if (this.paginationSignal$().page === 1) {
+          this.itemSizeSignal$.set(150);
         }
-        // this.paginationSignal$.set({ page: 1, nextPage: null, data: filter });
-        
-        this.isFilterActive = true;
-      // }
-      if(filter.name=='' || filter.status==''){
-        this.isFilterActive = false;
-        // this.paginationSignal$.set({ page: this.paginationSignal$().page, nextPage: null, data: { name: '', status: '' } });
+        this.characters.set([]);
       }
-      // Reset characters and pagination
-      // this.characters.set([]);
-      // this.paginationSignal$.set({ page: 1, nextPage: null, data: filter });
+
+      if (filter.name == '' || filter.status == '') {
+        this.paginationSignal$.set({ page: this.paginationSignal$().page, nextPage: this.paginationSignal$().nextPage, filterPayload: filter });
+      }
+
     }),
     switchMap((filter) => {
       const { page } = this.paginationSignal$();
@@ -206,53 +173,12 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         tap((response: ICharactersResponse) => {
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
+          console.log('2', this.paginationSignal$())
           this.isLoadingSignal$.set(false);
         })
       );
     })
   );
-  // charactersResponse$ = this.selectionService.filter$.pipe(
-  //   tap(() => {
-  //     // Reset characters and pagination on filter change
-  //     this.characters.set([]);
-  //     this.paginationSignal$.set({ page: 1, nextPage: null, data: this.selectionService.filterSignal$()! });
-  //   }),
-  //   switchMap(() => {
-  //     const { page, data } = this.paginationSignal$();
-  //     this.isLoadingSignal$.set(true);
-  //     return this.charactersService.getCharacters(page, data).pipe(
-  //       tap((response: ICharactersResponse) => {
-  //         this.setCharactersData(response);
-  //         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-  //         this.isLoadingSignal$.set(false);
-  //       })
-  //     );
-  //   })
-  // );
-
-  // ✅ A clean page-only signal
-  // ✅ Response stream that only triggers on `page` changes
-  // charactersResponse$: Signal<ICharactersResponse> = toSignal(
-  //   // toObservable(this.currentPageSignal$)
-  //   toObservable(this.currentParamsSignal$)
-  //     .pipe(
-  //       tap(() => console.log('this.currentPageSignal$(: ', this.currentPageSignal$())),
-  //       tap(() => this.isLoadingSignal$.set(true)),
-  //       // switchMap(page => this.charactersService.getCharacters(page)),
-  //       switchMap(({ page, filter }) => this.charactersService.getCharacters(page, filter)),
-  //       // switchMap(page => {
-  //       //   const { data } = this.paginationSignal$();
-  //       //   return this.charactersService.getCharacters(page,data);
-  //       // }),
-  //       tap((response: ICharactersResponse) => {
-  //         debugger;
-  //         this.setCharactersData(response);
-  //         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-  //         this.isLoadingSignal$.set(false);
-  //       })
-  //     ),
-  //   { initialValue: { characters: [], nextPage: null } }
-  // );
 
   loadCharacters(): void {
     const { nextPage } = this.paginationSignal$();
@@ -270,7 +196,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   }
 
   isSelected(row: Character): boolean {
-    return this.selectionService.getSelectedRows().has(row);
+    // return this.selectionService.getSelectedRows().has(row);
+    return this.selectionService.getSelectedRows().has(+row.id);
   }
 
 

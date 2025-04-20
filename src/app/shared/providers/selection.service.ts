@@ -1,5 +1,5 @@
-import { computed, Injectable, Signal, signal } from '@angular/core';
-import { Character, ICharacterColumns } from '../models/character.model';
+import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { Character, ICharacterColumns, IFilterPayload } from '../models/character.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -7,7 +7,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 })
 export class SelectionService {
 
-  selectedRows = signal<Set<Character>>(new Set());
+  // selectedRows = signal<Set<Character>>(new Set());
+  selectedRows = signal<Map<number,Character>>(new Map());
 
   // Computed for count
   selectedCount$: Signal<number> = computed(() => this.selectedRows().size);
@@ -15,12 +16,10 @@ export class SelectionService {
   // Expose signal getter
   getSelectedRows = () => this.selectedRows();
 
-  selectedViewSignal$ = signal<string>('grid');
-  // selectedViewSignal$ = signal<string>('list');
+  // selectedViewSignal$ = signal<string>('grid');
+  selectedViewSignal$ = signal<string>('list');
 
-  data = signal<number>(0);
-
-  private _filterSignal = signal<{ name: string; status: string }>({ name: '', status: '' });
+  private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
 
   // Optional accessor
   filterSignal$ = this._filterSignal;
@@ -28,44 +27,36 @@ export class SelectionService {
   // ✅ Observable version for traditional RxJS use
   filter$ = toObservable(this._filterSignal);
 
-  setFilter(value: { name: string; status: string }) {
+  setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
   }
 
-  getFilter() {
+  getFilter(): IFilterPayload {
     return this._filterSignal();
   }
 
-  // private filterSignal = signal<{ name: string; status: string } | null>(null);
-  // filterSignal$ = this.filterSignal;
-  // setFilter(value: { name: string; status: string }) {
-  //   debugger;
-  //   this.filterSignal.set(value);
-  // }
 
-  // getFilter() {
-  //   return this.filterSignal();
-  // }
-
-
-
-  // Add/remove toggle logic
   toggleRow(row: Character) {
-    this.selectedRows.update((set) => {
-      const updated = new Set(set);
-      if (updated.has(row)) {
-        updated.delete(row);
+    this.selectedRows.update((prevMap) => {
+      const newMap = new Map(prevMap); // 🔁 new reference
+  
+      if (newMap.has(+row.id)) {
+        row.selected = false;
+        newMap.delete(+row.id);
       } else {
         row.selected = true;
-        updated.add(row);
+        newMap.set(+row.id, row);
       }
-      return updated;
+  
+      return newMap; // ✅ signals detect change
     });
-    console.log(this.selectedRows());
+  
   }
 
+
+
   clearSelection() {
-    this.selectedRows.set(new Set());
+    this.selectedRows.set(new Map());
   }
 
 }
