@@ -18,11 +18,15 @@ export class CharactersService {
 
   constructor() { }
 
-  getCharacters(page: number): Observable<{ characters: Character[]; nextPage: number | null }> {
+  getCharacters(page: number,filter?:{name:string,status:string}): Observable<{ characters: Character[]; nextPage: number | null }> {
     return this.apollo
       .query<CharacterQueryResponseDTO>({
         query: GET_CHARACTERS,
-        variables: { page },
+        variables: { 
+          page,
+          name: filter?.name,
+          status: filter?.status
+        },
       })
       .pipe(
         // auditTime(1000),
@@ -38,21 +42,42 @@ export class CharactersService {
       );
   }
 
-  findByNameStatus$ = signal<any>(null);
-  findByNameStatus(value: { name: string, status: string }): Observable<any> {
-    return this.apollo.query<CharacterQueryResponseDTO>({
-      query: NAME_STATUS_QUERY,
-      variables: {
-        name: value.name,
-        status: value.status
-      }
-    }).pipe(
-      map(res => {
-        console.log(res)
-        this.findByNameStatus$.set(res);
-        return res;
-      })
-    )
-  }
+
+
+  // findByNameStatus(value: { name: string; status: string }):
+  //   Observable<{ characters: Character[]; nextPage: number | null }> {
+  //   return this.apollo
+  //     .query<CharacterQueryResponseDTO>({
+  //       query: GET_CHARACTERS,
+  //       variables: value,
+  //     })
+  //     .pipe(
+  //       map((res) => ({
+  //         characters: res.data.characters.results.map((character) => ({
+  //           selected: false,
+  //           ...character,
+  //         })),
+  //         nextPage: res.data.characters.info.next,
+  //       })),
+  //       tap(() => this.isLoaded.set(true))
+  //     );
+  // }
+
+      // // findByNameStatus(value: { name: string; status: string }): Observable<{ characters: Character[] }> {
+    // debugger;
+    // return this.apollo.query<CharacterQueryResponseDTO>({
+    //   query: NAME_STATUS_QUERY,
+    //   variables: value
+    // }).pipe(
+    //   map(res => ({
+    //     characters: res.data.characters.results.map((character) => ({
+    //       selected: false,
+    //       ...character,
+    //     })),
+    //     nextPage: res.data.characters.info.next
+    //   })),
+    //   tap(() => this.isLoaded.set(true))
+    // );
+
 
 }

@@ -42,13 +42,17 @@ export class ToolbarComponent {
 
   readonly dialog = inject(MatDialog);
 
+  // characterService = inject(SelectionService);
+
+
+
   constructor() {
     effect(() => {
       // console.log(this.selectedSignal$())
       // console.log(this.selectedView())
     });
     setTimeout(() => {
-      this.openDialogHandler({value:'Filter By Status & Name'})
+      // this.openDialogHandler({value:'Filter By Status & Name'})
     }, 0);
   }
 
@@ -58,19 +62,22 @@ export class ToolbarComponent {
 
   openDialogHandler(action: { value: string }) {
     console.log('openDialogHandler: ', action.value);
-    const dialogRef = this.dialog.open(FilterDialogComponent, { 
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
       restoreFocus: false,
-      data:{
-        title:action.value
+      data: {
+        title: action.value
       },
-      width:'50%',
-      height:'50%'
+      width: '50%',
+      height: '50%'
     });
 
     // Manually restore focus to the menu trigger since the element that
     // opens the dialog won't be in the DOM any more when the dialog closes.
-    dialogRef.afterClosed().subscribe((val) => {
-      console.log('close: ',val)
+    dialogRef.afterClosed().subscribe((val: {
+      action: string,query: { name: string, status: string }
+    }) => {
+      console.log('close: ', val);
+      this.selectionService.setFilter({...val.query}); // inject and call
       // this.menuTrigger().focus()
     });
   }

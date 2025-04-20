@@ -4,14 +4,19 @@ export const NAME_STATUS_QUERY = gql`
 query getNameStatus($name:String, $status: String){
     characters(filter:{name:$name,status:$status}){
       info{
-        count,
-        pages,
-        prev,
-        next,
-      },
+      count,
+      pages,
+      prev,
+      next,
+    },
       results{
-        name,
+        id
+        name
         status
+        species
+        gender
+        image,
+        type
       }
     }
   }`;

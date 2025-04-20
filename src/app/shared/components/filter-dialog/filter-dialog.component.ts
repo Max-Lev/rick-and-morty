@@ -36,7 +36,7 @@ export class FilterDialogComponent {
       [
         Validators.required, Validators.minLength(3)
       ]),
-    status: new FormControl<STATUS_ENUM | null>(null),
+    status: new FormControl<string | null>(''),
   })
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() })
@@ -71,6 +71,11 @@ export class FilterDialogComponent {
 
   close() {
     this.dialogRef.close({ action: 'close', query: this.filterFormSignal() });
+    // this.dialogRef.afterClosed().subscribe(val=>{
+    //   if (val) {
+    //     this.characterService.setFilters(val); // inject and call
+    //   }
+    // })
   }
 
   onSubmit(form: FormGroup) {
