@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AfterViewInit, Component, effect, inject } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { STATUS_OPTIONS } from '../../models/status.enum';
+import { SelectComponent } from '../select/select.component';
+import { NameSearchComponent } from '../name-search/name-search.component';
+import { debounceTime, distinctUntilChanged, EMPTY, switchMap, tap } from 'rxjs';
+import { SelectionService } from '../../providers/selection.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-live-search-dialog',
@@ -16,11 +22,102 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    SelectComponent,
+    NameSearchComponent
   ],
   templateUrl: './live-search-dialog.component.html',
   styleUrl: './live-search-dialog.component.scss'
 })
-export class LiveSearchDialogComponent {
+export class LiveSearchDialogComponent implements AfterViewInit {
+
+  statusOptions = STATUS_OPTIONS;
+  incomingData = inject(MAT_DIALOG_DATA);
+  dialogRef = inject(MatDialogRef<LiveSearchDialogComponent>);
+  selectionService = inject(SelectionService);
+
+  form = new FormGroup({
+    name: new FormControl<string>('', [Validators.minLength(3)]),
+    status: new FormControl<string | null>('')
+  });
+
+  filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+
+  constructor() {
+    // effect(()=>{
+    console.log(this.filterFormSignal())
+    toObservable(this.filterFormSignal).pipe(
+        debounceTime(3000),
+        distinctUntilChanged((prev, curr) =>prev?.name === curr?.name && prev?.status === curr?.status),
+        tap(() => {
+          console.log('Form validity:', this.form.valid);
+        }),
+        switchMap((val) => {
+          const name = val?.name ?? '';
+          const status = val?.status ?? '';
+
+          if (this.form.valid && name.length >= 3) {
+            console.log('Request triggered with:', { name, status });
+            this.selectionService.setFilter({ name, status });
+            return this.selectionService.filter$;
+          } else {
+            console.log('not valid');
+            return EMPTY;
+          }
+        })
+      ).subscribe(res => {
+        console.log('Request triggered with:', res);
+      })
+    // .pipe(
+    //   debounceTime(1500),
+    //   distinctUntilChanged(),   
+    //   tap((val) => {
+    //     console.log(val);
+    //     console.log('Form validity:', this.form.valid);
+    //   })
+    // ).subscribe(res=>{
+    //   console.log('Request triggered with:', res);
+    // })
+    // })
+  }
+
+  ngAfterViewInit(): void {
+
+    // this.form.valueChanges.pipe(
+    //   debounceTime(1500),
+    //   distinctUntilChanged((prev, curr) =>
+    //     prev?.name === curr?.name && prev?.status === curr?.status
+    //   ),
+    //   tap(() => {
+    //     console.log('Form validity:', this.form.valid);
+    //   }),
+    //   switchMap((val) => {
+    //     const name = val?.name ?? '';
+    //     const status = val?.status ?? '';
+
+    //     if (this.form.valid && name.length >= 3) {
+    //       console.log('Request triggered with:', { name, status });
+    //       this.selectionService.setFilter({ name, status });
+    //       return this.selectionService.filter$;
+    //     } else {
+    //       console.log('not valid');
+    //       return []; // or use `EMPTY`
+    //     }
+    //   })
+    // ).subscribe((res) => {
+    //   console.log('Filtered result', res);
+    // });
+
+
+  }
+
+
+  search() {
+    this.dialogRef.close()//({ action: 'search', query: this.filterFormSignal() });
+  }
+
+  onSubmit(form: FormGroup) {
+    console.log(form.value);
+  }
 
 }

@@ -60,19 +60,27 @@ export class FilterDialogComponent implements AfterViewInit {
     });
 
 
-    this.form.get('liveSearch')?.valueChanges.pipe(
-      debounceTime(1000),
-      distinctUntilChanged((prev, curr) => prev === curr),
-      switchMap((val: string | null) => {
-        console.log('val', val);
-        const name = val || '';
-        this.selectionService.setFilter({ name: name, status: '' })
-        return this.selectionService.filter$;
-      })
-    ).subscribe((res) => {
-      console.log('res', res)
-      console.log('this.filterFormSignal()', this.filterFormSignal())
-    });
+    // this.form.get('liveSearch')?.valueChanges.pipe(
+    //   debounceTime(1000),
+    //   distinctUntilChanged((prev, curr) => prev === curr),
+    //   switchMap((val: string | null) => {
+    //     console.log('val', val);
+    //     const name = val || '';
+    //     this.selectionService.setFilter({ name: name, status: '' })
+    //     return this.selectionService.filter$;
+    //   })
+    // ).subscribe((res) => {
+    //   console.log('res', res)
+    //   console.log('this.filterFormSignal()', this.filterFormSignal())
+    // });
+
+    // this.dialogRef.afterClosed().subscribe((value:{action:string})=>{
+    //   debugger;
+    //   // query: this.filterFormSignal()
+    //   if (value.action === 'search') {
+    //     // this.characterService.setFilters(val); // inject and call
+    //   }
+    // })
 
   }
 
@@ -82,7 +90,7 @@ export class FilterDialogComponent implements AfterViewInit {
 
   nameError = computed(() => {
     // Trigger reactivity by calling signal
-    this.filterFormSignal();
+    // this.filterFormSignal();
     const ctrl = this.form.get('name');
     if (ctrl?.touched || ctrl?.dirty) {
       if (ctrl.hasError('required')) return 'Name is required';
@@ -91,13 +99,8 @@ export class FilterDialogComponent implements AfterViewInit {
     return '';
   });
 
-  find() {
-    this.dialogRef.close({ action: 'find', query: this.filterFormSignal() });
-    // this.dialogRef.afterClosed().subscribe(val=>{
-    //   if (val) {
-    //     this.characterService.setFilters(val); // inject and call
-    //   }
-    // })
+  search() {
+    this.dialogRef.close({ action: 'search', query: this.filterFormSignal() });
   }
 
   onSubmit(form: FormGroup) {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -10,6 +10,8 @@ import {
 } from '@angular/material/dialog';
 import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
 import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
+import { LiveSearchDialogComponent } from '../../../shared/components/live-search-dialog/live-search-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 // import { MatFormFieldControl } from '@angular/material/form-field';
 @Component({
   selector: 'app-toolbar',
@@ -19,8 +21,9 @@ import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
     MatToolbar,
     ToolbarMenuComponent,
     MatBadgeModule,
+
   ],
-  
+
   standalone: true,
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
@@ -34,7 +37,7 @@ export class ToolbarComponent {
 
   selectedViewSignal = this.selectionService.selectedViewSignal$;
 
-  // cdr = inject(ChangeDetectorRef);
+  destroy$ = inject(DestroyRef);
 
   readonly dialog = inject(MatDialog);
 
@@ -45,7 +48,7 @@ export class ToolbarComponent {
       // console.log(this.selectedCount())
     });
     setTimeout(() => {
-      this.openDialogHandler({value:'Filter By Status & Name',dialogType:1})
+      this.openDialogHandler({ value: 'Search By Name', dialogType: 2 })
     }, 1000);
   }
 
@@ -57,28 +60,46 @@ export class ToolbarComponent {
     console.log('openDialogHandler: ', action.value);
     if (action.dialogType === DIALOG_TYPE_ENUM.filter) {
       this.openFilterDialog(action.value);
+    } else if (action.dialogType === DIALOG_TYPE_ENUM.live) {
+      this.openLiveSearchDialog(action.value);
     }
   }
 
   openFilterDialog(title: string) {
+
     const dialogRef = this.dialog.open(FilterDialogComponent, {
       restoreFocus: false,
       data: {
         title: title
       },
-      width: '50%',
-      height: '50%'
+      width: '25%',
+      height: '35%'
     });
 
     // Manually restore focus to the menu trigger since the element that
     // opens the dialog won't be in the DOM any more when the dialog closes.
-    dialogRef.afterClosed().subscribe((val: {
-      action: string, query: { name: string, status: string }
-    }) => {
-      console.log('close: ', val);
-      this.selectionService.setFilter({ ...val.query }); // inject and call
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$)).subscribe((dialogValue: { action: string, query: { name: string, status: string } }) => {
+      if (dialogValue.action === 'search') {
+        console.log('search: ', dialogValue);
+        this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
+      } else {
+        return;
+      }
+
       // this.menuTrigger().focus()
     });
+  }
+
+  openLiveSearchDialog(title: string) {
+    const dialogRef = this.dialog.open(LiveSearchDialogComponent, {
+      restoreFocus: false,
+      data: {
+        title: title
+      },
+      width: '25%',
+      height: '35%'
+    });
+
   }
 
 }

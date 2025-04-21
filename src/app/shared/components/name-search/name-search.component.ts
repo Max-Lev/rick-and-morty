@@ -27,7 +27,7 @@ export class NameSearchComponent implements ControlValueAccessor {
 
   // ControlValueAccessor
   writeValue(value: any): void {
-    this.value = value;
+    this.value = value ?? '';
     console.log(this.value)
   }
   registerOnChange(fn: any): void {
@@ -49,7 +49,6 @@ export class NameSearchComponent implements ControlValueAccessor {
   constructor() { }
 
   onInput(event: Event) {
-    console.log(event)
     const input = event.target as HTMLInputElement;
     this.value = input.value;
     this.onChange(this.value);
