@@ -39,7 +39,9 @@ export class FilterDialogComponent {
     status: new FormControl<string | null>(''),
   })
 
-  filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() })
+  filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+
+  filterForm$ = signal(this.form);
 
   charactersService = inject(CharactersService);
 
@@ -49,7 +51,8 @@ export class FilterDialogComponent {
       console.log('statusOptions:', this.statusOptions);
     });
     effect(() => {
-
+      console.log(this.filterFormSignal())
+      console.log(this.filterForm$())
     });
 
     // this.form.valueChanges.subscribe((value) => {

@@ -8,7 +8,7 @@ import { COLUMNS } from './columns.config';
 import { Character, ColumnConfig, ICharacterColumns, ICharactersResponse, IFilterPayload, IPagination } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { debounceTime, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { ListViewComponent } from '../../components/list-view/list-view.component';
 
@@ -67,17 +67,16 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
     effect(() => {
-      console.log('characters length: ', this.characters(), this.characters().length)
+      // console.log('characters length: ', this.characters(), this.characters().length)
       // console.log('currentPageSignal$ ', this.currentPageSignal$())
       // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
-      // console.log('selectedCount$: ', this.selectedCount$());
     });
 
   }
 
   ngOnInit(): void {
     this.getResolvedData();
-    this.charactersResponse$.subscribe();
+    this.charactersResponse$.pipe().subscribe();
   }
 
   ngAfterViewInit() {
@@ -100,8 +99,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.setScrollIndex();
       // Prevent loading if already in progress or nothing more to load
       if (end >= total * 0.9 && nextPage && page && !this.isLoadingSignal$()) {
-        this.loadCharacters();
-        this.charactersResponse$.subscribe();
+        this.loadCharactersOnScroll();
+        // this.charactersResponse$.pipe(take(1)).subscribe();
       }
 
     }
@@ -141,36 +140,20 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     this.isLoadingSignal$.set(false);
   }
 
-  
+
   charactersResponse$ = this.selectionService.filter$.pipe(
     debounceTime(300), // Optional debounce
+    distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
     tap((filter: IFilterPayload) => {
-
-      if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
-
-        this.prevFilter.update((v) => ({
-          ...v,
-          name: filter.name,
-          status: filter.status
-        }));
-
-        this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
-        if (this.paginationSignal$().page === 1) {
-          this.itemSizeSignal$.set(150);
-        }
-        this.characters.set([]);
-      }
-
-      if (filter.name == '' || filter.status == '') {
-        this.paginationSignal$.set({ page: this.paginationSignal$().page, nextPage: this.paginationSignal$().nextPage, filterPayload: filter });
-      }
-
+      this.newFilterRequest(filter);
+      this.resetFilter(filter)
     }),
     switchMap((filter) => {
       const { page } = this.paginationSignal$();
       this.isLoadingSignal$.set(true);
       return this.charactersService.getCharacters(page, filter).pipe(
         tap((response: ICharactersResponse) => {
+          console.log('charactersResponse',response)
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
           console.log('2', this.paginationSignal$())
@@ -180,12 +163,43 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     })
   );
 
-  loadCharacters(): void {
-    const { nextPage } = this.paginationSignal$();
-    if (nextPage) {
-      this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
+  newFilterRequest(filter: IFilterPayload) {
+    if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
+
+      this.prevFilter.update((v) => ({...v,name: filter.name,status: filter.status}));
+
+      this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
+      // console.log('newFilterRequest 1',this.paginationSignal$())
+      if (this.paginationSignal$().page === 1) {
+        this.itemSizeSignal$.set(150);
+      }
+      this.characters.set([]);
     }
   }
+  resetFilter(filter: IFilterPayload) {
+    if (filter.name == '' || filter.status == '') {
+      const { page, nextPage } = this.paginationSignal$();
+      this.paginationSignal$.set({ page: page, nextPage: nextPage, filterPayload: filter });
+      // console.log('resetFilter 2',this.paginationSignal$())
+    }
+  }
+
+  loadCharactersOnScroll(): void {
+    const { page, nextPage, filterPayload } = this.paginationSignal$();
+    if (nextPage) {
+      this.isLoadingSignal$.set(true);
+      this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
+  
+      this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
+        console.log('loadCharacters',response)
+        this.setCharactersData(response);
+        this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
+        console.log('loadCharactersOnScroll', this.paginationSignal$())
+        this.isLoadingSignal$.set(false);
+      });
+    }
+  }
+  
 
   selectedRow = (row: Character): void => {
     console.log(row)
