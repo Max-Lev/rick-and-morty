@@ -1,0 +1,7 @@
+<mat-form-field class="example-full-width">
+    <mat-label>Character name</mat-label>
+    <input (input)="onInput($event)" [value]="value" matInput placeholder="Ex. Rick">
+    <!-- @if(nameError() && form.controls.name.touched){
+    <mat-error>{{nameError()}}</mat-error>
+    } -->
+</mat-form-field>

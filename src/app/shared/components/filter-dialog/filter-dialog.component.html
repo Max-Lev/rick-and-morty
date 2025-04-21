@@ -6,24 +6,18 @@
 
     <section style="display: flex;justify-content: center;">
         <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
-            <mat-form-field class="example-full-width">
+            <app-name-search formControlName="name"></app-name-search>
+            <!-- <mat-form-field class="example-full-width">
                 <mat-label>Character name</mat-label>
                 <input formControlName="name" matInput placeholder="Ex. Rick">
                 @if(nameError() && form.controls.name.touched){
                 <mat-error>{{nameError()}}</mat-error>
                 }
-            </mat-form-field>
-            <!-- <mat-form-field class="example-full-width"> -->
-                <app-select formControlName="status"
-                [control]="form.controls['status']" [statusOptions]="statusOptions" ></app-select>
-                <!-- <mat-label>Status</mat-label>
-                <mat-select formControlName="status">
-                    <mat-option>None</mat-option>
-                    @for (status of statusOptions; track $index;) {
-                    <mat-option [value]="status.value">{{status.value}}</mat-option>
-                    }
-                </mat-select> -->
-            <!-- </mat-form-field> -->
+            </mat-form-field> -->
+
+            <app-select formControlName="status" [control]="form.controls['status']"
+                [statusOptions]="statusOptions"></app-select>
+
 
             <!-- <mat-form-field class="example-full-width">
                 <mat-label>Live Search</mat-label>
@@ -41,6 +35,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions [align]="'end'">
-    <button style="color:white" (click)="close()" mat-button mat-dialog-close>Close</button>
-    <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+    <button style="color:white" (click)="find()" mat-button mat-dialog-close>Find</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
 </mat-dialog-actions>

@@ -1,17 +1,14 @@
-import { AfterViewInit, Component, computed, effect, forwardRef, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators, } from '@angular/forms';
+import { AfterViewInit, Component, computed, effect, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators, } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
-import { STATUS_ENUM } from '../../models/status.enum';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
+import { STATUS_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatSelectModule } from '@angular/material/select';
 import { CharactersService } from '../../../core/providers/characters.service';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { SelectionService } from '../../providers/selection.service';
-import { NgIf } from '@angular/common';
 import { SelectComponent } from '../select/select.component';
+import { NameSearchComponent } from '../name-search/name-search.component';
 @Component({
   selector: 'app-filter-dialog',
   imports: [
@@ -20,10 +17,8 @@ import { SelectComponent } from '../select/select.component';
     MatDialogContent,
     MatButtonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     SelectComponent,
+    NameSearchComponent
   ],
 
   templateUrl: './filter-dialog.component.html',
@@ -31,21 +26,15 @@ import { SelectComponent } from '../select/select.component';
 
 })
 export class FilterDialogComponent implements AfterViewInit {
-  statusOptions = [{ key: STATUS_ENUM.Alive, value: 'Alive' },
-  { key: STATUS_ENUM.Dead, value: 'Dead' },
-  { key: STATUS_ENUM.unknown, value: 'Unknown' }
-  ];
+  statusOptions = STATUS_OPTIONS
   incomingData = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<FilterDialogComponent>);
 
   form = new FormGroup({
-    name: new FormControl<string>('',
-      [
-        Validators.required, Validators.minLength(3)
-      ]),
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
     status: new FormControl<string | null>(''),
     liveSearch: new FormControl<string>('')
-  })
+  });
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
 
@@ -102,8 +91,8 @@ export class FilterDialogComponent implements AfterViewInit {
     return '';
   });
 
-  close() {
-    this.dialogRef.close({ action: 'close', query: this.filterFormSignal() });
+  find() {
+    this.dialogRef.close({ action: 'find', query: this.filterFormSignal() });
     // this.dialogRef.afterClosed().subscribe(val=>{
     //   if (val) {
     //     this.characterService.setFilters(val); // inject and call
