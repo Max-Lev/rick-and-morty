@@ -100,7 +100,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       // Prevent loading if already in progress or nothing more to load
       if (end >= total * 0.9 && nextPage && page && !this.isLoadingSignal$()) {
         this.loadCharactersOnScroll();
-        // this.charactersResponse$.pipe(take(1)).subscribe();
       }
 
     }
@@ -140,7 +139,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     this.isLoadingSignal$.set(false);
   }
 
-
+/**
+ * initial load & filter response
+ */
   charactersResponse$ = this.selectionService.filter$.pipe(
     debounceTime(300), // Optional debounce
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
@@ -156,11 +157,12 @@ export class CharactersComponent implements OnInit, AfterViewInit {
           console.log('charactersResponse',response)
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-          console.log('2', this.paginationSignal$())
+          // console.log('2', this.paginationSignal$())
           this.isLoadingSignal$.set(false);
         })
       );
-    })
+    }),
+    shareReplay(1) // optional, to avoid unnecessary re-fetching
   );
 
   newFilterRequest(filter: IFilterPayload) {
@@ -183,7 +185,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       // console.log('resetFilter 2',this.paginationSignal$())
     }
   }
-
+/**
+ * on scroll event as pagination
+ */
   loadCharactersOnScroll(): void {
     const { page, nextPage, filterPayload } = this.paginationSignal$();
     if (nextPage) {
@@ -194,7 +198,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         console.log('loadCharacters',response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-        console.log('loadCharactersOnScroll', this.paginationSignal$())
+        // console.log('loadCharactersOnScroll', this.paginationSignal$())
         this.isLoadingSignal$.set(false);
       });
     }
