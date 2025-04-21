@@ -1,16 +1,17 @@
-import { AfterViewInit, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import { AfterViewInit, Component, computed, effect, forwardRef, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators, } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { STATUS_ENUM } from '../../models/status.enum';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSelectModule } from '@angular/material/select';
 import { CharactersService } from '../../../core/providers/characters.service';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { SelectionService } from '../../providers/selection.service';
 import { NgIf } from '@angular/common';
+import { SelectComponent } from '../select/select.component';
 @Component({
   selector: 'app-filter-dialog',
   imports: [
@@ -21,11 +22,13 @@ import { NgIf } from '@angular/common';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    SelectComponent,
   ],
+
   templateUrl: './filter-dialog.component.html',
   styleUrl: './filter-dialog.component.scss',
-   
+
 })
 export class FilterDialogComponent implements AfterViewInit {
   statusOptions = [{ key: STATUS_ENUM.Alive, value: 'Alive' },
@@ -59,9 +62,14 @@ export class FilterDialogComponent implements AfterViewInit {
       // console.log(this.filterFormSignal())
       // console.log(this.filterForm$())
     });
-      
+
   }
   ngAfterViewInit(): void {
+
+    this.form.valueChanges.subscribe(val => {
+      console.log('val', val)
+    });
+
 
     this.form.get('liveSearch')?.valueChanges.pipe(
       debounceTime(1000),
@@ -73,14 +81,13 @@ export class FilterDialogComponent implements AfterViewInit {
         return this.selectionService.filter$;
       })
     ).subscribe((res) => {
-      console.log('res',res)
-      console.log('this.filterFormSignal()',this.filterFormSignal())
+      console.log('res', res)
+      console.log('this.filterFormSignal()', this.filterFormSignal())
     });
 
   }
 
-  readonly liveSearchValue = toSignal(
-    this.form.controls.liveSearch.valueChanges,
+  readonly liveSearchValue = toSignal(this.form.controls.liveSearch.valueChanges,
     { initialValue: this.form.controls.liveSearch.value });
 
 

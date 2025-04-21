@@ -10,6 +10,7 @@ import {
 } from '@angular/material/dialog';
 import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
 import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
+// import { MatFormFieldControl } from '@angular/material/form-field';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -19,6 +20,7 @@ import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
     ToolbarMenuComponent,
     MatBadgeModule,
   ],
+  
   standalone: true,
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
@@ -43,8 +45,8 @@ export class ToolbarComponent {
       // console.log(this.selectedCount())
     });
     setTimeout(() => {
-      // this.openDialogHandler({value:'Filter By Status & Name'})
-    }, 0);
+      this.openDialogHandler({value:'Filter By Status & Name',dialogType:1})
+    }, 1000);
   }
 
   toggleView(view: string) {
