@@ -3,6 +3,11 @@
 </button>
 <mat-menu #menu="matMenu">
     @for (item of menuOptions; track $index) {
-    <button mat-menu-item (click)="item.action()">{{item.label}}</button>
+    <button mat-menu-item (click)="item.action()">
+        {{item.label}}
+        <mat-icon class="material-icons-outlined">
+            {{item.icon}}
+        </mat-icon>
+    </button>
     }
 </mat-menu>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
 
 @Component({
   selector: 'app-toolbar-menu',
@@ -18,18 +19,20 @@ import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 })
 export class ToolbarMenuComponent {
 
-@Output() openDialogAction = new EventEmitter<{value: string}>();
+@Output() openDialogAction = new EventEmitter<{value: string,dialogType:DIALOG_TYPE_ENUM}>();
 
   menuOptions = [
     {
       label: 'Filter By Status & Name',
-      icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968292.png',
-      action: (): void => this.openDialog(this.menuOptions[0].label)
+      icon: 'filter_alt',
+      type:DIALOG_TYPE_ENUM.filter,
+      action: (): void => this.openDialog(this.menuOptions[0].label,this.menuOptions[0].type)
     },
     {
-      label: 'Option 2',
-      icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968292.png',
-      action: () => this.selectedMenuOption(this.menuOptions[1].label)
+      label: 'Search By Name',
+      icon: 'search',
+      type:DIALOG_TYPE_ENUM.live,
+      action: (): void => this.openDialog(this.menuOptions[1].label,this.menuOptions[1].type)
     }
   ];
 
@@ -37,8 +40,8 @@ export class ToolbarMenuComponent {
     console.log('Option 1 clicked', label)
   }
 
-  openDialog(label: string) {
-    this.openDialogAction.emit({value:label})
+  openDialog(label: string,dialogType:DIALOG_TYPE_ENUM) {
+    this.openDialogAction.emit({value:label,dialogType});
   }
 
 }

@@ -9,6 +9,7 @@ import {
   MatDialog,
 } from '@angular/material/dialog';
 import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
+import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -35,15 +36,11 @@ export class ToolbarComponent {
 
   readonly dialog = inject(MatDialog);
 
-  // characterService = inject(SelectionService);
-
-
-
   constructor() {
     effect(() => {
       // console.log(this.selectedSignal$())
       // console.log(this.selectedView())
-      console.log(this.selectedCount())
+      // console.log(this.selectedCount())
     });
     setTimeout(() => {
       // this.openDialogHandler({value:'Filter By Status & Name'})
@@ -54,12 +51,18 @@ export class ToolbarComponent {
     this.selectionService.selectedViewSignal$.set(view);
   }
 
-  openDialogHandler(action: { value: string }) {
+  openDialogHandler(action: { value: string, dialogType: DIALOG_TYPE_ENUM }) {
     console.log('openDialogHandler: ', action.value);
+    if (action.dialogType === DIALOG_TYPE_ENUM.filter) {
+      this.openFilterDialog(action.value);
+    }
+  }
+
+  openFilterDialog(title: string) {
     const dialogRef = this.dialog.open(FilterDialogComponent, {
       restoreFocus: false,
       data: {
-        title: action.value
+        title: title
       },
       width: '50%',
       height: '50%'
@@ -68,10 +71,10 @@ export class ToolbarComponent {
     // Manually restore focus to the menu trigger since the element that
     // opens the dialog won't be in the DOM any more when the dialog closes.
     dialogRef.afterClosed().subscribe((val: {
-      action: string,query: { name: string, status: string }
+      action: string, query: { name: string, status: string }
     }) => {
       console.log('close: ', val);
-      this.selectionService.setFilter({...val.query}); // inject and call
+      this.selectionService.setFilter({ ...val.query }); // inject and call
       // this.menuTrigger().focus()
     });
   }

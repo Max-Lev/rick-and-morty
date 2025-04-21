@@ -12,6 +12,11 @@
         <mat-icon>person_add_alt_1</mat-icon>
         }
     </button>
+    <button (click)="toggleView('grid')" mat-icon-button class="example-icon">
+        <mat-icon class="material-icons-outlined">
+            remove_done
+        </mat-icon>
+    </button>
 
     @if(selectedViewSignal()==='list'){
     <button (click)="toggleView('grid')" mat-icon-button class="example-icon"
