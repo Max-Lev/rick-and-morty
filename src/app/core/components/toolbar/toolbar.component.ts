@@ -12,6 +12,7 @@ import { FilterDialogComponent } from '../../../shared/components/filter-dialog/
 import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { LiveSearchDialogComponent } from '../../../shared/components/live-search-dialog/live-search-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DialogService } from '../../providers/dialog.service';
 // import { MatFormFieldControl } from '@angular/material/form-field';
 @Component({
   selector: 'app-toolbar',
@@ -41,15 +42,17 @@ export class ToolbarComponent {
 
   readonly dialog = inject(MatDialog);
 
+  dialogService = inject(DialogService);
+
   constructor() {
     effect(() => {
       // console.log(this.selectedSignal$())
       // console.log(this.selectedView())
       // console.log(this.selectedCount())
     });
-    setTimeout(() => {
-      this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
-    }, 1000);
+    // setTimeout(() => {
+    //   this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
+    // }, 1000);
   }
 
   toggleView(view: string) {
@@ -57,50 +60,8 @@ export class ToolbarComponent {
   }
 
   openDialogHandler(action: { value: string, dialogType: DIALOG_TYPE_ENUM }) {
-    console.log('openDialogHandler: ', action.value);
-    if (action.dialogType === DIALOG_TYPE_ENUM.filter) {
-      this.openFilterDialog(action.value);
-    } else if (action.dialogType === DIALOG_TYPE_ENUM.live) {
-      this.openLiveSearchDialog(action.value);
-    }
+    this.dialogService.openDialogAction(action);
   }
 
-  openFilterDialog(title: string) {
-
-    const dialogRef = this.dialog.open(FilterDialogComponent, {
-      restoreFocus: false,
-      data: {
-        title: title
-      },
-      width: '25%',
-      height: '35%'
-    });
-
-    // Manually restore focus to the menu trigger since the element that
-    // opens the dialog won't be in the DOM any more when the dialog closes.
-    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$)).subscribe((dialogValue: { action: string, query: { name: string, status: string } }) => {
-      if (dialogValue.action === 'search') {
-        console.log('search: ', dialogValue);
-        this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
-      } else {
-        return;
-      }
-
-      // this.menuTrigger().focus()
-    });
-  }
-
-  openLiveSearchDialog(title: string) {
-    const dialogRef = this.dialog.open(LiveSearchDialogComponent, {
-      restoreFocus: false,
-      data: {
-        title: title
-      },
-      width: '25%',
-      height: '35%',
-      
-    });
-
-  }
 
 }

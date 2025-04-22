@@ -33,7 +33,9 @@ export class FilterDialogComponent implements AfterViewInit {
   dialogRef = inject(MatDialogRef<FilterDialogComponent>);
 
   form = new FormGroup({
-    name: new FormControl<string>('', {validators: [Validators.required, Validators.minLength(3)]}),
+    name: new FormControl<string>('', 
+      // {validators: [Validators.required, Validators.minLength(3)]}
+    ),
     status: new FormControl<string | null>(''),
   });
 
@@ -64,6 +66,7 @@ export class FilterDialogComponent implements AfterViewInit {
 
 
   search() {
+    // IFilterPayload
     this.dialogRef.close({ action: 'search', query: this.filterFormSignal() });
   }
 

@@ -3,13 +3,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AutofocusDirective } from '../../directives/auto-focus.directive';
 
 @Component({
   selector: 'app-name-search',
   imports: [
     MatFormFieldModule,
     MatInputModule,
-    // MatFormFieldControl
+    AutofocusDirective
   ],
   providers: [
     {
@@ -29,8 +30,6 @@ export class NameSearchComponent implements ControlValueAccessor, OnChanges, Aft
 
   @Input({ required: false }) form!: FormGroup;
 
-  // filterFormSignal = toSignal(this.form?.valueChanges, { initialValue: this.form?.getRawValue() });
-  // filterFormSignal = signal<{ name: string | null; status: string | null }>({ name: null, status: null });
   filterFormSignal!: Signal<{ name: string | null; status: string | null }>;
 
   injector = inject(Injector);
@@ -68,34 +67,25 @@ export class NameSearchComponent implements ControlValueAccessor, OnChanges, Aft
   onChange = (_: any) => { };
   onTouched = () => { };
 
-  constructor() { }
-  ngAfterViewInit(): void {
-    // this.filterFormSignal = toSignal(this.form?.valueChanges, { initialValue: this.form?.getRawValue() });
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    // if (changes['form'] && this.form) {
-    //   const observable = this.form.valueChanges;
-    //   if (observable) {
-    //     // Convert the observable to a signal
-    //     const reactiveFormSignal = toSignal(observable, {initialValue: this.form.getRawValue()});
-    //     this.filterFormSignal = reactiveFormSignal;
-    //   }
-    // }
-    if (changes['form'] && this.form) {
-      
-      runInInjectionContext(this.injector, () => {
-        this.filterFormSignal = toSignal(this.form.valueChanges, {
-          initialValue: this.form.getRawValue(),
-        });
-      });
-    }
-
-  }
-
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;
     this.value = input.value;
     this.onChange(this.value);
     this.onTouched();
   }
+
+  ngAfterViewInit(): void {
+    // queueMicrotask(()=>{})
+    
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['form'] && this.form) {
+      runInInjectionContext(this.injector, () => {
+        this.filterFormSignal = toSignal(this.form.valueChanges, {
+          initialValue: this.form.getRawValue(),
+        });
+      });
+    }
+  }
+
 }

@@ -78,7 +78,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
 
 
   search() {
-    this.dialogRef.close()//({ action: 'search', query: this.filterFormSignal() });
+    this.dialogRef.close()
   }
 
   onSubmit(form: FormGroup) {
