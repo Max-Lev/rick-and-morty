@@ -24,7 +24,8 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
     MatInputModule,
     MatSelectModule,
     SelectComponent,
-    NameSearchComponent
+    NameSearchComponent,
+    
   ],
   templateUrl: './live-search-dialog.component.html',
   styleUrl: './live-search-dialog.component.scss'
@@ -47,7 +48,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
     // effect(()=>{
     console.log(this.filterFormSignal())
     toObservable(this.filterFormSignal).pipe(
-        debounceTime(3000),
+        debounceTime(1000),
         distinctUntilChanged((prev, curr) =>prev?.name === curr?.name && prev?.status === curr?.status),
         tap(() => {
           console.log('Form validity:', this.form.valid);
@@ -68,46 +69,10 @@ export class LiveSearchDialogComponent implements AfterViewInit {
       ).subscribe(res => {
         console.log('Request triggered with:', res);
       })
-    // .pipe(
-    //   debounceTime(1500),
-    //   distinctUntilChanged(),   
-    //   tap((val) => {
-    //     console.log(val);
-    //     console.log('Form validity:', this.form.valid);
-    //   })
-    // ).subscribe(res=>{
-    //   console.log('Request triggered with:', res);
-    // })
-    // })
+  
   }
 
   ngAfterViewInit(): void {
-
-    // this.form.valueChanges.pipe(
-    //   debounceTime(1500),
-    //   distinctUntilChanged((prev, curr) =>
-    //     prev?.name === curr?.name && prev?.status === curr?.status
-    //   ),
-    //   tap(() => {
-    //     console.log('Form validity:', this.form.valid);
-    //   }),
-    //   switchMap((val) => {
-    //     const name = val?.name ?? '';
-    //     const status = val?.status ?? '';
-
-    //     if (this.form.valid && name.length >= 3) {
-    //       console.log('Request triggered with:', { name, status });
-    //       this.selectionService.setFilter({ name, status });
-    //       return this.selectionService.filter$;
-    //     } else {
-    //       console.log('not valid');
-    //       return []; // or use `EMPTY`
-    //     }
-    //   })
-    // ).subscribe((res) => {
-    //   console.log('Filtered result', res);
-    // });
-
 
   }
 

@@ -48,7 +48,7 @@ export class ToolbarComponent {
       // console.log(this.selectedCount())
     });
     setTimeout(() => {
-      this.openDialogHandler({ value: 'Search By Name', dialogType: 2 })
+      this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
     }, 1000);
   }
 
@@ -97,7 +97,8 @@ export class ToolbarComponent {
         title: title
       },
       width: '25%',
-      height: '35%'
+      height: '35%',
+      
     });
 
   }

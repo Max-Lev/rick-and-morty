@@ -6,13 +6,17 @@
 
     <section style="display: flex;justify-content: center;">
         <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
-            <app-name-search formControlName="name"></app-name-search>
-            <!-- <mat-form-field class="example-full-width">
-                <mat-label>Character name</mat-label>
-                <input formControlName="name" matInput placeholder="Ex. Rick">
-                @if(nameError() && form.controls.name.touched){
-                <mat-error>{{nameError()}}</mat-error>
+            <app-name-search [form]="form" formControlName="name"></app-name-search>
+            <!-- @if(nameError() && form.controls.name.touched){
+            <mat-hint>{{nameError()}}</mat-hint>
+            } -->
+            <!-- @if(form.controls.name.touched && form.controls.name.hasError('minlength')){
+                <mat-hint>{{nameError()}}</mat-hint>
                 }
+            @if(form.controls.name.touched && form.controls.name.hasError('required')){
+                <mat-hint>{{nameError()}}</mat-hint>
+                } -->
+            <!-- <mat-form-field class="example-full-width">
             </mat-form-field> -->
 
             <app-select formControlName="status" [control]="form.controls['status']"
@@ -34,7 +38,7 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions [align]="'end'">
+<mat-dialog-actions [align]="'center'">
     <button style="color:white" (click)="search()" mat-button mat-dialog-close>Search</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
+    <button style="color:white" mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
 </mat-dialog-actions>

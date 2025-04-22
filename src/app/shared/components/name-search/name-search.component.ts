@@ -1,5 +1,6 @@
-import { Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, forwardRef, inject, Injector, Input, OnChanges, runInInjectionContext, Signal, signal, SimpleChanges } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -8,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
   imports: [
     MatFormFieldModule,
     MatInputModule,
+    // MatFormFieldControl
   ],
   providers: [
     {
@@ -23,7 +25,27 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './name-search.component.html',
   styleUrl: './name-search.component.scss'
 })
-export class NameSearchComponent implements ControlValueAccessor {
+export class NameSearchComponent implements ControlValueAccessor, OnChanges, AfterViewInit {
+
+  @Input({ required: false }) form!: FormGroup;
+
+  // filterFormSignal = toSignal(this.form?.valueChanges, { initialValue: this.form?.getRawValue() });
+  // filterFormSignal = signal<{ name: string | null; status: string | null }>({ name: null, status: null });
+  filterFormSignal!: Signal<{ name: string | null; status: string | null }>;
+
+  injector = inject(Injector);
+
+  nameError = computed(() => {
+    // Trigger reactivity by calling signal
+    this.filterFormSignal();
+    const ctrl = this.form.get('name');
+    if (ctrl?.touched || ctrl?.dirty) {
+      if (ctrl.hasError('required')) return 'Name is required';
+      if (ctrl.hasError('minlength')) return 'Name min length is 3';
+    }
+    return '';
+  });
+
 
   // ControlValueAccessor
   writeValue(value: any): void {
@@ -47,6 +69,28 @@ export class NameSearchComponent implements ControlValueAccessor {
   onTouched = () => { };
 
   constructor() { }
+  ngAfterViewInit(): void {
+    // this.filterFormSignal = toSignal(this.form?.valueChanges, { initialValue: this.form?.getRawValue() });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    // if (changes['form'] && this.form) {
+    //   const observable = this.form.valueChanges;
+    //   if (observable) {
+    //     // Convert the observable to a signal
+    //     const reactiveFormSignal = toSignal(observable, {initialValue: this.form.getRawValue()});
+    //     this.filterFormSignal = reactiveFormSignal;
+    //   }
+    // }
+    if (changes['form'] && this.form) {
+      
+      runInInjectionContext(this.injector, () => {
+        this.filterFormSignal = toSignal(this.form.valueChanges, {
+          initialValue: this.form.getRawValue(),
+        });
+      });
+    }
+
+  }
 
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;

@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { SelectionService } from '../../providers/selection.service';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-filter-dialog',
   imports: [
@@ -18,7 +19,8 @@ import { NameSearchComponent } from '../name-search/name-search.component';
     MatButtonModule,
     ReactiveFormsModule,
     SelectComponent,
-    NameSearchComponent
+    NameSearchComponent,
+    MatFormFieldModule
   ],
 
   templateUrl: './filter-dialog.component.html',
@@ -31,9 +33,8 @@ export class FilterDialogComponent implements AfterViewInit {
   dialogRef = inject(MatDialogRef<FilterDialogComponent>);
 
   form = new FormGroup({
-    name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+    name: new FormControl<string>('', {validators: [Validators.required, Validators.minLength(3)]}),
     status: new FormControl<string | null>(''),
-    liveSearch: new FormControl<string>('')
   });
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
@@ -59,45 +60,8 @@ export class FilterDialogComponent implements AfterViewInit {
       console.log('val', val)
     });
 
-
-    // this.form.get('liveSearch')?.valueChanges.pipe(
-    //   debounceTime(1000),
-    //   distinctUntilChanged((prev, curr) => prev === curr),
-    //   switchMap((val: string | null) => {
-    //     console.log('val', val);
-    //     const name = val || '';
-    //     this.selectionService.setFilter({ name: name, status: '' })
-    //     return this.selectionService.filter$;
-    //   })
-    // ).subscribe((res) => {
-    //   console.log('res', res)
-    //   console.log('this.filterFormSignal()', this.filterFormSignal())
-    // });
-
-    // this.dialogRef.afterClosed().subscribe((value:{action:string})=>{
-    //   debugger;
-    //   // query: this.filterFormSignal()
-    //   if (value.action === 'search') {
-    //     // this.characterService.setFilters(val); // inject and call
-    //   }
-    // })
-
   }
 
-  readonly liveSearchValue = toSignal(this.form.controls.liveSearch.valueChanges,
-    { initialValue: this.form.controls.liveSearch.value });
-
-
-  nameError = computed(() => {
-    // Trigger reactivity by calling signal
-    // this.filterFormSignal();
-    const ctrl = this.form.get('name');
-    if (ctrl?.touched || ctrl?.dirty) {
-      if (ctrl.hasError('required')) return 'Name is required';
-      if (ctrl.hasError('minlength')) return 'Name min length is 3';
-    }
-    return '';
-  });
 
   search() {
     this.dialogRef.close({ action: 'search', query: this.filterFormSignal() });
