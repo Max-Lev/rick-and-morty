@@ -7,7 +7,7 @@
             {{column.header}}
         </th>
 
-        <td mat-cell *matCellDef="let row">
+        <td mat-cell *matCellDef="let row" class="hover">
             @if(column.columnDef==='id' && !isSelected(row)){
             {{column.cell(row)}}
             }@else if(column.columnDef==='id' && isSelected(row)){
@@ -29,7 +29,8 @@
             }
             @else{
             <!-- NAME COLUMN -->
-            <section class="name-image" matTooltip="{{!isSelected(row) ?'SELECT CHARACTER':''}}" [matTooltipPosition]="'before'">
+            <section class="name-image" matTooltip="{{!isSelected(row) ?'SELECT CHARACTER':''}}"
+            [matTooltipPosition]="'after'">
                 <div class="avatar-container">
                     <img [src]="row.image" alt="" class="img" [style.border-color]="row['status'] | color">
                 </div>

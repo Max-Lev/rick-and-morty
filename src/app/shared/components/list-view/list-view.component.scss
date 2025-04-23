@@ -5,11 +5,18 @@
         // height: 56px;
         height: 60px;
         letter-spacing: 2.0px;
+        &.hover{
+            cursor: copy;
+        }
     }
 
     .name-image {
         display: flex;
         align-items: center;
+        // &.hover{
+        //     // cursor: cell;
+        //     cursor: copy;
+        // }
 
         .avatar-container {
             display: flex;
