@@ -12,9 +12,10 @@ import { FilterDialogComponent } from '../../../shared/components/filter-dialog/
 import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { LiveSearchDialogComponent } from '../../../shared/components/live-search-dialog/live-search-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DialogService } from '../../providers/dialog.service';
+import { DialogConfigService } from '../../providers/dialog-config.service';
 import { IDialogHandler } from '../../../shared/models/dialog.model';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -24,9 +25,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ToolbarMenuComponent,
     MatBadgeModule,
     MatTooltipModule,
-
+    RouterModule,
+    // ActivatedRoute
   ],
-
   standalone: true,
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',
@@ -44,13 +45,16 @@ export class ToolbarComponent {
 
   readonly dialog = inject(MatDialog);
 
-  dialogService = inject(DialogService);
+  dialogService = inject(DialogConfigService);
+
+  activatedRoute = inject(ActivatedRoute);
+
+  router = inject(Router);
 
   constructor() {
     effect(() => {
       console.log(this.selectionService.selectedRows())
       // console.log(this.selectedView())
-      console.log(this.selectedCount())
     });
     // setTimeout(() => {
     //   this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
@@ -67,6 +71,20 @@ export class ToolbarComponent {
 
   clearSelection(){
     this.selectionService.clearSelection();
+  }
+
+  showDetails(){
+    
+    this.router.navigate(['details'],{
+      // queryParams:{
+      //   data:[1,2]
+      // }
+    });
+    this.router.navigateByUrl('details',{
+      state: {
+        selectedRows: this.selectionService.selectedRows()
+      }
+    })
   }
 
 

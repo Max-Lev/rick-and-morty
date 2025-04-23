@@ -1,21 +1,17 @@
-<!-- @defer (when isLoadedSignal$()) { -->
+
 @if(selectedViewSignal$()==='list'){
   
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"
   class="list-viewport">
   <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns()">
   </app-list-view>
-
 </cdk-virtual-scroll-viewport>
-<!-- }
-@placeholder {
-<div>Large component placeholder</div>
-} -->
 
 }@else{
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view">
   <div *cdkVirtualFor="let character of characters()" class="grid-item">
-    <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view>
+    <!-- <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view> -->
+    <app-grid-view [character]="character"></app-grid-view>
   </div>
 </cdk-virtual-scroll-viewport>
 }

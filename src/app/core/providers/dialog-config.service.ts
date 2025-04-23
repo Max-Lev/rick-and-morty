@@ -10,8 +10,7 @@ import { IDialogHandler } from '../../shared/models/dialog.model';
 @Injectable({
   providedIn: 'root'
 })
-export class DialogService implements OnDestroy {
-
+export class DialogConfigService implements OnDestroy {
 
   readonly dialog = inject(MatDialog);
   selectionService = inject(SelectionService);
@@ -45,7 +44,6 @@ export class DialogService implements OnDestroy {
         } else {
           return;
         }
-
         // this.menuTrigger().focus()
       });
   }

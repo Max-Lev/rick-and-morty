@@ -1,10 +1,8 @@
-import { Injectable, inject, signal } from "@angular/core";
+import { Injectable, signal, inject } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { Subscription, map, expand, of, takeWhile, reduce, defer, Observable, tap, debounceTime, auditTime } from "rxjs";
-import { GET_CHARACTERS } from "../schema/characters.schema";
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable, map, tap } from "rxjs";
 import { Character, CharacterQueryResponseDTO } from "../../shared/models/character.model";
-import { NAME_STATUS_QUERY } from "../schema/name-status.schema";
+import { GET_CHARACTERS } from "../schema/characters.schema";
 
 
 @Injectable({

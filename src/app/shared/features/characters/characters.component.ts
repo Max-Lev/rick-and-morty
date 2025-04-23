@@ -205,18 +205,20 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   }
   
 
-  selectedRow = (row: Character): void => {
-    console.log(row)
-    this.selectionService.toggleRow(row);
-  }
-  selectedRowCharacter = (character: Character): void => {
-    console.log(character)
-  }
+  // selectedRow = (row: Character): void => {
+  //   console.log(row)
+  //   this.selectionService.toggleRow(row);
+  // }
 
-  isSelected(row: Character): boolean {
-    // return this.selectionService.getSelectedRows().has(row);
-    return this.selectionService.getSelectedRows().has(+row.id);
-  }
+  // selectedRowCharacter = (character: Character): void => {
+  //   console.log(character)
+  // }
+
+  // isSelected(row: Character): boolean {
+  //   debugger;
+  //   // return this.selectionService.getSelectedRows().has(row);
+  //   return this.selectionService.getSelectedRows().has(+row.id);
+  // }
 
 
 }

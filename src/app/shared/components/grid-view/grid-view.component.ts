@@ -28,25 +28,25 @@ export class GridViewComponent implements OnChanges {
     this.selectionService.toggleRow(row);
   }
 
+  // isSelected(row: Character): boolean {
+  //   const selectedRow = this.selectionService.getSelectedRows();
+  //   const selectedList: Character[] = Array.from(selectedRow.values());
+
+  //   const selected = selectedList.some((c) => {
+  //     if (c.id === row.id) {
+  //       row.selected = true;
+  //       // console.log(selectedRowa)
+  //       // console.log(row)
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   });
+  //   return selected;
+  // }
   isSelected(row: Character): boolean {
-    const selectedRowa = this.selectionService.getSelectedRows();
-    const selectedList: Character[] = Array.from(selectedRowa.values());
-
-    const selected = selectedList.some((c) => {
-      if (c.id === row.id) {
-        row.selected = true;
-        // console.log(selectedRowa)
-        // console.log(row)
-        return true;
-      } else {
-        return false;
-      }
-    })
-
-    // const selected = this.selectionService.getSelectedRows().has(row);
-    // if (selected) {
-    //   console.log('selected: ', row)
-    // }
-    return selected;
+    console.log(this.selectionService.getSelectedRows())
+    return this.selectionService.getSelectedRows().has(+row.id);
   }
+
 }

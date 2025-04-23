@@ -37,13 +37,7 @@ export class ToolbarMenuComponent {
     }
   ];
 
-  selectedMenuOption(label: string) {
-    console.log('Option 1 clicked', label)
-  }
-
   openDialog(dialogAction:IDialogHandler) {
-    debugger;
-    // this.openDialogAction.emit({title:label,dialogType});
     this.openDialogAction.emit(dialogAction);
   }
 
