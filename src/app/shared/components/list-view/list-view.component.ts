@@ -4,13 +4,15 @@ import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-list-view',
   imports: [
     IsEmptyPipe,
     ColorPipe,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule,
   ],
   standalone: true,
   templateUrl: './list-view.component.html',
@@ -21,9 +23,8 @@ export class ListViewComponent implements OnChanges {
   @Input({ required: true }) columns: any = [];
 
   characters = input.required<Character[]>();
-  // characters$ = toObservable(this.characters);
+
   displayedColumns = input.required<string[]>();
-  // displayedColumns$ = toObservable(this.displayedColumns);
 
   selectionService = inject(SelectionService);
 

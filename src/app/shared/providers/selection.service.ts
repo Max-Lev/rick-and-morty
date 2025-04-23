@@ -53,8 +53,6 @@ export class SelectionService {
   
   }
 
-
-
   clearSelection() {
     this.selectedRows.set(new Map());
   }

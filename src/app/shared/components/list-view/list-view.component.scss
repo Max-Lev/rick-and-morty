@@ -26,5 +26,14 @@
     .row-is-clicked {
         font-weight: bold;
     }
+    .selected-id{
+        display: flex;
+        align-items: center; 
+        color:rgb(85, 204, 68);
+        mat-icon{
+            font-size: 1rem;
+            height: 1rem;
+        }   
+    }
 }
 

@@ -14,7 +14,7 @@ import { LiveSearchDialogComponent } from '../../../shared/components/live-searc
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DialogService } from '../../providers/dialog.service';
 import { IDialogHandler } from '../../../shared/models/dialog.model';
-// import { MatFormFieldControl } from '@angular/material/form-field';
+import {MatTooltipModule} from '@angular/material/tooltip';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -23,6 +23,7 @@ import { IDialogHandler } from '../../../shared/models/dialog.model';
     MatToolbar,
     ToolbarMenuComponent,
     MatBadgeModule,
+    MatTooltipModule,
 
   ],
 
@@ -47,9 +48,9 @@ export class ToolbarComponent {
 
   constructor() {
     effect(() => {
-      // console.log(this.selectedSignal$())
+      console.log(this.selectionService.selectedRows())
       // console.log(this.selectedView())
-      // console.log(this.selectedCount())
+      console.log(this.selectedCount())
     });
     // setTimeout(() => {
     //   this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
@@ -61,8 +62,11 @@ export class ToolbarComponent {
   }
 
   openDialogHandler(dialogAction: IDialogHandler) {
-    debugger;
     this.dialogService.openDialogAction(dialogAction);
+  }
+
+  clearSelection(){
+    this.selectionService.clearSelection();
   }
 
 

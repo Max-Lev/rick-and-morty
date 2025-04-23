@@ -11,7 +11,9 @@
             @if(column.columnDef==='id' && !isSelected(row)){
             {{column.cell(row)}}
             }@else if(column.columnDef==='id' && isSelected(row)){
-            ( {{column.cell(row)}} )
+            <div class="selected-id">
+                ({{column.cell(row)}})
+            </div>
             }
             @else if (column.columnDef === 'status') {
             <div [style.color]="row['status'] | color">{{ column.cell(row)}}</div>
@@ -26,14 +28,15 @@
             <div [style.color]="row['gender'] | color:row">{{ column.cell(row)}}</div>
             }
             @else{
-                <section class="name-image">
-                    <div class="avatar-container">
-                        <img [src]="row.image" alt="" class="img" [style.border-color]="row['status'] | color">
-                    </div>
-                    <div>
-                        {{column.cell(row)}}
-                    </div>
-                </section>
+            <!-- NAME COLUMN -->
+            <section class="name-image" matTooltip="{{!isSelected(row) ?'SELECT CHARACTER':''}}" [matTooltipPosition]="'before'">
+                <div class="avatar-container">
+                    <img [src]="row.image" alt="" class="img" [style.border-color]="row['status'] | color">
+                </div>
+                <div>
+                    {{column.cell(row)}}
+                </div>
+            </section>
             }
         </td>
 
