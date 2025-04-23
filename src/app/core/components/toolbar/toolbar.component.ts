@@ -13,6 +13,7 @@ import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { LiveSearchDialogComponent } from '../../../shared/components/live-search-dialog/live-search-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DialogService } from '../../providers/dialog.service';
+import { IDialogHandler } from '../../../shared/models/dialog.model';
 // import { MatFormFieldControl } from '@angular/material/form-field';
 @Component({
   selector: 'app-toolbar',
@@ -59,8 +60,9 @@ export class ToolbarComponent {
     this.selectionService.selectedViewSignal$.set(view);
   }
 
-  openDialogHandler(action: { value: string, dialogType: DIALOG_TYPE_ENUM }) {
-    this.dialogService.openDialogAction(action);
+  openDialogHandler(dialogAction: IDialogHandler) {
+    debugger;
+    this.dialogService.openDialogAction(dialogAction);
   }
 
 

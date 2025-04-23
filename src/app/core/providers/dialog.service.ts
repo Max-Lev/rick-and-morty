@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SelectionService } from '../../shared/providers/selection.service';
 import { LiveSearchDialogComponent } from '../../shared/components/live-search-dialog/live-search-dialog.component';
 import { DIALOG_TYPE_ENUM } from '../../shared/models/status.enum';
+import { IDialogHandler } from '../../shared/models/dialog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,12 @@ export class DialogService implements OnDestroy {
   selectionService = inject(SelectionService);
   destroy$ = inject(DestroyRef);
 
-  openDialogAction(action: { value: string, dialogType: DIALOG_TYPE_ENUM }) {
-    if (action.dialogType === DIALOG_TYPE_ENUM.filter) {
-      this.openFilterDialog(action.value);
-    } else if (action.dialogType === DIALOG_TYPE_ENUM.live) {
-      this.openLiveSearchDialog(action.value);
+  openDialogAction({ title, dialogType }: IDialogHandler) {
+
+    if (dialogType === DIALOG_TYPE_ENUM.filter) {
+      this.openFilterDialog(title);
+    } else if (dialogType === DIALOG_TYPE_ENUM.live) {
+      this.openLiveSearchDialog(title);
     }
   }
 
