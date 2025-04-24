@@ -8,14 +8,10 @@ import { SelectionService } from '../../../shared/providers/selection.service';
 import {
   MatDialog,
 } from '@angular/material/dialog';
-import { FilterDialogComponent } from '../../../shared/components/filter-dialog/filter-dialog.component';
-import { DIALOG_TYPE_ENUM } from '../../../shared/models/status.enum';
-import { LiveSearchDialogComponent } from '../../../shared/components/live-search-dialog/live-search-dialog.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DialogConfigService } from '../../providers/dialog-config.service';
 import { IDialogHandler } from '../../../shared/models/dialog.model';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -26,7 +22,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
     MatBadgeModule,
     MatTooltipModule,
     RouterModule,
-    // ActivatedRoute
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
@@ -46,8 +41,6 @@ export class ToolbarComponent {
   readonly dialog = inject(MatDialog);
 
   dialogService = inject(DialogConfigService);
-
-  activatedRoute = inject(ActivatedRoute);
 
   router = inject(Router);
 

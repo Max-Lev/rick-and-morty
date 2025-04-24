@@ -14,11 +14,7 @@ export class DetailsComponent implements OnInit {
 
   getDetailsService = inject(GetDetailsService);
 
-  details$ = computed(()=>{
-    console.log(this.detailsResolver)
-    return this.detailsResolver;
-  })
-  details$$ = signal(this.detailsResolver);
+  details$ = computed(()=>this.detailsResolver)
 
   constructor() {
     effect(() => {
@@ -29,9 +25,6 @@ export class DetailsComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.detailsResolver);
     console.log(this.details$());
-    // this.detailsResolver.map(i=>console.log(i.character.name))
-    console.log(this.details$$());
-
   }
 
 }
