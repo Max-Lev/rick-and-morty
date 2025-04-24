@@ -1,9 +1,6 @@
-import { Component, computed, effect, inject, Input, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GetDetailsService } from '../../../core/providers/get-details.service';
-import { IDetailsResponse, IEpisode, ILocation, IOrigin } from '../../models/details.model';
-import { Character } from '../../models/character.model';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, effect, inject, Input, OnInit, signal } from "@angular/core";
+import { GetDetailsService } from "../../../core/providers/get-details.service";
+import { IDetailsResponse } from "../../models/details.model";
 
 @Component({
   selector: 'app-details',
@@ -13,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class DetailsComponent implements OnInit {
 
-  @Input() detailsResolver!: IDetailsResponse[];
+  @Input() detailsResolver!: IDetailsResponse;
 
   getDetailsService = inject(GetDetailsService);
 

@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { IDetailsResponse } from '../../shared/models/details.model';
 import { ResolveFn, Router } from '@angular/router';
 
-export const detailsResolver: ResolveFn<IDetailsResponse[]> = () => {
+export const detailsResolver: ResolveFn<IDetailsResponse> = () => {
   
   const router = inject(Router);
   const nav = router.getCurrentNavigation();

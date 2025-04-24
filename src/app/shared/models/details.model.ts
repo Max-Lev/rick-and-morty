@@ -17,44 +17,35 @@ export interface IOrigin {
     dimension: string
 }
 
+
 export interface IDetailsResponseDTO {
-    charactersByIds: {
-        id: string;
-        name: string;
-        status: string;
-        species: string;
-        gender: string;
-        image: string;
-        selected?: boolean;
-        type: string;
+    charactersByIds: RawCharacterDTO[];
+  }
 
-        location: ILocation,
-        origin: IOrigin,
-        episode: IEpisode[]
-    }[]
-}
+export type RawCharacterDTO = {
+    id: string;
+    name: string;
+    status: string;
+    species: string;
+    gender: string;
+    image: string;
+    selected?: boolean;
+    type: string;
+    location: ILocation;
+    origin: IOrigin;
+    episode: IEpisode[];
+  };
 
-export interface IDetailsResponse {
+export interface IDetail {
     character: Character;
     location: ILocation;
     origin: IOrigin;
     episodes: IEpisode[];
 }
 
+export type IDetailsResponse = IDetail[];
+
 export interface IFormateDetails {
-    // character: {
-    //     id: string;
-    //     name: string;
-    //     status: string;
-    //     species: string;
-    //     gender: string;
-    //     image: string;
-    //     selected?: boolean;
-    //     type: string;
-    //     // location: ILocation;
-    //     // origin: IOrigin;
-    //     // episode: IEpisode[];
-    // }
     character:Character;
     location: ILocation;
     origin: IOrigin;
