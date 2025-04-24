@@ -1,1 +1,6 @@
 <p>details works!</p>
+@for (item of detailsResolver; track $index) {
+    <h2>{{item.character.name}}</h2>
+    <h2>{{item.location.name}}</h2>
+    <hr/>
+}

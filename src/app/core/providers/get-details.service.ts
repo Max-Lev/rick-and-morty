@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { IDetailsResponseDTO } from '../../shared/models/details.model';
+import { IDetailsResponse, IDetailsResponseDTO } from '../../shared/models/details.model';
 import { GET_DETAILS } from '../schema/details.schema';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { ApolloQueryResult } from '@apollo/client';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +13,34 @@ export class GetDetailsService {
 
   private apollo = inject(Apollo);
 
-  constructor() { }
-
-  getDetailsQuery(charactedIDs: string[]) {
+  getDetailsQuery(charactedIDs: string[]): Observable<IDetailsResponse[]> {
     return this.apollo.query<IDetailsResponseDTO>({
       query: GET_DETAILS,
       variables: {
         ids: charactedIDs
-      }
-    })
-    .pipe(
-      map((response) => {
-        console.log(response);
-        return response;
-      })
-    )
+      },
+      fetchPolicy: 'network-only'
+    }).pipe(
+      map((response: ApolloQueryResult<IDetailsResponseDTO>) => {
+        return response.data.charactersByIds.map((character) => {
+          return {
+              character: {
+                id: character.id,
+                name: character.name,
+                gender: character.gender,
+                species: character.species,
+                status: character.status,
+                image: character.image,
+                type: character.type,
+              },
+              location: character.location,
+              episodes: character.episode,
+              origin: character.origin
+            }
+        })
+      }),
+      tap((character) => console.log(character))
+    );
 
   }
 

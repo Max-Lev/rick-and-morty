@@ -26,6 +26,7 @@ export class CharactersService {
           name: filter?.name,
           status: filter?.status
         },
+        fetchPolicy: 'network-only' 
       })
       .pipe(
         // auditTime(1000),

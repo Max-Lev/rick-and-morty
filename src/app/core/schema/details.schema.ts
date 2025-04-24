@@ -12,7 +12,8 @@ query GetMultipleCharacters($ids: [ID!]!) {
     image,
     origin {
       id
-      name
+      name,
+      dimension
     },
     location{
       id,
@@ -23,11 +24,11 @@ query GetMultipleCharacters($ids: [ID!]!) {
       id,
       name,
       episode,
-      characters{
-        id,
-        name,
-        gender
-      }
+      # characters{
+      #   id,
+      #   name,
+      #   gender
+      # }
     }
   }
 }`;

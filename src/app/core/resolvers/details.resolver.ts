@@ -1,7 +1,14 @@
-import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from '@angular/router';
+import { GetDetailsService } from '../providers/get-details.service';
+import { inject } from '@angular/core';
+import { IDetailsResponse } from '../../shared/models/details.model';
+import { ResolveFn, Router } from '@angular/router';
 
-export const detailsResolver: ResolveFn<boolean> = (route:ActivatedRouteSnapshot, state:RouterStateSnapshot) => {
-  console.log(route)
-  console.log(state)
-  return true;
+export const detailsResolver: ResolveFn<IDetailsResponse[]> = () => {
+  
+  const router = inject(Router);
+  const nav = router.getCurrentNavigation();
+  const selectedIDs:string[] = nav?.extras.state?.['selectedIDs'] ?? [];
+  const getDetailsService = inject(GetDetailsService).getDetailsQuery(selectedIDs);
+
+  return getDetailsService;
 };

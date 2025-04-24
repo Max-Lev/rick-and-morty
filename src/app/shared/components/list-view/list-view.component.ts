@@ -29,33 +29,33 @@ export class ListViewComponent implements OnChanges {
   selectionService = inject(SelectionService);
 
   constructor() {
-    effect(() => {
-      console.log('mock')
-      const c1 = {
-        "selected": false,
-        "__typename": "Character",
-        "id": "1",
-        "name": "Rick Sanchez",
-        "status": "Alive",
-        "species": "Human",
-        "gender": "Male",
-        "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-        "type": ""
-      };
-      this.selectedRow(c1);
-      const c2 = {
-        "selected": true,
-        "__typename": "Character",
-        "id": "2",
-        "name": "Morty Smith",
-        "status": "Alive",
-        "species": "Human",
-        "gender": "Male",
-        "image": "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
-        "type": ""
-      }
-      this.selectedRow(c2);
-    });
+    // effect(() => {
+    //   console.log('mock')
+    //   const c1 = {
+    //     "selected": false,
+    //     "__typename": "Character",
+    //     "id": "1",
+    //     "name": "Rick Sanchez",
+    //     "status": "Alive",
+    //     "species": "Human",
+    //     "gender": "Male",
+    //     "image": "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+    //     "type": ""
+    //   };
+    //   this.selectedRow(c1);
+    //   const c2 = {
+    //     "selected": true,
+    //     "__typename": "Character",
+    //     "id": "2",
+    //     "name": "Morty Smith",
+    //     "status": "Alive",
+    //     "species": "Human",
+    //     "gender": "Male",
+    //     "image": "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
+    //     "type": ""
+    //   }
+    //   this.selectedRow(c2);
+    // });
   }
 
   isSelected(row: Character): boolean {

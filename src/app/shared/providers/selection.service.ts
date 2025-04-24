@@ -7,8 +7,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 })
 export class SelectionService {
 
-  // selectedRows = signal<Set<Character>>(new Set());
   selectedRows = signal<Map<number,Character>>(new Map());
+
+  selectedRowsIDs = computed(() => Array.from(this.selectedRows().keys()));
 
   // Computed for count
   selectedCount$: Signal<number> = computed(() => this.selectedRows().size);

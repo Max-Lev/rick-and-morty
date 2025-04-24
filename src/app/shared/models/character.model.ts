@@ -21,6 +21,7 @@ export interface Character {
   gender: string;
   image: string;
   selected?: boolean;
+  type:string;
 }
 
 export interface CharacterQueryResponseDTO {

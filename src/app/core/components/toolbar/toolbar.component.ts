@@ -73,18 +73,9 @@ export class ToolbarComponent {
     this.selectionService.clearSelection();
   }
 
-  showDetails(){
-    
-    this.router.navigate(['details'],{
-      // queryParams:{
-      //   data:[1,2]
-      // }
-    });
-    this.router.navigateByUrl('details',{
-      state: {
-        selectedRows: this.selectionService.selectedRows()
-      }
-    })
+  navigateDetails(){
+    const selectedIDs = this.selectionService.selectedRowsIDs();
+    this.router.navigateByUrl('details',{state: {selectedIDs}});
   }
 
 
