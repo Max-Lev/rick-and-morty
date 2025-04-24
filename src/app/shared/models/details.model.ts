@@ -26,7 +26,7 @@ export interface IDetailsResponseDTO {
         gender: string;
         image: string;
         selected?: boolean;
-        type:string;
+        type: string;
 
         location: ILocation,
         origin: IOrigin,
@@ -35,10 +35,28 @@ export interface IDetailsResponseDTO {
 }
 
 export interface IDetailsResponse {
-    // characterDetails: {
-        character: Character;
-        location: ILocation;
-        origin: IOrigin;
-        episodes: IEpisode[];
-    // }[];
+    character: Character;
+    location: ILocation;
+    origin: IOrigin;
+    episodes: IEpisode[];
+}
+
+export interface IFormateDetails {
+    // character: {
+    //     id: string;
+    //     name: string;
+    //     status: string;
+    //     species: string;
+    //     gender: string;
+    //     image: string;
+    //     selected?: boolean;
+    //     type: string;
+    //     // location: ILocation;
+    //     // origin: IOrigin;
+    //     // episode: IEpisode[];
+    // }
+    character:Character;
+    location: ILocation;
+    origin: IOrigin;
+    episodes: IEpisode[];
 }
