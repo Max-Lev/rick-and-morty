@@ -1,6 +1,146 @@
-<p>details works!</p>
-@for (item of details$(); track $index) {
-    <h2>{{item.character.name}}</h2>
-    <h2>{{item.location.name}}</h2>
-    <hr/>
-}
+<table mat-table [dataSource]="products" class="mat-elevation-z8" multiTemplateDataRows>
+
+  <!-- Expand Column -->
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef style="width: 5rem"></th>
+    <td mat-cell *matCellDef="let product">
+      <button mat-icon-button (click)="toggleRow(product)">
+        <mat-icon>{{ expandedRows[product.id] ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+    <td mat-cell *matCellDef="let product">{{ product.name }}</td>
+  </ng-container>
+
+  <!-- Image Column -->
+  <ng-container matColumnDef="image">
+    <th mat-header-cell *matHeaderCellDef>Image</th>
+    <td mat-cell *matCellDef="let product">
+      <img [src]="'https://example.com/images/' + product.image" [alt]="product.name" width="50" />
+    </td>
+  </ng-container>
+
+  <!-- Price Column -->
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+    <td mat-cell *matCellDef="let product">{{ product.price | currency: 'USD' }}</td>
+  </ng-container>
+
+  <!-- Category Column -->
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+    <td mat-cell *matCellDef="let product">{{ product.category }}</td>
+  </ng-container>
+
+  <!-- Rating Column -->
+  <ng-container matColumnDef="rating">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Reviews</th>
+    <td mat-cell *matCellDef="let product">{{ product.rating }}</td>
+  </ng-container>
+
+  <!-- Inventory Status Column -->
+  <ng-container matColumnDef="inventoryStatus">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+    <td mat-cell *matCellDef="let product">{{ product.inventoryStatus }}</td>
+  </ng-container>
+
+  <!-- Expanded Detail Column -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let product" [attr.colspan]="displayedColumns.length">
+      <div class="p-4" *ngIf="expandedRows[product.id]">
+        <h5>Orders for {{ product.name }}</h5>
+
+        <table mat-table [dataSource]="product.orders" class="mat-elevation-z8">
+          <!-- Inner table columns -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+          </ng-container>
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+            <td mat-cell *matCellDef="let order">{{ order.customer }}</td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let order">{{ order.date }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+            <td mat-cell *matCellDef="let order">{{ order.amount | currency: 'USD' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let order">{{ order.status }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['id', 'customer', 'date', 'amount', 'status']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['id', 'customer', 'date', 'amount', 'status']"></tr>
+        </table>
+
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- <ng-container> -->
+    <ng-container matColumnDef="expandedDetail2">
+    <td mat-cell *matCellDef="let product" [attr.colspan]="displayedColumns.length">
+      <div class="p-4" *ngIf="expandedRows2[product.id]">
+        <h5>Location for {{ product.name }}</h5>
+
+        <table mat-table [dataSource]="product.location" class="mat-elevation-z8">
+          <!-- Inner table columns -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let location">{{ location.id }}</td>
+          </ng-container>
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+            <td mat-cell *matCellDef="let location">{{ location.customer }}</td>
+          </ng-container>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let location">{{ location.date }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+            <td mat-cell *matCellDef="let location">{{ location.amount | currency: 'USD' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let location">{{ location.status }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status2</th>
+            <td mat-cell *matCellDef="let location">{{ location.status2 }}</td>
+          </ng-container>
+
+          <!-- headers -->
+          <tr mat-header-row *matHeaderRowDef="['id', 'customer', 'date', 'amount', 'status','status2']"></tr>
+          <!-- rows -->
+          <tr class="lighter" mat-row *matRowDef="let row; columns: ['id', 'customer', 'date', 'amount', 'status','status2']"></tr>
+        </table>
+
+      </div>
+    </td>
+  </ng-container>
+
+
+
+
+  <!-- Header and Row Definitions -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail2']" class="detail-row"></tr>
+
+  <!-- Buttons -->
+  <div class="flex flex-wrap justify-end gap-2 p-4">
+    <button mat-raised-button color="primary" (click)="expandAll()">Expand All</button>
+    <button mat-raised-button color="accent" (click)="collapseAll()">Collapse All</button>
+  </div>
+
+</table>
