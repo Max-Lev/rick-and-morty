@@ -30,10 +30,9 @@
             border: 1px solid;
         }
     }
-    // .row-is-clicked {
-    //     // font-weight: bold !important;
-    //     font-weight: bold;
-    // }
+    .row-is-clicked {
+        font-weight: bold;
+    }
     .selected-id{
         display: flex;
         align-items: center; 

@@ -1,11 +1,11 @@
 export interface ColumnConfig<T> {
   columnDef: string;
   header: string;
-  cell: (element: T) => string;
+  cell: (element: T) => string | number;
 }
 
 export interface ICharacterColumns {
-  id: number;
+  id: number | string;
   name: string;
   status: any;
   species: any;

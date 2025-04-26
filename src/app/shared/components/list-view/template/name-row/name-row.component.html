@@ -1,0 +1,9 @@
+<section class="name-image" matTooltip="{{isSelected(row)}}"
+[matTooltipPosition]="'after'">
+    <div class="avatar-container">
+        <img [src]="row.image" alt="" class="img" [style.border-color]="row['status'] | color">
+    </div>
+    <div>
+        {{column.cell(row)}}
+    </div>
+</section>

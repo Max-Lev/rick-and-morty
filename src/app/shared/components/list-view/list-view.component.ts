@@ -1,10 +1,13 @@
 import { Component, effect, inject, input, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
-import { Character } from '../../models/character.model';
+import { Character, ColumnConfig, ICharacterColumns } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { JsonPipe } from '@angular/common';
+import { NameRowComponent } from './template/name-row/name-row.component';
+import { RowComponent } from './template/row/row.component';
 
 @Component({
   selector: 'app-list-view',
@@ -13,6 +16,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ColorPipe,
     MatTableModule,
     MatTooltipModule,
+    NameRowComponent,
+    RowComponent
   ],
   standalone: true,
   templateUrl: './list-view.component.html',
@@ -20,7 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class ListViewComponent implements OnChanges {
 
-  @Input({ required: true }) columns: any = [];
+  // @Input({ required: true }) columns: any = [];
+  @Input({ required: true }) columns: ColumnConfig<ICharacterColumns>[] =[];
 
   characters = input.required<Character[]>();
 
@@ -59,6 +65,9 @@ export class ListViewComponent implements OnChanges {
   }
 
   isSelected(row: Character): boolean {
+    if(this.selectionService.getSelectedRows().has(+row.id)){
+      console.log(row)
+    }
     return this.selectionService.getSelectedRows().has(+row.id);
   }
   selectedRow = (row: Character): void => {
@@ -67,7 +76,7 @@ export class ListViewComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
+    console.log(changes)
   }
 
 
