@@ -11,6 +11,8 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { ListViewComponent } from '../../components/list-view/list-view.component';
+import { LayoutSelectionService } from '../../providers/layout-selection.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-characters',
@@ -19,6 +21,7 @@ import { ListViewComponent } from '../../components/list-view/list-view.componen
     ScrollingModule,
     ListViewComponent,
     GridViewComponent,
+    NgClass
 
   ],
   templateUrl: './characters.component.html',
@@ -63,6 +66,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   prevFilter = signal<IFilterPayload>({ name: '', status: '' });
 
+  layoutSelectionService = inject(LayoutSelectionService);
+  layout = computed(() => this.layoutSelectionService.layoutSizeSignal());
+
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
@@ -85,7 +91,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const { end, total } = viewportSize;
     console.log('viewportSize ', viewportSize)
     console.log('end, total ', end, total);
-    console.log('toolbar + scroll height container: ',this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
+    console.log('toolbar + scroll height container: ', this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
     console.log(this.viewport.checkViewportSize())
     console.log(this.viewport.measureViewportOffset('bottom'))
     console.log(this.viewport.getViewportSize())
@@ -145,7 +151,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   setCharactersData = (charactersData: ICharactersResponse) => {
     const existing = this.characters();
     const merged = [...existing, ...charactersData.characters];
-    debugger
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
     this.isLoadingSignal$.set(false);

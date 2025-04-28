@@ -12,6 +12,7 @@ import { DialogConfigService } from '../../providers/dialog-config.service';
 import { IDialogHandler } from '../../../shared/models/dialog.model';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Router, RouterModule } from '@angular/router';
+import { LayoutSelectionService } from '../../../shared/providers/layout-selection.service';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -71,8 +72,9 @@ export class ToolbarComponent {
     this.router.navigateByUrl('details',{state: {selectedIDs}});
   }
 
-  tabletView(){
-    
+  layoutSelectionService = inject(LayoutSelectionService);
+  tabletView(type:string){
+      this.layoutSelectionService.setLayoutSize(type,720,1200)
   }
 
 }

@@ -1,24 +1,6 @@
-<!-- <h2>Rick and Morty Characters</h2>
-<ng-container *ngIf="characters().length; else loading">
-  <div *ngFor="let c of characters()" class="character-card">
-    <img [src]="c.image" alt="{{ c.name }}" />
-    <div>
-      <h4>{{ c.name }}</h4>
-      <p>{{ c.species }} - {{ c.status }}</p>
-    </div>
-  </div>
-</ng-container>
-<ng-template #loading>
-  <p>Loading characters...</p>
-</ng-template>
 
-<button *ngIf="nextPage()" (click)="loadMore()">Load More</button> -->
-<!-- <app-characters></app-characters> -->
-
-<!-- width: 720px;
-    justify-self: center; -->
-<section class="desktop">
+<section class="desktop" [ngClass]="layout().type">
+<!-- <section class="desktop"> -->
   <app-toolbar></app-toolbar>
   <router-outlet></router-outlet>
 </section>
-<!-- <app-characters></app-characters> -->

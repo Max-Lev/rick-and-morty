@@ -9,8 +9,8 @@
 </cdk-virtual-scroll-viewport>
 
 }@else{
-<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view">
-  <div *cdkVirtualFor="let character of characters()" class="grid-item">
+<cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view" [ngClass]="layout().type">
+  <div *cdkVirtualFor="let character of characters()" class="grid-item" [ngClass]="layout().type">
     <app-grid-view [character]="character"></app-grid-view>
   </div>
 </cdk-virtual-scroll-viewport>
