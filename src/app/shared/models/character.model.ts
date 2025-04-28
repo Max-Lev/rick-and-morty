@@ -14,7 +14,7 @@ export interface ICharacterColumns {
 }
 
 export interface Character {
-  id: string;
+  id: string | number;
   name: string;
   status: string;
   species: string;

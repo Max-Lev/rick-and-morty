@@ -10,7 +10,7 @@ import { ColorPipe } from '../../../../pipes/color.pipe';
   templateUrl: './row.component.html',
   styleUrl: './row.component.scss'
 })
-export class RowComponent implements OnChanges {
+export class RowComponent {
 
   @Input({ required: true }) row!: Character;
 
@@ -18,9 +18,6 @@ export class RowComponent implements OnChanges {
 
   @Input() color!:string | boolean;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-  }
 
 
 

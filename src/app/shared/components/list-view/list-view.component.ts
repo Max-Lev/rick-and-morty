@@ -17,15 +17,14 @@ import { RowComponent } from './template/row/row.component';
     MatTableModule,
     MatTooltipModule,
     NameRowComponent,
-    RowComponent
+    RowComponent,
   ],
   standalone: true,
   templateUrl: './list-view.component.html',
   styleUrl: './list-view.component.scss'
 })
-export class ListViewComponent implements OnChanges {
+export class ListViewComponent {
 
-  // @Input({ required: true }) columns: any = [];
   @Input({ required: true }) columns: ColumnConfig<ICharacterColumns>[] =[];
 
   characters = input.required<Character[]>();
@@ -65,18 +64,14 @@ export class ListViewComponent implements OnChanges {
   }
 
   isSelected(row: Character): boolean {
-    if(this.selectionService.getSelectedRows().has(+row.id)){
-      console.log(row)
-    }
+    // if(this.selectionService.getSelectedRows().has(+row.id)){
+    //   console.log(row)
+    // }
     return this.selectionService.getSelectedRows().has(+row.id);
   }
   selectedRow = (row: Character): void => {
     console.log(row)
     this.selectionService.toggleRow(row);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
   }
 
 

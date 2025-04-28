@@ -16,7 +16,7 @@ export const routes: Routes = [
     },
     {
         path: 'details', loadComponent: () => import('./shared/features/details/details.component').then(m => m.DetailsComponent),
-        // resolve: { detailsResolver: detailsResolver },
+        resolve: { charactersDetails: detailsResolver },
         // canActivate: [isSelectedGuard]
     },
     

@@ -23,3 +23,13 @@ body {
     font-weight: bold !important;
     // font-weight: bold;
 }
+.mtd{
+    // .mat-mdc-cell {
+        // height: 56px;
+        height: 60px;
+        letter-spacing: 2.0px;
+        &.hover{
+            cursor: copy;
+        }
+    // }
+}

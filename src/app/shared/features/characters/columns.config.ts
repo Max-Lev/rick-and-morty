@@ -32,4 +32,5 @@ export const COLUMNS:ColumnConfig<ICharacterColumns>[] = [
     header: 'Gender',
     cell: (element: ICharacterColumns) => `${element.gender}`,
   },
+  
 ];

@@ -10,7 +10,6 @@
 }@else{
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view">
   <div *cdkVirtualFor="let character of characters()" class="grid-item">
-    <!-- <app-grid-view [character]="character" (click)="selectedRowCharacter(character)"></app-grid-view> -->
     <app-grid-view [character]="character"></app-grid-view>
   </div>
 </cdk-virtual-scroll-viewport>

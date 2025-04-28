@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, Input, OnInit, signal } from "@angular/core";
 import { GetDetailsService } from "../../../core/providers/get-details.service";
-import { IDetailsResponse } from "../../models/details.model";
+import { IDetail, IDetailsResponse } from "../../models/details.model";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from "@angular/common";
@@ -47,57 +47,33 @@ interface Location {
 })
 export class DetailsComponent implements OnInit {
 
-  @Input() detailsResolver!: IDetailsResponse;
+  @Input() charactersDetails!: IDetailsResponse;
   getDetailsService = inject(GetDetailsService);
 
-  details$ = computed(() => this.detailsResolver);
+  details$ = computed(() => this.charactersDetails);
 
-  displayedColumns: string[] = ['expand', 'name', 'image', 'price', 'category', 'rating', 'inventoryStatus'];
-  // displayedColumns2: string[] = ['expand', 'name', 'image', 'price', 'category', 'rating', 'inventoryStatus'];
+  displayedColumns = ['image', 'name', 'species', 'status', 'gender'];
+  locationColumns = ['id','name', 'dimension'];
+  originColumns = ['id','name', 'dimension'];
+  episodeColumns = ['episode', 'name'];
+
   expandedRows: { [key: number]: boolean } = {};
-  expandedRows2: { [key: number]: boolean } = {};
-
-  // Sample data
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Hydrogen',
-      image: 'hydrogen.png',
-      price: 1.008,
-      category: 'Element',
-      rating: 4.5,
-      inventoryStatus: 'In Stock',
-      orders: [
-        { id: 1, customer: 'John Doe', date: '2023-04-01', amount: 100, status: 'Shipped' },
-        { id: 2, customer: 'Jane Smith', date: '2023-04-02', amount: 150, status: 'Pending' }
-      ],
-      location: [
-        { id: 1, customer: 'John Doe', date: '2023-04-01', amount: 100, status: 'Shipped',status2: 'Pending' },
-        { id: 2, customer: 'Jane Smith', date: '2023-04-02', amount: 150, status: 'Pending',status2: 'Pending' }
-      ]
-    }
-  ];
-
   ngOnInit(): void {
-    console.log(this.detailsResolver);
-    console.log(this.details$());
-  }
-
-  toggleRow(product: Product) {
-    debugger
-    this.expandedRows[product.id] = !this.expandedRows[product.id];
-    this.expandedRows2[product.id] = !this.expandedRows2[product.id];
-  }
-
-  expandAll() {
-    this.products.forEach(product => {
-      this.expandedRows[product.id] = true;
+    this.charactersDetails.forEach((character: IDetail) => {
+      this.expandedRows[+character.character.id] = false; // Remove + to keep as string
     });
   }
 
-  collapseAll() {
-    this.products.forEach(product => {
-      this.expandedRows[product.id] = false;
-    });
+  isExpandedRow = (index: number, element: IDetail): boolean => {
+    return !!this.expandedRows[+element.character.id]; // Pure check without side effects
+  };
+
+  toggle(element: IDetail) {
+    const id = element.character.id;
+    this.expandedRows[+id] = !this.expandedRows[+id];
+    // If using plain array, force change detection:
+    this.charactersDetails = [...this.charactersDetails];
   }
+
+
 }

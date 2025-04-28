@@ -66,11 +66,11 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
-    effect(() => {
-      // console.log('characters length: ', this.characters(), this.characters().length)
-      // console.log('currentPageSignal$ ', this.currentPageSignal$())
-      // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
-    });
+    // effect(() => {
+    //   // console.log('characters length: ', this.characters(), this.characters().length)
+    //   // console.log('currentPageSignal$ ', this.currentPageSignal$())
+    //   // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
+    // });
 
   }
 
@@ -106,9 +106,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   }
 
   getViewportSize() {
-    const end = this.viewport.getRenderedRange().end;
-    const total = this.viewport.getDataLength();
-    const offset = this.viewport.measureScrollOffset();
+    const end = this.viewport?.getRenderedRange().end;
+    const total = this.viewport?.getDataLength();
+    const offset = this.viewport?.measureScrollOffset();
     // SCROLL GUARD: Scroll direction = down only
     if (offset < this.lastScrollOffset) {
       this.lastScrollOffset = offset;
@@ -134,14 +134,15 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   setCharactersData = (charactersData: ICharactersResponse) => {
     const existing = this.characters();
     const merged = [...existing, ...charactersData.characters];
+    debugger
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
     this.isLoadingSignal$.set(false);
   }
 
-/**
- * initial load & filter response
- */
+  /**
+   * initial load & filter response
+   */
   charactersResponse$ = this.selectionService.filter$.pipe(
     debounceTime(300), // Optional debounce
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
@@ -154,7 +155,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.isLoadingSignal$.set(true);
       return this.charactersService.getCharacters(page, filter).pipe(
         tap((response: ICharactersResponse) => {
-          console.log('charactersResponse',response)
+          console.log('charactersResponse', response)
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
           // console.log('2', this.paginationSignal$())
@@ -168,7 +169,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   newFilterRequest(filter: IFilterPayload) {
     if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
 
-      this.prevFilter.update((v) => ({...v,name: filter.name,status: filter.status}));
+      this.prevFilter.update((v) => ({ ...v, name: filter.name, status: filter.status }));
 
       this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
       // console.log('newFilterRequest 1',this.paginationSignal$())
@@ -185,17 +186,17 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       // console.log('resetFilter 2',this.paginationSignal$())
     }
   }
-/**
- * on scroll event as pagination
- */
+  /**
+   * on scroll event as pagination
+   */
   loadCharactersOnScroll(): void {
     const { page, nextPage, filterPayload } = this.paginationSignal$();
     if (nextPage) {
       this.isLoadingSignal$.set(true);
       this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
-  
+
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
-        console.log('loadCharacters',response)
+        console.log('loadCharacters', response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
         // console.log('loadCharactersOnScroll', this.paginationSignal$())
@@ -203,7 +204,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       });
     }
   }
-  
+
 
 
 }
