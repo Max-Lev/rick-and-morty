@@ -69,7 +69,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     // effect(() => {
     //   // console.log('characters length: ', this.characters(), this.characters().length)
     //   // console.log('currentPageSignal$ ', this.currentPageSignal$())
-    //   // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
+    console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
     // });
 
   }
@@ -80,7 +80,15 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
+    const viewportSize = this.getViewportSize();
+    if (!viewportSize) return;
+    const { end, total } = viewportSize;
+    console.log('viewportSize ', viewportSize)
+    console.log('end, total ', end, total);
+    console.log('toolbar + scroll height container: ',this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
+    console.log(this.viewport.checkViewportSize())
+    console.log(this.viewport.measureViewportOffset('bottom'))
+    console.log(this.viewport.getViewportSize())
   }
 
   onScroll(index: number): void {
@@ -93,6 +101,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
       if (!viewportSize) return;
       const { end, total } = viewportSize;
+
+      console.log('viewportSize ', viewportSize)
+      console.log('end, total ', end, total)
 
       this.setItemSize(index);
 

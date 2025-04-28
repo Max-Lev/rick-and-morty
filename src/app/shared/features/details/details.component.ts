@@ -1,22 +1,17 @@
 import { Component, computed, effect, inject, Input, OnInit, signal } from "@angular/core";
 import { GetDetailsService } from "../../../core/providers/get-details.service";
 import { IDetail, IDetailsResponse } from "../../models/details.model";
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatTableModule } from "@angular/material/table";
 import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
+import { COLUMNS } from "../characters/columns.config";
+import { Character, ColumnConfig, ICharacterColumns } from "../../models/character.model";
+import { RowComponent } from "../../components/list-view/template/row/row.component";
+import { NameRowComponent } from "../../components/list-view/template/name-row/name-row.component";
+import { ColorPipe } from "../../pipes/color.pipe";
+import { IsEmptyPipe } from "../../pipes/is-empty.pipe";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  category: string;
-  rating: number;
-  inventoryStatus: string;
-  image: string;
-  orders: Order[];
-  location: Location[];
-}
 
 interface Order {
   id: number;
@@ -40,7 +35,9 @@ interface Location {
     MatTableModule,
     MatExpansionModule,
     CommonModule,
-    MatIcon
+    RowComponent,
+    NameRowComponent,
+    ColorPipe,IsEmptyPipe
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']
@@ -52,12 +49,15 @@ export class DetailsComponent implements OnInit {
 
   details$ = computed(() => this.charactersDetails);
 
-  displayedColumns = ['image', 'name', 'species', 'status', 'gender'];
   locationColumns = ['id','name', 'dimension'];
   originColumns = ['id','name', 'dimension'];
   episodeColumns = ['episode', 'name'];
 
   expandedRows: { [key: number]: boolean } = {};
+
+  columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
+  displayedColumns = this.columns.map(column => column.columnDef);
+
   ngOnInit(): void {
     this.charactersDetails.forEach((character: IDetail) => {
       this.expandedRows[+character.character.id] = false; // Remove + to keep as string
@@ -74,6 +74,11 @@ export class DetailsComponent implements OnInit {
     // If using plain array, force change detection:
     this.charactersDetails = [...this.charactersDetails];
   }
+
+  isSelected(row: Character): boolean {
+    return false;
+  }
+
 
 
 }

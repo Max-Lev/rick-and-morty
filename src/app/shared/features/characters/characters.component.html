@@ -3,6 +3,7 @@
   
 <cdk-virtual-scroll-viewport (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSizeSignal$()}}"
   class="list-viewport">
+  <!-- class="list-viewport" style="height: 80%;"> -->
   <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns()">
   </app-list-view>
 </cdk-virtual-scroll-viewport>

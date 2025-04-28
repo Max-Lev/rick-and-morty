@@ -1,7 +1,6 @@
 @if (columns.length) {
     <table mat-table [dataSource]="characters()" class="mat-elevation-z8">
   
-      <!-- <app-reusable-list-view [isSelected]="isSelected"></app-reusable-list-view> -->
       @for (column of columns; track column) {
         <ng-container [matColumnDef]="column.columnDef">
     
@@ -14,9 +13,7 @@
             @if(column.columnDef==='id' && !isSelected(row)) {
               {{ column.cell(row) }}
             } @else if(column.columnDef==='id' && isSelected(row)) {
-              <div class="selected-id">
-                ({{ column.cell(row) }})
-              </div>
+              <div class="selected-id">({{ column.cell(row) }})</div>
             } @else if (column.columnDef === 'status') {
               <div [style.color]="row['status'] | color">{{ column.cell(row) }}</div>
             } @else if (column.columnDef === 'species') {

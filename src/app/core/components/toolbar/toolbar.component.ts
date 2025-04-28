@@ -71,5 +71,8 @@ export class ToolbarComponent {
     this.router.navigateByUrl('details',{state: {selectedIDs}});
   }
 
+  tabletView(){
+    
+  }
 
 }

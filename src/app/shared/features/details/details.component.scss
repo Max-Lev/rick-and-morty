@@ -1,4 +1,14 @@
-fixed-table,table{
+.sub-table{
     table-layout: fixed;
     width: 100%;
+}
+:host{
+    overflow-x:scroll;
+    .mat-mdc-cell {
+        height: 60px;
+        letter-spacing: 2.0px;
+        &.hover{
+            cursor: copy;
+        }
+    }
 }
