@@ -43,11 +43,11 @@
     </button>
     }
 
-<button (click)="tabletView('desktop')">desktop</button>
-<button (click)="tabletView('tablet')">tablet</button>
-<button (click)="tabletView('mobile')">mobile</button>
+    <span class="spacer"></span>
 
-
+    <button (click)="cycleLayout()" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
+        <mat-icon>{{cycleLayout$()}}</mat-icon>
+    </button>
 
 
 </mat-toolbar>

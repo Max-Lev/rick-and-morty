@@ -3,7 +3,9 @@
     width: 100%;
 }
 :host{
+    background: black;
     overflow-x:scroll;
+    height: 100%;
     .mat-mdc-cell {
         height: 60px;
         letter-spacing: 2.0px;

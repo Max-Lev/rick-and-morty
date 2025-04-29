@@ -42,32 +42,10 @@ cdk-virtual-scroll-viewport {}
 }
 
 :host {
+  background: black;
   width: 100%;
   display: flex;
   flex-direction: column;
-
-  // .desktop,
-  // .tablet,
-  // .mobile {
-  //   display: flex;
-  //   flex-direction: column;
-  //   height: 100%;
-  //   width: 100%;
-  //   /* default full width */
-  // }
-
-  /* Specific overrides */
-  // .tablet {
-  //   max-width: 1024px;
-  //   width: 100%;
-  //   align-self: center;
-  // }
-
-  // .mobile {
-  //   max-width: 420px;
-  //   width: 100%;
-  //   align-self: center;
-  // }
 
   /* grid view container */
   .grid-view {
@@ -89,83 +67,4 @@ cdk-virtual-scroll-viewport {}
       max-width: 100%;
     }
   }
-
-  /* grid items (cards) */
-  // .grid-item {
-  //   height: 250px;
-  //   flex: 0 0 33.3333%;
-  //   max-width: 33.3333%;
-  //   box-sizing: border-box;
-  //   background: #f5f5f5;
-  //   border-radius: 8px;
-  //   display: flex;
-  //   flex-direction: column;
-  //   padding: 1rem;
-  // }
-
-  /* Responsive adjustments */
-  // @media (max-width: 1024px) {
-  //   .grid-item {
-  //     flex: 0 0 50%;
-  //     max-width: 50%;
-  //   }
-  // }
-
-  // @media (max-width: 600px) {
-  //   .grid-item {
-  //     flex: 0 0 100%;
-  //     max-width: 100%;
-  //   }
-  // }
-
 }
-
-//   /* character card inside grid item */
-//   .character-card {
-//     display: flex;
-//     align-items: center;
-//     gap: 1rem;
-//     padding: 0.5rem;
-//     border-bottom: 1px solid #ccc;
-//     flex: 1;
-//   }
-
-//   img {
-//     width: 80px;
-//     border-radius: 10px;
-//   }
-// }
-
-
-
-// @media  (max-width: 600px) {
-//   .grid-item{
-//       width: 100%;
-//       border: 1px solid red;
-//   }
-// }
-
-// .grid-item {
-//   height: 250px;
-//   flex: 0 0 33.3333%; /* 3 items per row on desktop */
-//   max-width: 33.3333%;
-//   box-sizing: border-box;
-//   padding: 8px;
-// }
-
-// /* Tablets (landscape and portrait) */
-// @media (max-width: 1024px) {
-//   .grid-item {
-//     flex: 0 0 50%; /* 2 items per row */
-//     max-width: 50%;
-//   }
-// }
-
-// /* Mobile Phones */
-// @media (max-width: 600px) {
-//   .grid-item {
-//     flex: 0 0 100%; /* 1 item per row */
-//     max-width: 100%;
-//     border: 1px solid red; /* for debug */
-//   }
-// }

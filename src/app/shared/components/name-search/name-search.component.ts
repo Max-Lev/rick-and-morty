@@ -9,8 +9,7 @@ import { AutofocusDirective } from '../../directives/auto-focus.directive';
   selector: 'app-name-search',
   imports: [
     MatFormFieldModule,
-    MatInputModule,
-    AutofocusDirective
+    MatInputModule
   ],
   providers: [
     {

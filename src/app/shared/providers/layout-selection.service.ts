@@ -1,47 +1,45 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { LAYOUT_TYPE_ENUM } from '../models/status.enum';
 
-type LayoutSize = {
-  type: string;
-  width: number;
-  height: number;
-};
+type LayoutSize = {type: string;};
 
 @Injectable({
   providedIn: 'root'
 })
 export class LayoutSelectionService {
 
-  // constructor() { }
+  private layoutType = signal<LayoutSize>({ type: LAYOUT_TYPE_ENUM.DESKTOP });
 
-  // layoutSize = signal({type:'iPad',width:1024,height:768});
-  // private layoutSize = signal({ type: '', width: 0, height: 0 });
-
-  // layoutSize$ = this.layoutSize;
-
-  // setLayoutSize(type: string, width: number, height: number){
-  //   this.layoutSize.set({ type: type, width: width, height: height });
-  //   console.log(this.layoutSize())
-  // }
-
-  // getLayoutSize(): Signal<{
-  //   type: string;
-  //   width: number;
-  //   height: number;
-  // }> {
-  //   return this.layoutSize$;
-  // }
-
-  private layoutSize = signal<LayoutSize>({ type: 'desktop', width: 0, height: 0 });
+  layoutsOptions = [
+    {
+      type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop'
+    },
+    {
+      type: LAYOUT_TYPE_ENUM.TABLET, icon: 'tablet_mac'
+    },
+    {
+      type: LAYOUT_TYPE_ENUM.MOBILE, icon: 'stay_primary_portrait'
+    },
+  ];
+  activeLayout = signal(0);
 
   constructor() {}
 
-  setLayoutSize(type: string, width: number, height: number): void {
-    this.layoutSize.set({ type, width, height });
-    console.log(this.layoutSize());
+  setLayoutType(type: string): void {
+    this.layoutType.set({ type });
+    
   }
 
-  get layoutSizeSignal(): Signal<LayoutSize> {
-    return this.layoutSize;
+  get getLayoutType(): Signal<LayoutSize> {
+    return this.layoutType;
+  }
+  
+
+  cycleLayout():string {
+    const index = (this.activeLayout() + 1) % this.layoutsOptions.length;
+    this.activeLayout.set(index);
+    this.setLayoutType(this.layoutsOptions[this.activeLayout()].type);
+    return this.layoutsOptions[this.activeLayout()].icon;
   }
 
 

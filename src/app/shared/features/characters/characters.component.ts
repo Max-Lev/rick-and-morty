@@ -67,16 +67,17 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   prevFilter = signal<IFilterPayload>({ name: '', status: '' });
 
   layoutSelectionService = inject(LayoutSelectionService);
-  layout = computed(() => this.layoutSelectionService.layoutSizeSignal());
+  layout = computed(() => this.layoutSelectionService.getLayoutType());
 
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
-    // effect(() => {
-    //   // console.log('characters length: ', this.characters(), this.characters().length)
-    //   // console.log('currentPageSignal$ ', this.currentPageSignal$())
-    console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
-    // });
+    effect(() => {
+      // console.log('characters length: ', this.characters(), this.characters().length)
+      // console.log('currentPageSignal$ ', this.currentPageSignal$())
+      // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
+      // console.log(this.layoutSelectionService.getLayoutType())
+    });
 
   }
 
@@ -89,12 +90,12 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const viewportSize = this.getViewportSize();
     if (!viewportSize) return;
     const { end, total } = viewportSize;
-    console.log('viewportSize ', viewportSize)
-    console.log('end, total ', end, total);
-    console.log('toolbar + scroll height container: ', this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
-    console.log(this.viewport.checkViewportSize())
-    console.log(this.viewport.measureViewportOffset('bottom'))
-    console.log(this.viewport.getViewportSize())
+    // console.log('viewportSize ', viewportSize)
+    // console.log('end, total ', end, total);
+    // console.log('toolbar + scroll height container: ', this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
+    // console.log(this.viewport.checkViewportSize())
+    // console.log(this.viewport.measureViewportOffset('bottom'))
+    // console.log(this.viewport.getViewportSize())
   }
 
   onScroll(index: number): void {
@@ -174,7 +175,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
           console.log('charactersResponse', response)
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-          // console.log('2', this.paginationSignal$())
           this.isLoadingSignal$.set(false);
         })
       );
@@ -188,7 +188,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.prevFilter.update((v) => ({ ...v, name: filter.name, status: filter.status }));
 
       this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
-      // console.log('newFilterRequest 1',this.paginationSignal$())
+
       if (this.paginationSignal$().page === 1) {
         this.itemSizeSignal$.set(150);
       }
@@ -199,7 +199,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     if (filter.name == '' || filter.status == '') {
       const { page, nextPage } = this.paginationSignal$();
       this.paginationSignal$.set({ page: page, nextPage: nextPage, filterPayload: filter });
-      // console.log('resetFilter 2',this.paginationSignal$())
     }
   }
   /**
@@ -215,7 +214,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         console.log('loadCharacters', response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-        // console.log('loadCharactersOnScroll', this.paginationSignal$())
         this.isLoadingSignal$.set(false);
       });
     }

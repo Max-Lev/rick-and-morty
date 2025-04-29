@@ -10,9 +10,11 @@ import {
 } from '@angular/material/dialog';
 import { DialogConfigService } from '../../providers/dialog-config.service';
 import { IDialogHandler } from '../../../shared/models/dialog.model';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {Router, RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
 import { LayoutSelectionService } from '../../../shared/providers/layout-selection.service';
+import { LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
+import { single } from 'rxjs';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -45,9 +47,14 @@ export class ToolbarComponent {
 
   router = inject(Router);
 
+  layoutSelectionService = inject(LayoutSelectionService);
+  cycleLayout$ = signal<string>(this.layoutSelectionService.layoutsOptions[0].icon);
+
   constructor() {
     effect(() => {
       console.log(this.selectionService.selectedRows())
+      console.log(this.layoutSelectionService.layoutsOptions[0])
+      console.log(this.cycleLayout$())
       // console.log(this.selectedView())
     });
     // setTimeout(() => {
@@ -63,18 +70,21 @@ export class ToolbarComponent {
     this.dialogService.openDialogAction(dialogAction);
   }
 
-  clearSelection(){
+  clearSelection() {
     this.selectionService.clearSelection();
   }
 
-  navigateDetails(){
+  navigateDetails() {
     const selectedIDs = this.selectionService.selectedRowsIDs();
-    this.router.navigateByUrl('details',{state: {selectedIDs}});
+    this.router.navigateByUrl('details', { state: { selectedIDs } });
   }
 
-  layoutSelectionService = inject(LayoutSelectionService);
-  tabletView(type:string){
-      this.layoutSelectionService.setLayoutSize(type,720,1200)
+  
+  cycleLayout() {
+    const icon =  this.layoutSelectionService.cycleLayout();
+    console.log(icon)
+    this.cycleLayout$.set(icon);
   }
+  
 
 }

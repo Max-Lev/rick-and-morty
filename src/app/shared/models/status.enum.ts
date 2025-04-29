@@ -14,3 +14,10 @@ export const STATUS_OPTIONS = [
   { key: STATUS_ENUM.Dead, value: 'Dead' },
   { key: STATUS_ENUM.unknown, value: 'Unknown' }
 ];
+
+export enum LAYOUT_TYPE_ENUM {
+  DESKTOP = 'desktop',
+  TABLET = 'tablet',
+  MOBILE = 'mobile'
+  
+}

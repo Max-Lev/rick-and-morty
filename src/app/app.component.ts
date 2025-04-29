@@ -22,20 +22,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   layoutSelectionService = inject(LayoutSelectionService);
 
-  layout = computed(()=>{
-    return this.layoutSelectionService.layoutSizeSignal();
-  })
+  layout = computed(() => this.layoutSelectionService.getLayoutType())
 
-  constructor(){
-    effect(()=>{
-      console.log(this.layoutSelectionService.layoutSizeSignal());
-      console.log(this.layout());
-    });
+  constructor() {
+
   }
 
   ngOnInit(): void {
 
-    // This function is called when the component is initialized
   }
 
   ngAfterViewInit() {
