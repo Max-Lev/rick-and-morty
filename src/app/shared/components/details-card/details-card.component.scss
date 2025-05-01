@@ -71,28 +71,39 @@
             }
         }
     }
+    &.tablet {
+        flex: 1 0 75%;
+        max-width: 75%;
+      }
 }
 
 
 ::ng-deep{
     mat-expansion-panel{
+        border: 1px solid;
+        border-radius: 13px;
         .mat-expansion-panel-content-wrapper {
+            
             .mat-expansion-panel-content{
-                overflow-y: auto;
-                max-height: 400px;
-                max-height: 175px;
-                border: 1px solid;
-                border-radius: 13px;
+                
+                .mat-expansion-panel-body{
+                    overflow-y: auto;
+                    max-height: 160px;
+                    table{
+                        thead,tbody{
+                            tr{
+                                th,td{
+                                    letter-spacing: 1.5px !important;
+                                }
+                            }
+                        }
+                    }
+                }
             }
           }
     }
 }
 
-
-// .example-card {
-//     // max-width: 400px;
-//     // max-width: 40%;
-// }
 
 .example-header-image {
     background-size: cover;

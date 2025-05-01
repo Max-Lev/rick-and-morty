@@ -29,6 +29,6 @@ export class DetailsCardComponent {
 
   character = input.required<IDetail>();
 
-  readonly panelOpenState = signal(false);
+  readonly panelOpenState = signal(true);
 
 }

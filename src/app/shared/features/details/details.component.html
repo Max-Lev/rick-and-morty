@@ -115,6 +115,7 @@
 </table>
 }@else{
 <ng-container>
+  <!-- [ngClass]="layout().type" -->
   <section class="details-card-grid">
     @for (character of charactersDetails; track character.character.id) {
     <app-details-card [character]="character" [ngClass]="layout().type"></app-details-card>

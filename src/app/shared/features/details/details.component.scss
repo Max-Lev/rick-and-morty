@@ -13,6 +13,7 @@
     background: black;
     overflow-x:scroll;
     height: 100%;
+    
     .mat-mdc-cell {
         height: 60px;
         letter-spacing: 2.0px;
@@ -23,13 +24,18 @@
     .details-card-grid{
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-evenly;
+        // justify-content: space-evenly;
+        justify-content: center;
+        &.tablet{
+            justify-content: center;
+        }
     }
 }
 
 .tablet {
-    flex: 1 0 49%;
-    max-width: 50%;
+    // flex: 1 0 49%;
+    // // max-width: 50%;
+    // max-width: 75%;
   }
 
   .mobile {

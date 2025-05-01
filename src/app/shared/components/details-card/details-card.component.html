@@ -38,9 +38,9 @@
 
     <mat-card-content>
 
-        <mat-accordion multi="false">
-            <mat-expansion-panel >
-            <!-- <mat-expansion-panel multi="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
+        <mat-accordion multi="true">
+            <mat-expansion-panel [expanded]="true">
+            <!-- <mat-expansion-panel  (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
                     <mat-panel-title> Location </mat-panel-title>
                 </mat-expansion-panel-header>
@@ -65,10 +65,11 @@
                 </table>
             </mat-expansion-panel>
 
-            <mat-expansion-panel>
-            <!-- <mat-expansion-panel multi="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
+            
+            <mat-expansion-panel [expanded]="true">
+            <!-- <mat-expansion-panel [expanded]="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Origin </mat-panel-title>
+                    <mat-panel-title> Origin {{panelOpenState()}}</mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <table mat-table [dataSource]="[character().origin]" class="inner-table sub-table">
@@ -91,9 +92,10 @@
                   </table>
             </mat-expansion-panel>
 
-            <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+            <mat-expansion-panel [expanded]="true">
+            <!-- <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Episods </mat-panel-title>
+                    <mat-panel-title> Episods  ({{character().episodes.length}})</mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <table mat-table [dataSource]="character().episodes" class="inner-table sub-table">
