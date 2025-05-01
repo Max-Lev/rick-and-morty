@@ -12,6 +12,8 @@ import { NameRowComponent } from "../../components/list-view/template/name-row/n
 import { ColorPipe } from "../../pipes/color.pipe";
 import { IsEmptyPipe } from "../../pipes/is-empty.pipe";
 import { DetailsCardComponent } from "../../components/details-card/details-card.component";
+import { LayoutSelectionService } from "../../providers/layout-selection.service";
+import { SelectionService } from "../../providers/selection.service";
 
 
 
@@ -23,7 +25,7 @@ import { DetailsCardComponent } from "../../components/details-card/details-card
     CommonModule,
     RowComponent,
     NameRowComponent,
-    ColorPipe,IsEmptyPipe,
+    ColorPipe, IsEmptyPipe,
     DetailsCardComponent
   ],
   templateUrl: './details.component.html',
@@ -36,8 +38,8 @@ export class DetailsComponent implements OnInit {
 
   details$ = computed(() => this.charactersDetails);
 
-  locationColumns = ['id','name', 'dimension'];
-  originColumns = ['id','name', 'dimension'];
+  locationColumns = ['id', 'name', 'dimension'];
+  originColumns = ['id', 'name', 'dimension'];
   episodeColumns = ['episode', 'name'];
 
   expandedRows: { [key: number]: boolean } = {};
@@ -45,7 +47,17 @@ export class DetailsComponent implements OnInit {
   columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
   displayedColumns = this.columns.map(column => column.columnDef);
 
+  layoutSelectionService = inject(LayoutSelectionService);
+  layout = computed(() => this.layoutSelectionService.getLayoutType());
+
+  selectionService = inject(SelectionService);
+  selectedViewSignal$ = this.selectionService.selectedViewSignal$;
+
   ngOnInit(): void {
+    this.expandAllSubTables();
+  }
+
+  expandAllSubTables() {
     this.charactersDetails.forEach((character: IDetail) => {
       this.expandedRows[+character.character.id] = false; // Remove + to keep as string
     });

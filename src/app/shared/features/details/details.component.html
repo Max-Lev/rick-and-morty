@@ -1,5 +1,5 @@
+@if(selectedViewSignal$()==='list'){
 <table mat-table [dataSource]="charactersDetails" multiTemplateDataRows class="mat-elevation-z8">
-
   <!-- Character Columns -->
   @for (column of columns; track column) {
   <ng-container [matColumnDef]="column.columnDef">
@@ -113,11 +113,12 @@
   </tr>
 
 </table>
-
+}@else{
 <ng-container>
   <section class="details-card-grid">
     @for (character of charactersDetails; track character.character.id) {
-    <app-details-card [character]="character"></app-details-card>
+    <app-details-card [character]="character" [ngClass]="layout().type"></app-details-card>
     }
   </section>
 </ng-container>
+}

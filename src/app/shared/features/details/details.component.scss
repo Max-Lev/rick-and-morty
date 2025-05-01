@@ -26,3 +26,13 @@
         justify-content: space-evenly;
     }
 }
+
+.tablet {
+    flex: 1 0 49%;
+    max-width: 50%;
+  }
+
+  .mobile {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }

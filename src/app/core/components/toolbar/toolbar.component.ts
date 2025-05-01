@@ -50,7 +50,6 @@ export class ToolbarComponent {
   router = inject(Router);
 
   layoutSelectionService = inject(LayoutSelectionService);
-  // initialIcon = this.layoutSelectionService.layoutsOptions[0].icon;
   layoutIcon = signal<{ type: LAYOUT_TYPE_ENUM; icon: string; }>({ type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop' });
 
   constructor() {

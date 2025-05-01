@@ -1,6 +1,8 @@
 <mat-card class="example-card" appearance="outlined">
     <mat-card-header>
-        <div mat-card-avatar [ngStyle]="{'background-image': 'url(' + character().character.image + ')'}"
+        <div 
+        [style.border-color]="character().character['status'] | color"
+        mat-card-avatar [ngStyle]="{'background-image': 'url(' + character().character.image + ')'}"
             class="example-header-image"></div>
 
         <mat-card-title>
@@ -36,7 +38,7 @@
 
     <mat-card-content>
 
-        <mat-accordion multi>
+        <mat-accordion multi="false">
             <mat-expansion-panel >
             <!-- <mat-expansion-panel multi="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>

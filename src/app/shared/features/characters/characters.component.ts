@@ -90,7 +90,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const viewportSize = this.getViewportSize();
     if (!viewportSize) return;
-    const { end, total } = viewportSize;
+    // const { end, total } = viewportSize;
     // console.log('viewportSize ', viewportSize)
     // console.log('end, total ', end, total);
     // console.log('toolbar + scroll height container: ', this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))

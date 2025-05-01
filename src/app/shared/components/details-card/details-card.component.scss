@@ -80,6 +80,7 @@
             .mat-expansion-panel-content{
                 overflow-y: auto;
                 max-height: 400px;
+                max-height: 175px;
                 border: 1px solid;
                 border-radius: 13px;
             }
@@ -95,4 +96,5 @@
 
 .example-header-image {
     background-size: cover;
+    border: 1px solid;
 }
