@@ -11,23 +11,9 @@ import { RowComponent } from "../../components/list-view/template/row/row.compon
 import { NameRowComponent } from "../../components/list-view/template/name-row/name-row.component";
 import { ColorPipe } from "../../pipes/color.pipe";
 import { IsEmptyPipe } from "../../pipes/is-empty.pipe";
+import { DetailsCardComponent } from "../../components/details-card/details-card.component";
 
 
-interface Order {
-  id: number;
-  customer: string;
-  date: string;
-  amount: number;
-  status: string;
-}
-interface Location {
-  id: number;
-  customer: string;
-  date: string;
-  amount: number;
-  status: string;
-  status2: string;
-}
 
 @Component({
   selector: 'app-details',
@@ -37,7 +23,8 @@ interface Location {
     CommonModule,
     RowComponent,
     NameRowComponent,
-    ColorPipe,IsEmptyPipe
+    ColorPipe,IsEmptyPipe,
+    DetailsCardComponent
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']

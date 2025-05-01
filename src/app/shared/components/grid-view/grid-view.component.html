@@ -1,7 +1,5 @@
-<section class="grid-view-container" 
-[class.selected]="isSelected(character)"
-(click)="selectedRow(character)">
-    
+<section class="grid-view-container" [class.selected]="isSelected(character)" (click)="selectedRow(character)">
+
     <article class="card">
         <div class="pic">
             <img src={{character.image}} alt="Baby Wizard">
@@ -12,26 +10,36 @@
                     <h2>{{character.id}}. {{character.name}}</h2>
                 </span>
                 <span class="status">
-                   <div class="status-indicator" [style.background]="character.status | color:'status'"></div> 
-                   <span [style.color]="character.status | color:'status'">{{character.status}}</span>
+                    <div class="status-indicator" [style.background]="character.status | color:'status'"></div>
+                    <span [style.color]="character.status | color:'status'">{{character.status}}</span>
                 </span>
             </div>
 
             <div class="section">
-                <span class="text-gray">Last known location:</span>
-                <a class="">Earth (Replacement Dimension)</a>
+                <span class="text-gray">Gender:</span>
+                <span>{{character.gender}}</span>
             </div>
             <div class="section">
-                <span class="text-gray">First seen in:</span>
-                <a class="">Total Rickall</a>
+                <span class="text-gray">Species:</span>
+                <span>{{character.species}}</span>
             </div>
+            <div class="section">
+                <span class="text-gray">Type:</span>
+                <span [style.color]="character['type'] | color:'type'">
+                    {{character.type | isEmpty:character['type']}}
+                </span>
+            </div>
+            <!-- <div class="section">
+                <ng-content origin></ng-content>
+                <ng-content location></ng-content>
+            </div> -->
         </div>
+
+
 
     </article>
 
-    <!-- <div class="selected-indicator" *ngIf="isSelected(character)">
-        <mat-icon class="checkmark">check_circle</mat-icon>
-      </div> -->
+
     @if(isSelected(character)){
     <section class="selected-container">
         <mat-icon>
@@ -39,5 +47,7 @@
         </mat-icon>
     </section>
     }
+
+
 
 </section>

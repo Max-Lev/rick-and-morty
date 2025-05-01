@@ -68,7 +68,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   layoutSelectionService = inject(LayoutSelectionService);
   layout = computed(() => this.layoutSelectionService.getLayoutType());
-
+  
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
@@ -77,6 +77,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       // console.log('currentPageSignal$ ', this.currentPageSignal$())
       // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
       // console.log(this.layoutSelectionService.getLayoutType())
+      // console.log(this.layout)
     });
 
   }
@@ -109,8 +110,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       if (!viewportSize) return;
       const { end, total } = viewportSize;
 
-      console.log('viewportSize ', viewportSize)
-      console.log('end, total ', end, total)
+      // console.log('viewportSize ', viewportSize)
+      // console.log('end, total ', end, total)
 
       this.setItemSize(index);
 

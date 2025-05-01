@@ -2,14 +2,16 @@ import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { Character } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
 import { MatIcon } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
 import { ColorPipe } from '../../pipes/color.pipe';
+import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
+import { IDetailsResponse } from '../../models/details.model';
 
 @Component({
   selector: 'app-grid-view',
   imports: [
     MatIcon,
-    ColorPipe
+    ColorPipe,
+    IsEmptyPipe
 
   ],
   standalone: true,
@@ -17,35 +19,21 @@ import { ColorPipe } from '../../pipes/color.pipe';
   styleUrl: './grid-view.component.scss'
 })
 export class GridViewComponent implements OnChanges {
-  ngOnChanges(changes: SimpleChanges): void {
 
-  }
   @Input() character!: Character;
   selectionService = inject(SelectionService);
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes)
+    console.log(this.character)
+  }
+
   selectedRow = (row: Character): void => {
-    console.log(row)
     this.selectionService.toggleRow(row);
   }
 
-  // isSelected(row: Character): boolean {
-  //   const selectedRow = this.selectionService.getSelectedRows();
-  //   const selectedList: Character[] = Array.from(selectedRow.values());
 
-  //   const selected = selectedList.some((c) => {
-  //     if (c.id === row.id) {
-  //       row.selected = true;
-  //       // console.log(selectedRowa)
-  //       // console.log(row)
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   });
-  //   return selected;
-  // }
   isSelected(row: Character): boolean {
-    console.log(this.selectionService.getSelectedRows())
     return this.selectionService.getSelectedRows().has(+row.id);
   }
 

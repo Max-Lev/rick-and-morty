@@ -1,7 +1,7 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { LAYOUT_TYPE_ENUM } from '../models/status.enum';
 
-type LayoutSize = {type: string;};
+type LayoutSize = { type: string; };
 
 @Injectable({
   providedIn: 'root'
@@ -23,23 +23,23 @@ export class LayoutSelectionService {
   ];
   activeLayout = signal(0);
 
-  constructor() {}
+  constructor() { }
 
   setLayoutType(type: string): void {
     this.layoutType.set({ type });
-    
+
   }
 
   get getLayoutType(): Signal<LayoutSize> {
     return this.layoutType;
   }
-  
 
-  cycleLayout():string {
+
+  cycleLayout(): { type: LAYOUT_TYPE_ENUM; icon: string; } {
     const index = (this.activeLayout() + 1) % this.layoutsOptions.length;
     this.activeLayout.set(index);
     this.setLayoutType(this.layoutsOptions[this.activeLayout()].type);
-    return this.layoutsOptions[this.activeLayout()].icon;
+    return this.layoutsOptions[this.activeLayout()];
   }
 
 

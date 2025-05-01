@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { LayoutSelectionService } from '../../../shared/providers/layout-selection.service';
 import { LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { single } from 'rxjs';
+import { UpperCasePipe } from '@angular/common';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -25,6 +26,7 @@ import { single } from 'rxjs';
     MatBadgeModule,
     MatTooltipModule,
     RouterModule,
+    UpperCasePipe
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
@@ -48,13 +50,14 @@ export class ToolbarComponent {
   router = inject(Router);
 
   layoutSelectionService = inject(LayoutSelectionService);
-  cycleLayout$ = signal<string>(this.layoutSelectionService.layoutsOptions[0].icon);
+  // initialIcon = this.layoutSelectionService.layoutsOptions[0].icon;
+  layoutIcon = signal<{ type: LAYOUT_TYPE_ENUM; icon: string; }>({ type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop' });
 
   constructor() {
     effect(() => {
-      console.log(this.selectionService.selectedRows())
-      console.log(this.layoutSelectionService.layoutsOptions[0])
-      console.log(this.cycleLayout$())
+      // console.log(this.selectionService.selectedRows())
+      // console.log(this.layoutSelectionService.layoutsOptions[0])
+      // console.log(this.layoutIcon())
       // console.log(this.selectedView())
     });
     // setTimeout(() => {
@@ -79,12 +82,11 @@ export class ToolbarComponent {
     this.router.navigateByUrl('details', { state: { selectedIDs } });
   }
 
-  
+
   cycleLayout() {
-    const icon =  this.layoutSelectionService.cycleLayout();
-    console.log(icon)
-    this.cycleLayout$.set(icon);
+    const layout: { type: LAYOUT_TYPE_ENUM; icon: string; } = this.layoutSelectionService.cycleLayout();
+    this.layoutIcon.set(layout);
   }
-  
+
 
 }

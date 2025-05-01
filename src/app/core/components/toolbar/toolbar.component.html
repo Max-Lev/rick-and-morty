@@ -45,8 +45,8 @@
 
     <span class="spacer"></span>
 
-    <button (click)="cycleLayout()" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
-        <mat-icon>{{cycleLayout$()}}</mat-icon>
+    <button (click)="cycleLayout()" mat-icon-button class="example-icon" matTooltip="{{layoutIcon().type | uppercase}} VIEW">
+        <mat-icon>{{layoutIcon().icon}}</mat-icon>
     </button>
 
 
