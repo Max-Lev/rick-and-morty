@@ -83,10 +83,11 @@
             <tr mat-row *matRowDef="let row; columns: originColumns;"></tr>
           </table>
 
-          <h3 class="sub-title">Episodes</h3>
-          <table mat-table [dataSource]="element.episodes" class="inner-table sub-table">
+          <h3 class="sub-title">Episodes ({{element.episodes.length}})</h3>
+          <!-- <table mat-table [dataSource]="element.episodes" class="inner-table sub-table"> -->
+          <table mat-table [dataSource]="episodeDataSources[element.character.id]" class="inner-table sub-table">
             <ng-container matColumnDef="episode">
-              <th mat-header-cell *matHeaderCellDef> Episode </th>
+              <th mat-header-cell *matHeaderCellDef> Episode</th>
               <td mat-cell *matCellDef="let ep"> {{ep.episode}} </td>
             </ng-container>
 
@@ -95,9 +96,12 @@
               <td mat-cell *matCellDef="let ep"> {{ep.name}} </td>
             </ng-container>
 
+            <!-- <tr mat-header-row *matHeaderRowDef="episodeColumns;sticky: true"></tr> -->
             <tr mat-header-row *matHeaderRowDef="episodeColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: episodeColumns;"></tr>
           </table>
+          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+          </mat-paginator>
 
         </div>
         }
@@ -114,12 +118,9 @@
 
 </table>
 }@else{
-<ng-container>
-  <!-- [ngClass]="layout().type" -->
-  <section class="details-card-grid">
-    @for (character of charactersDetails; track character.character.id) {
-    <app-details-card [character]="character" [ngClass]="layout().type"></app-details-card>
-    }
-  </section>
-</ng-container>
+<section class="details-card-grid">
+  @for (character of charactersDetails; track character.character.id) {
+  <app-details-card [character]="character" [ngClass]="layout().type"></app-details-card>
+  }
+</section>
 }
