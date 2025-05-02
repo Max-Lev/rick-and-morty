@@ -8,9 +8,15 @@ export interface ICharacterColumns {
   id: number | string;
   name: string;
   status: any;
-  species: any;
+  species: string;
   type: any;
-  gender: any;
+  gender: string;
+  locationDimension?: string;
+  locationName?: string;
+  locationId?: number;
+  originDimension?: string;
+  originId?: string;
+  originName?: string;
 }
 
 export interface Character {
@@ -21,7 +27,7 @@ export interface Character {
   gender: string;
   image: string;
   selected?: boolean;
-  type:string;
+  type: string;
 }
 
 export interface CharacterQueryResponseDTO {
@@ -45,7 +51,8 @@ export interface IPagination {
   nextPage: number | null;
   filterPayload?: IFilterPayload
 }
-export interface IFilterPayload{
-  name: string, 
+export interface IFilterPayload {
+  name: string,
   status: string
 }
+

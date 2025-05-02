@@ -51,3 +51,23 @@ export interface IFormateDetails {
     origin: IOrigin;
     episodes: IEpisode[];
 }
+
+export type DetailsCharacterList = {
+    character: {
+    locationDimension: string;
+      locationName: string;
+      locationId: string;
+      originId: string;
+      originName: string;
+      originDimension: string;
+      id: string | number;
+      name: string;
+      status: string;
+      species: string;
+      gender: string;
+      image: string;
+      selected?: boolean;
+      type: string;
+    },
+    episodes: IEpisode[];
+  }

@@ -25,7 +25,7 @@ export class DetailsCardComponent {
 
   locationColumns = ['id', 'name', 'dimension'];
   originColumns = ['id', 'name', 'dimension'];
-  episodeColumns = ['episode', 'name'];
+  episodeColumns = ['id','episode', 'name'];
 
   character = input.required<IDetail>();
 

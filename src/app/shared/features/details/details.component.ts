@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, computed, effect, inject, Input, OnInit, QueryList, signal, ViewChild, ViewChildren } from "@angular/core";
 import { GetDetailsService } from "../../../core/providers/get-details.service";
-import { IDetail, IDetailsResponse } from "../../models/details.model";
+import { DetailsCharacterList, IDetail, IDetailsResponse } from "../../models/details.model";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatExpansionModule } from '@angular/material/expansion';
-import { CommonModule } from "@angular/common";
+import { CommonModule, NgSwitch, NgSwitchCase } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
-import { COLUMNS } from "../characters/columns.config";
+import { COLUMNS, DETAILS_COLUMNS } from "../characters/columns.config";
 import { Character, ColumnConfig, ICharacterColumns } from "../../models/character.model";
 import { RowComponent } from "../../components/list-view/template/row/row.component";
 import { NameRowComponent } from "../../components/list-view/template/name-row/name-row.component";
@@ -27,7 +27,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     NameRowComponent,
     ColorPipe, IsEmptyPipe,
     DetailsCardComponent,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgSwitchCase
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss']
@@ -35,17 +36,17 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 export class DetailsComponent implements OnInit, AfterViewInit {
 
   @Input() charactersDetails!: IDetailsResponse;
-  getDetailsService = inject(GetDetailsService);
+  // getDetailsService = inject(GetDetailsService);
 
   details$ = computed(() => this.charactersDetails);
 
   locationColumns = ['id', 'name', 'dimension'];
   originColumns = ['id', 'name', 'dimension'];
-  episodeColumns = ['episode', 'name'];
+  episodeColumns = ['id','episode', 'name'];
 
   expandedRows: { [key: number]: boolean } = {};
 
-  columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
+  columns: ColumnConfig<ICharacterColumns>[] = DETAILS_COLUMNS;
   displayedColumns = this.columns.map(column => column.columnDef);
 
   layoutSelectionService = inject(LayoutSelectionService);
@@ -54,24 +55,41 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   selectionService = inject(SelectionService);
   selectedViewSignal$ = this.selectionService.selectedViewSignal$;
 
-  dataSource = new MatTableDataSource<{ episode: string, name: string }>();
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   episodeDataSources: { [id: number]: MatTableDataSource<any> } = {};
   paginators: { [id: number]: MatPaginator } = {};
   @ViewChildren('paginator') paginatorsViewChildren!: QueryList<MatPaginator>;
-
+  
+  combineDataList = signal<DetailsCharacterList[]>([]);
   ngOnInit(): void {
     this.expandAllSubTables();
-   this.setEpisodsodeDataSources();
-    console.log(this.episodeDataSources);
-    this.dataSource.paginator = this.paginator;
-    console.log(this.dataSource.paginator, this.paginator);
+    this.setEpisodsodeDataSources();
+    this.formatCharacterData();
   }
 
   ngAfterViewInit() {
-     this.bindPaginators();
+    this.bindPaginators();
   }
+
+  formatCharacterData() {
+    const combinedData = this.charactersDetails.map(({ character, location, origin, episodes }) => ({
+      character: {
+        ...character,
+        locationId: location?.id ?? null,
+        locationName: location?.name,
+        locationDimension: location?.dimension,
+        originId: origin?.id ?? null,
+        originName: origin?.name,
+        originDimension: origin?.dimension,
+        // originName: origin?.name ?? 'unknown',
+        // originDimension: origin?.dimension ?? 'unknown',
+      },
+      episodes,
+    }));
+    console.log(combinedData);
+    this.combineDataList.set(combinedData);
+    return combinedData;
+  }
+
   setEpisodsodeDataSources() {
     for (const character of this.charactersDetails) {
       const id = +character.character.id;
@@ -84,7 +102,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         const id = +this.charactersDetails[index].character.id;
         this.episodeDataSources[id].paginator = paginator;
       });
-    });  
+    });
   }
 
   expandAllSubTables() {
