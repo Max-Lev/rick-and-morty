@@ -6,26 +6,32 @@
         </div>
         <div class="card-content lighter">
             <div class="section">
-                <span>
-                    <h2>{{character.id}}. {{character.name}}</h2>
-                </span>
-                <span class="status">
-                    <div class="status-indicator" [style.background]="character.status | color:'status'"></div>
-                    <span [style.color]="character.status | color:'status'">{{character.status}}</span>
+                <span class="long">
+                    <h2 [title]="character.name">{{character.id}}. {{character.name}}</h2>
                 </span>
             </div>
 
             <div class="section">
-                <span class="text-gray">Gender:</span>
-                <span>{{character.gender}}</span>
+                <span class="text-gray">Status: </span>
+                <span [style.marginTop]="(character.status==='Alive' || character.status==='Dead') ? '-5px' :'0px'"
+                    [style.color]="character.status | color"
+                    [innerHTML]="character.status | isEmpty:character.status:'status'"></span>
+                <!-- <div class="status-indicator" [style.background]="character.status | color:'status'"></div> -->
             </div>
+
+            <div class="section">
+                <span class="text-gray">Gender:</span>
+                <span [style.color]="character['gender'] | color:'gender'">{{character.gender}}</span>
+            </div>
+
             <div class="section">
                 <span class="text-gray">Species:</span>
-                <span>{{character.species}}</span>
+                <span [style.color]="character['species'] | color:'species'">{{character.species}}</span>
             </div>
+
             <div class="section">
                 <span class="text-gray">Type:</span>
-                <span [style.color]="character['type'] | color:'type'">
+                <span class="long" [style.color]="character['type'] | color:'type'">
                     {{character.type | isEmpty:character['type']}}
                 </span>
             </div>
@@ -35,10 +41,7 @@
             </div> -->
         </div>
 
-
-
     </article>
-
 
     @if(isSelected(character)){
     <section class="selected-container">
@@ -47,7 +50,5 @@
         </mat-icon>
     </section>
     }
-
-
 
 </section>

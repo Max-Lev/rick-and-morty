@@ -1,9 +1,8 @@
 <mat-card class="example-card" appearance="outlined">
     <mat-card-header>
-        <div 
-        [style.border-color]="character().character['status'] | color"
-        mat-card-avatar [ngStyle]="{'background-image': 'url(' + character().character.image + ')'}"
-            class="example-header-image"></div>
+        <div [style.border-color]="character().character['status'] | color" mat-card-avatar
+            [ngStyle]="{'background-image': 'url(' + character().character.image + ')'}" class="example-header-image">
+        </div>
 
         <mat-card-title>
             <div class="id">({{character().character.id}})</div>
@@ -12,8 +11,16 @@
 
         <mat-card-subtitle>
             <span>Status: </span>
-            <span [style.color]="character().character.status | color:'status'">{{ character().character.status
-                }}</span>
+            <!-- <span [style.color]="character().character.status | color:'status'">
+                {{ character().character.status}}
+            </span> -->
+            <!-- <span [style.color]="character().character.status | color:'status'">
+                {{ character().character.status}}
+            </span> -->
+
+            <span [style.color]="character().character.status | color" [innerHTML]="character().character.status | 
+          isEmpty:character().character.status:'status'"></span>
+
         </mat-card-subtitle>
         <mat-card-subtitle>
             <span>Species: </span>
@@ -40,24 +47,31 @@
 
         <mat-accordion multi="true">
             <mat-expansion-panel [expanded]="true">
-            <!-- <mat-expansion-panel  (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
+                <!-- <mat-expansion-panel  (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
                     <mat-panel-title> Location </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <table mat-table [dataSource]="[character().location]" class="inner-table sub-table">
+                <table mat-table [dataSource]="[character()]" class="inner-table sub-table">
                     <ng-container matColumnDef="id">
                         <th mat-header-cell *matHeaderCellDef> ID. </th>
-                        <td mat-cell *matCellDef="let loc"> {{loc.id}} </td>
+                        <td mat-cell *matCellDef="let loc"> {{loc.character.locationId |
+                            isEmpty:loc.character.locationId}}
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef> Name </th>
-                        <td mat-cell *matCellDef="let loc"> {{loc.name}} </td>
+                        <td mat-cell *matCellDef="let loc">
+                            {{loc.character.lcationName | isEmpty:loc.character.lcationName}}
+                        </td>
                     </ng-container>
 
                     <ng-container matColumnDef="dimension">
                         <th mat-header-cell *matHeaderCellDef> Dimension </th>
-                        <td mat-cell *matCellDef="let loc"> {{loc.dimension}} </td>
+                        <td mat-cell *matCellDef="let loc"
+                            [style.color]="loc.character['locationDimension'] | color:'locationDimension'">
+                            {{loc.character['locationDimension'] | isEmpty:loc.character['locationDimension']}}
+                        </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="locationColumns"></tr>
@@ -65,57 +79,64 @@
                 </table>
             </mat-expansion-panel>
 
-            
+
             <mat-expansion-panel [expanded]="true">
-            <!-- <mat-expansion-panel [expanded]="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
+                <!-- <mat-expansion-panel [expanded]="true" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
                     <mat-panel-title> Origin</mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <table mat-table [dataSource]="[character().origin]" class="inner-table sub-table">
+                <table mat-table [dataSource]="[character()]" class="inner-table sub-table">
                     <ng-container matColumnDef="id">
-                      <th mat-header-cell *matHeaderCellDef> ID. </th>
-                      <td mat-cell *matCellDef="let origin"> {{origin.id}} </td>
+                        <th mat-header-cell *matHeaderCellDef> ID. </th>
+                        <td mat-cell *matCellDef="let origin"> {{origin.character.originId |
+                            isEmpty:origin.character.originId}} </td>
                     </ng-container>
                     <ng-container matColumnDef="name">
-                      <th mat-header-cell *matHeaderCellDef> Name </th>
-                      <td mat-cell *matCellDef="let origin"> {{origin.name}} </td>
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let origin"
+                            [style.color]="origin.character['originName'] | color:'originName'">
+                            {{origin.character.originName | isEmpty:origin.character.originName}}
+                        </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="dimension">
-                      <th mat-header-cell *matHeaderCellDef> Dimension </th>
-                      <td mat-cell *matCellDef="let origin"> {{origin.dimension}} </td>
+                        <th mat-header-cell *matHeaderCellDef> Dimension </th>
+                        <td mat-cell *matCellDef="let origin"
+                            [style.color]="origin.character['originDimension'] | color:'originDimension'">
+                            {{origin.character.originDimension | isEmpty:origin.character.originDimension}}
+                        </td>
                     </ng-container>
-        
+
                     <tr mat-header-row *matHeaderRowDef="originColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: originColumns;"></tr>
-                  </table>
+                </table>
             </mat-expansion-panel>
 
             <mat-expansion-panel [expanded]="true">
-            <!-- <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
+                <!-- <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> -->
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Episods  ({{character().episodes.length}})</mat-panel-title>
+                    <mat-panel-title> Episods ({{character().episodes.length}})</mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <table mat-table [dataSource]="character().episodes" class="inner-table sub-table">
                     <ng-container matColumnDef="id">
-                      <th mat-header-cell *matHeaderCellDef> Episode ID. </th>
-                      <td mat-cell *matCellDef="let ep"> {{ep.id}} </td>
+                        <th mat-header-cell *matHeaderCellDef style="white-space: nowrap;">ID. </th>
+                        <td mat-cell *matCellDef="let ep"> {{ep.id}} </td>
                     </ng-container>
                     <ng-container matColumnDef="episode">
-                      <th mat-header-cell *matHeaderCellDef> Episode </th>
-                      <td mat-cell *matCellDef="let ep"> {{ep.episode}} </td>
+                        <th mat-header-cell *matHeaderCellDef> Episode </th>
+                        <td mat-cell *matCellDef="let ep"> {{ep.episode}} </td>
                     </ng-container>
-        
+
                     <ng-container matColumnDef="name">
-                      <th mat-header-cell *matHeaderCellDef> Name </th>
-                      <td mat-cell *matCellDef="let ep"> {{ep.name}} </td>
+                        <th mat-header-cell *matHeaderCellDef> Name </th>
+                        <td mat-cell *matCellDef="let ep"> {{ep.name}} </td>
                     </ng-container>
-        
+
                     <tr mat-header-row *matHeaderRowDef="episodeColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: episodeColumns;"></tr>
-                  </table>
+                </table>
             </mat-expansion-panel>
 
         </mat-accordion>

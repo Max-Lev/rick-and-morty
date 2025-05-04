@@ -1,5 +1,5 @@
 @if(selectedViewSignal$()==='list'){
-<!-- <table mat-table [dataSource]="charactersDetails" multiTemplateDataRows class="mat-elevation-z8"> -->
+
 <table mat-table [dataSource]="combineDataList()" multiTemplateDataRows class="mat-elevation-z8">
   <!-- Character Columns -->
   @for (column of columns; track column) {
@@ -22,8 +22,6 @@
 
         <!-- Status Column -->
         <ng-container *ngSwitchCase="'status'">
-          <!-- <div [style.color]="row.character['status'] | color">{{ row.character.status | 
-          isEmpty:row.character['status']:'status' }}</div> -->
           <div [style.color]="row.character['status'] | color" [innerHTML]="row.character.status | 
           isEmpty:row.character['status']:'status'"></div>
         </ng-container>
@@ -48,7 +46,8 @@
 
         <!-- Location Name -->
         <ng-container *ngSwitchCase="'locationName'">
-          <div>{{ row.character.locationName }}</div>
+          <div [style.color]="row.character['locationName'] | color:'locationName'">
+            {{ row.character.locationName | isEmpty:row.character['locationName'] }}</div>
         </ng-container>
 
         <!-- Location Dimension -->
@@ -59,12 +58,14 @@
 
         <!-- Origin Name -->
         <ng-container *ngSwitchCase="'originName'">
-          <div>{{ row.character.originName }}</div>
+          <div [style.color]="row.character['originName'] | color:'originName'">
+            {{ row.character.originName | isEmpty:row.character['originName'] }}</div>
         </ng-container>
 
         <!-- Origin Dimension -->
         <ng-container *ngSwitchCase="'originDimension'">
-          <div>{{ row.character.originDimension }}</div>
+          <div [style.color]="row.character['originDimension'] | color:'originDimension'">
+            {{ row.character.originDimension | isEmpty:row.character['originDimension']:'originDimension' }}</div>
         </ng-container>
 
         <!-- Default -->
@@ -73,38 +74,6 @@
         </ng-container>
 
       </ng-container>
-
-      <!-- @if(column.columnDef==='id' && !isSelected(row)) {
-      {{ row.character?.id }}
-      } @else if(column.columnDef==='id' && isSelected(row)) {
-      <div class="selected-id">({{ row.character?.id }})</div>
-      } @else if (column.columnDef === 'status') {
-      <div [style.color]="row.character['status'] | color">{{ row.character.status }}</div>
-      } @else if (column.columnDef === 'species') {
-      <div [style.color]="row.character['species'] | color">{{ row.character.species }}</div>
-      } @else if (column.columnDef === 'type') {
-      <div [style.color]="row.character['type'] | color:'type'">{{ row.character.type | isEmpty:row.character['type'] }}
-      </div>
-      } @else if (column.columnDef === 'gender') {
-      <app-row [column]="column" [row]="row.character"
-        [color]="row.character.gender | color:row.character.gender"></app-row>
-      }
-      @else if (column.columnDef === 'locationName') {
-        <div>{{ row.character.locationName }}</div>
-      } 
-      @else if (column.columnDef === 'locationDimension') {
-        <div>{{ row.character.locationDimension }}</div>
-      } 
-      @else if (column.columnDef === 'originName') {
-        <div>{{ row.character.originName }}</div>
-      } 
-      @else if (column.columnDef === 'originDimension') {
-        <div>{{ row.character.originDimension }}</div>
-      } 
-      
-      @else {
-      <name-row [column]="column" [row]="row.character"></name-row>
-      } -->
 
     </td>
 
@@ -168,7 +137,7 @@
               <td mat-cell *matCellDef="let ep"> {{ep.id}} </td>
             </ng-container>
             <ng-container matColumnDef="episode">
-              <th mat-header-cell *matHeaderCellDef> Episode</th>
+              <th mat-header-cell *matHeaderCellDef>Episode</th>
               <td mat-cell *matCellDef="let ep"> {{ep.episode}} </td>
             </ng-container>
 
@@ -192,15 +161,17 @@
 
   <!-- Main Rows and Expanded Detail Rows -->
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
   <tr mat-row *matRowDef="let element; columns: displayedColumns;" (click)="toggle(element)"></tr>
-  <tr mat-row *matRowDef="let element; columns: ['expandedDetail']; when: isExpandedRow">
-  </tr>
+  <tr mat-row *matRowDef="let element; columns: ['expandedDetail']; when: isExpandedRow"
+  [class.hidden-row]="!expandedRows[element.character.id]">
+</tr>
 
 </table>
 }@else{
 <section class="details-card-grid">
-  @for (character of charactersDetails; track character.character.id) {
+  <!-- @for (character of charactersDetails; track character.character.id) { -->
+  @for (character of combineDataList(); track character.character.id) {
   <app-details-card [character]="character" [ngClass]="layout().type"></app-details-card>
   }
 </section>

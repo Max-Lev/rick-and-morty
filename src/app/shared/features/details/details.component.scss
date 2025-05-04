@@ -54,3 +54,11 @@
     flex: 0 0 100%;
     max-width: 100%;
 }
+
+.hidden-row {
+    height: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    visibility: collapse; /* Or display: none, if layout allows */
+  }
+  

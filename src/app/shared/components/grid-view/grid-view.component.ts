@@ -5,14 +5,15 @@ import { MatIcon } from '@angular/material/icon';
 import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { IDetailsResponse } from '../../models/details.model';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-grid-view',
   imports: [
     MatIcon,
     ColorPipe,
-    IsEmptyPipe
-
+    IsEmptyPipe,
+    NgStyle
   ],
   standalone: true,
   templateUrl: './grid-view.component.html',
@@ -24,8 +25,7 @@ export class GridViewComponent implements OnChanges {
   selectionService = inject(SelectionService);
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-    console.log(this.character)
+    
   }
 
   selectedRow = (row: Character): void => {

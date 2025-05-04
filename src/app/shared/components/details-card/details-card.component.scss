@@ -23,6 +23,7 @@
         }
         mat-card-content,
         mat-card-header {
+            min-height: 160px;
             .title {
                 display: flex;
                 align-items: center;
@@ -89,6 +90,7 @@
                 .mat-expansion-panel-body{
                     overflow-y: auto;
                     max-height: 160px;
+                    min-height: 162px;
                     table{
                         thead,tbody{
                             tr{

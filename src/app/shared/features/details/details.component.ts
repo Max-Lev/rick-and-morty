@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, effect, inject, Input, OnInit, QueryList, signal, ViewChild, ViewChildren } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, Input, OnInit, QueryList, signal, ViewChild, ViewChildren } from "@angular/core";
 import { GetDetailsService } from "../../../core/providers/get-details.service";
 import { DetailsCharacterList, IDetail, IDetailsResponse } from "../../models/details.model";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
@@ -31,7 +31,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     NgSwitchCase
   ],
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+  styleUrls: ['./details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailsComponent implements OnInit, AfterViewInit {
 
@@ -60,6 +61,17 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   @ViewChildren('paginator') paginatorsViewChildren!: QueryList<MatPaginator>;
   
   combineDataList = signal<DetailsCharacterList[]>([]);
+
+  cdr = inject(ChangeDetectorRef);
+
+  constructor() { 
+    effect(() => {
+      if (this.selectedViewSignal$() === 'list') {
+        this.bindPaginators();
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.expandAllSubTables();
     this.setEpisodsodeDataSources();
@@ -67,7 +79,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.bindPaginators();
+    // this.bindPaginators();
+    this.cdr.detectChanges();
   }
 
   formatCharacterData() {
@@ -79,14 +92,12 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         locationDimension: location?.dimension,
         originId: origin?.id ?? null,
         originName: origin?.name,
-        originDimension: origin?.dimension,
-        // originName: origin?.name ?? 'unknown',
-        // originDimension: origin?.dimension ?? 'unknown',
+        originDimension: origin?.dimension
       },
       episodes,
     }));
-    console.log(combinedData);
     this.combineDataList.set(combinedData);
+    console.log('combinedData',this.combineDataList());
     return combinedData;
   }
 
