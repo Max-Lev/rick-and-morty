@@ -7,7 +7,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 })
 export class SelectionService {
 
-  selectedRows = signal<Map<number,Character>>(new Map());
+  selectedRows = signal<Map<number, Character>>(new Map());
 
   selectedRowsIDs = computed(() => Array.from(this.selectedRows().keys()));
 
@@ -40,7 +40,7 @@ export class SelectionService {
   toggleRow(row: Character) {
     this.selectedRows.update((prevMap) => {
       const newMap = new Map(prevMap); // 🔁 new reference
-  
+
       if (newMap.has(+row.id)) {
         row.selected = false;
         newMap.delete(+row.id);
@@ -48,10 +48,10 @@ export class SelectionService {
         row.selected = true;
         newMap.set(+row.id, row);
       }
-  
+
       return newMap; // ✅ signals detect change
     });
-  
+    console.log(this.selectedRows());
   }
 
   clearSelection() {

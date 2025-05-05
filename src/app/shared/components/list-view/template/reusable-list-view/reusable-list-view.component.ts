@@ -23,7 +23,7 @@ import { GenderPipe } from '../../../../pipes/gender.pipe';
 })
 export class ReusableListViewComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
+    // console.log(changes)
   }
   
   // @Input({ required: true }) columns:ColumnConfig<ICharacterColumns>[] =COLUMNS;

@@ -17,7 +17,7 @@ export class CharactersService {
   constructor() { }
 
   getCharacters(page: number,filter?:{name:string,status:string}): Observable<{ characters: Character[]; nextPage: number | null }> {
-    console.log('getCharacters: ',page,filter?.name,filter?.status);
+    // console.log('getCharacters: ',page,filter?.name,filter?.status);
     return this.apollo
       .query<CharacterQueryResponseDTO>({
         query: GET_CHARACTERS,

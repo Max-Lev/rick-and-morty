@@ -173,7 +173,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.isLoadingSignal$.set(true);
       return this.charactersService.getCharacters(page, filter).pipe(
         tap((response: ICharactersResponse) => {
-          console.log('charactersResponse', response)
+          // console.log('charactersResponse', response)
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
           this.isLoadingSignal$.set(false);
@@ -212,7 +212,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
 
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
-        console.log('loadCharacters', response)
+        // console.log('loadCharacters', response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
         this.isLoadingSignal$.set(false);

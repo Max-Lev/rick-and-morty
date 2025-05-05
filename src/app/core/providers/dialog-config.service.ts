@@ -39,7 +39,7 @@ export class DialogConfigService implements OnDestroy {
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$))
       .subscribe((dialogValue: { action: string, query: { name: string, status: string } }) => {
         if (dialogValue?.action === 'search') {
-          console.log('search: ', dialogValue);
+          // console.log('search: ', dialogValue);
           this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
         } else {
           return;

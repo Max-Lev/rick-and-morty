@@ -58,9 +58,9 @@ export class FilterDialogComponent implements AfterViewInit {
   }
   ngAfterViewInit(): void {
 
-    this.form.valueChanges.subscribe(val => {
-      console.log('val', val)
-    });
+    // this.form.valueChanges.subscribe(val => {
+    //   console.log('val', val)
+    // });
 
   }
 
@@ -71,7 +71,7 @@ export class FilterDialogComponent implements AfterViewInit {
   }
 
   onSubmit(form: FormGroup) {
-    console.log(form.value);
+    // console.log(form.value);
   }
 
 }

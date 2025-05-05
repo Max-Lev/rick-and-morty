@@ -41,7 +41,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   @Input() charactersDetails!: IDetailsResponse;
   // getDetailsService = inject(GetDetailsService);
 
-  details$ = computed(() => this.charactersDetails);
+  // details$ = computed(() => this.charactersDetails);
 
   locationColumns = ['id', 'name', 'dimension'];
   originColumns = ['id', 'name', 'dimension'];
@@ -86,6 +86,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   formatCharacterData() {
+    console.log(this.charactersDetails)
     const combinedData = this.charactersDetails.map(({ character, location, origin, episodes }) => ({
       character: {
         ...character,
@@ -99,7 +100,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       episodes,
     }));
     this.combineDataList.set(combinedData);
-    console.log('combinedData',this.combineDataList());
+    // console.log('combinedData',this.combineDataList());
     return combinedData;
   }
 

@@ -8,6 +8,7 @@ export const detailsResolver: ResolveFn<IDetailsResponse> = () => {
   const router = inject(Router);
   const nav = router.getCurrentNavigation();
   const selectedIDs:string[] = nav?.extras.state?.['selectedIDs'] ?? [];
+  
   const getDetailsService = inject(GetDetailsService).getDetailsQuery(selectedIDs);
 
   return getDetailsService;

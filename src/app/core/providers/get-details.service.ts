@@ -13,16 +13,26 @@ export class GetDetailsService {
 
   private apollo = inject(Apollo);
 
-  getDetailsQuery(charactedIDs: string[]): Observable<IDetailsResponse> {
+  getDetailsQuery(characterIDs: string[]): Observable<IDetailsResponse> {
+    console.log(characterIDs)
     return this.apollo.query<IDetailsResponseDTO>({
       query: GET_DETAILS,
       variables: {
-        ids: charactedIDs
+        ids: characterIDs
       },
       fetchPolicy: 'network-only'
     }).pipe(
       map((response: ApolloQueryResult<IDetailsResponseDTO>) => {
-        return response.data.charactersByIds.map((character: RawCharacterDTO) => this.formatDetails(character))
+        
+        const characters = response.data.charactersByIds;
+        // return response.data.charactersByIds.map((character: RawCharacterDTO) => this.formatDetails(character))
+
+        // 1. Create a Map from ID to character
+        const characterMap = new Map(characters.map((char: RawCharacterDTO) => [char.id, this.formatDetails(char)]));
+
+        // 2. Return results in the order of requested IDs
+        return characterIDs.map(id => characterMap.get(`${id}`)!) as IDetailsResponse;
+
       }),
       tap((character) => console.log(character))
     );
@@ -38,5 +48,5 @@ export class GetDetailsService {
       episodes: episode
     };
   }
-  
+
 }
