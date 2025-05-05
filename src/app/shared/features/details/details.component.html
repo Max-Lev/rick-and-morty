@@ -41,7 +41,9 @@
         <!-- Gender Column -->
         <ng-container *ngSwitchCase="'gender'">
           <app-row [column]="column" [row]="row.character"
-            [color]="row.character.gender | color:row.character.gender"></app-row>
+            [color]="row.character.gender | gender:row.character.gender"></app-row>
+          <!-- <app-row [column]="column" [row]="row.character"
+            [color]="row.character.gender | color:row.character.gender"></app-row> -->
         </ng-container>
 
         <!-- Location Name -->

@@ -23,7 +23,8 @@
       } @else if (column.columnDef === 'type') {
       <div [style.color]="row['type'] | color:'type'">{{ column.cell(row) | isEmpty:row['type'] }}</div>
       } @else if (column.columnDef === 'gender') {
-      <app-row [column]="column" [row]="row" [color]="row['gender'] | color"></app-row>
+      <!-- <app-row [column]="column" [row]="row" [color]="row['gender'] | color"></app-row> -->
+      <app-row [column]="column" [row]="row" [color]="row['gender'] | gender"></app-row>
       } @else {
       <name-row [column]="column" [row]="row"></name-row>
       }

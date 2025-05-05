@@ -15,6 +15,7 @@ import { DetailsCardComponent } from "../../components/details-card/details-card
 import { LayoutSelectionService } from "../../providers/layout-selection.service";
 import { SelectionService } from "../../providers/selection.service";
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { GenderPipe } from "../../pipes/gender.pipe";
 
 
 @Component({
@@ -28,7 +29,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     ColorPipe, IsEmptyPipe,
     DetailsCardComponent,
     MatPaginatorModule,
-    NgSwitchCase
+    NgSwitchCase,
+    GenderPipe
   ],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],

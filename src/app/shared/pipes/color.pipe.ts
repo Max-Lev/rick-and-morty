@@ -4,9 +4,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({ name: 'color' })
 export class ColorPipe implements PipeTransform {
   transform(value: string, ...args: unknown[]): string | boolean {
-    // console.log(value, args);
+    
     const [arg1,arg2] = args;
-    const isIncludesHuman = !(value).includes('Human');
+    
+    const isIncludesHuman = value!=='' && value!==null && !(value).includes('Human');
     if((arg1==='locationName' || arg1==='locationDimension' || arg1==='originName' || arg1==='originDimension')
       && value!=='unknown' && value!=='' &&  value!==undefined && value!==null){
       return value = 'white';
@@ -27,9 +28,10 @@ export class ColorPipe implements PipeTransform {
         || value === null
         || value === undefined
         || value === 'unknown'
-        // || value === 'Alien' 
         || value === 'Dead' ? 'red' : 'rgb(85, 204, 68)';
     }
+
+    
 
     
 

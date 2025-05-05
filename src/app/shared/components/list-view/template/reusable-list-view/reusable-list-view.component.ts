@@ -7,6 +7,7 @@ import { ColorPipe } from '../../../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../../../pipes/is-empty.pipe';
 import { ColumnConfig, ICharacterColumns } from '../../../../models/character.model';
 import { COLUMNS } from '../../../../features/characters/columns.config';
+import { GenderPipe } from '../../../../pipes/gender.pipe';
 
 @Component({
   selector: 'app-reusable-list-view',
@@ -14,7 +15,8 @@ import { COLUMNS } from '../../../../features/characters/columns.config';
     MatColumnDef, MatHeaderCellDef, MatCellDef, NameRowComponent,
     ColorPipe,
     IsEmptyPipe,
-    RowComponent
+    RowComponent,
+    GenderPipe
   ],
   templateUrl: './reusable-list-view.component.html',
   styleUrl: './reusable-list-view.component.scss'

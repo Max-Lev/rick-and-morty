@@ -6,6 +6,7 @@ import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { IDetailsResponse } from '../../models/details.model';
 import { NgStyle } from '@angular/common';
+import { GenderPipe } from '../../pipes/gender.pipe';
 
 @Component({
   selector: 'app-grid-view',
@@ -13,7 +14,7 @@ import { NgStyle } from '@angular/common';
     MatIcon,
     ColorPipe,
     IsEmptyPipe,
-    NgStyle
+    GenderPipe
   ],
   standalone: true,
   templateUrl: './grid-view.component.html',

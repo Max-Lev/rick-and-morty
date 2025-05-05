@@ -26,7 +26,7 @@ export class IsEmptyPipe implements PipeTransform {
   transform(value: unknown, ...args: unknown[]): unknown {
 
     const [arg1, arg2] = args;
-    console.log(value, arg1, arg2)
+    
     const isDeadOrEmpty = value === '' || value === null || value === undefined || value === 'Dead';
     const isAlive = value === 'Alive' || value == 'Alive';
 

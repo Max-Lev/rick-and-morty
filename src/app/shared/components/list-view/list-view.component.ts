@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { JsonPipe } from '@angular/common';
 import { NameRowComponent } from './template/name-row/name-row.component';
 import { RowComponent } from './template/row/row.component';
+import { GenderPipe } from '../../pipes/gender.pipe';
 
 @Component({
   selector: 'app-list-view',
@@ -18,6 +19,7 @@ import { RowComponent } from './template/row/row.component';
     MatTooltipModule,
     NameRowComponent,
     RowComponent,
+    GenderPipe
   ],
   standalone: true,
   templateUrl: './list-view.component.html',

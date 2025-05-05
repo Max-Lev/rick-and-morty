@@ -7,6 +7,7 @@ import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
+import { GenderPipe } from '../../pipes/gender.pipe';
 @Component({
   selector: 'app-details-card',
   imports: [
@@ -17,7 +18,7 @@ import { MatTableModule } from '@angular/material/table';
     IsEmptyPipe,
     MatExpansionModule,
     MatTableModule,
-    JsonPipe
+    GenderPipe
   ],
   templateUrl: './details-card.component.html',
   styleUrl: './details-card.component.scss'
