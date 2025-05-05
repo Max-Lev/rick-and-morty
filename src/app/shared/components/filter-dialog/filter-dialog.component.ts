@@ -4,9 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { STATUS_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CharactersService } from '../../../core/providers/characters.service';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs';
-import { SelectionService } from '../../providers/selection.service';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
@@ -41,11 +38,11 @@ export class FilterDialogComponent implements AfterViewInit {
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
 
-  filterForm$ = signal(this.form);
+  // filterForm$ = signal(this.form);
 
-  charactersService = inject(CharactersService);
+  // charactersService = inject(CharactersService);
 
-  selectionService = inject(SelectionService);
+  // selectionService = inject(SelectionService);
 
   constructor() {
     effect(() => {

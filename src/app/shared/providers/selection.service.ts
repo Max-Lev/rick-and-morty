@@ -26,15 +26,16 @@ export class SelectionService {
   filterSignal$ = this._filterSignal;
 
   // ✅ Observable version for traditional RxJS use
+  // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
   }
 
-  getFilter(): IFilterPayload {
-    return this._filterSignal();
-  }
+  // getFilter(): IFilterPayload {
+  //   return this._filterSignal();
+  // }
 
 
   toggleRow(row: Character) {

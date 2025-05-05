@@ -2,7 +2,8 @@
     <!-- appAutoFocus -->
     <mat-label >Character name</mat-label>
     <input  (input)="onInput($event)" [value]="value" matInput placeholder="Ex. Rick">
-    @if(nameError() && form.controls['name'].touched){
+    <!-- @if(nameError() && form.controls['name'].touched){ -->
+    @if(nameError()){
         <mat-hint>{{nameError()}}</mat-hint>
         }
   

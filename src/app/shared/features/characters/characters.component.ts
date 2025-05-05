@@ -62,7 +62,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     return this.paginationSignal$().page;
   });
 
-  filterSignal$ = this.selectionService.filterSignal$;
+  // filterSignal$ = this.selectionService.filterSignal$;
 
   prevFilter = signal<IFilterPayload>({ name: '', status: '' });
 
@@ -162,7 +162,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
    * initial load & filter response
    */
   charactersResponse$ = this.selectionService.filter$.pipe(
-    debounceTime(300), // Optional debounce
+    debounceTime(250), // Optional debounce
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
     tap((filter: IFilterPayload) => {
       this.newFilterRequest(filter);

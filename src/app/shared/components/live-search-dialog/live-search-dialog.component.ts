@@ -38,8 +38,9 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   selectionService = inject(SelectionService);
 
   form = new FormGroup({
-    name: new FormControl<string>('', [Validators.minLength(3)]),
-    status: new FormControl<string | null>('')
+    // name: new FormControl<string | null>(null, [Validators.required,Validators.minLength(3)]),
+    name: new FormControl<string | null>(null, [Validators.minLength(3)]),
+    status: new FormControl<string | null>(null)
   });
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
@@ -47,19 +48,20 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   destroy$ = inject(DestroyRef);
 
   constructor() {
-    // effect(()=>{
-    // console.log(this.filterFormSignal())
+    
+    console.log(this.filterFormSignal())
     toObservable(this.filterFormSignal).pipe(
-        debounceTime(1000),
+        debounceTime(250),
         distinctUntilChanged((prev, curr) =>prev?.name === curr?.name && prev?.status === curr?.status),
         tap(() => {
           // console.log('Form validity:', this.form.valid);
         }),
         switchMap((val) => {
-          const name = val?.name ?? '';
-          const status = val?.status ?? '';
-
-          if (this.form.valid && name.length >= 3) {
+          const name = val?.name ?? null;
+          const status = val?.status ?? null;
+          console.log(this.form.valid)
+          if (this.form.valid && this.form.touched) {
+          // if (this.form.valid && name.length >= 3) {
             // console.log('Request triggered with:', { name, status });
             this.selectionService.setFilter({ name, status });
             return this.selectionService.filter$;
@@ -70,7 +72,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
         }),
         takeUntilDestroyed(this.destroy$)
       ).subscribe(res => {
-        // console.log('Request triggered with:', res);
+        console.log('Request triggered with:', res);
       })
   
   }

@@ -1,7 +1,7 @@
 import { Injectable, signal, inject } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { Observable, map, tap } from "rxjs";
-import { Character, CharacterQueryResponseDTO } from "../../shared/models/character.model";
+import { Character, CharacterQueryResponseDTO, IFilterPayload } from "../../shared/models/character.model";
 import { GET_CHARACTERS } from "../schema/characters.schema";
 
 
@@ -16,12 +16,12 @@ export class CharactersService {
 
   constructor() { }
 
-  getCharacters(page: number,filter?:{name:string,status:string}): Observable<{ characters: Character[]; nextPage: number | null }> {
+  getCharacters(page: number, filter?: IFilterPayload): Observable<{ characters: Character[]; nextPage: number | null }> {
     // console.log('getCharacters: ',page,filter?.name,filter?.status);
     return this.apollo
       .query<CharacterQueryResponseDTO>({
         query: GET_CHARACTERS,
-        variables: { 
+        variables: {
           page,
           name: filter?.name,
           status: filter?.status

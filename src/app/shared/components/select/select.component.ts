@@ -40,6 +40,12 @@ export class SelectComponent implements ControlValueAccessor {
   // On touched handler
   onTouched = (value:any) => {console.log('onTouched called',this._value) };
 
+  onSelect(value: any): void {
+    this._value = value;
+    this.onChange(value); // Notifies Angular form that value changed
+    this.onTouched(value);     // Notifies Angular form control was touched
+  }
+
   // Write value from form control to the select component
   writeValue(value: any): void {
     this._value = value;
@@ -63,10 +69,10 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   // Method to handle value change from select
-  _onChange(value: any): void {
-    this._value = value;
-    this.onChange(value); // Notify the form control of the change
-  }
+  // _onChange(value: any): void {
+  //   this._value = value;
+  //   this.onChange(value); // Notify the form control of the change
+  // }
 
   statusOptions = input.required<{ key: STATUS_ENUM; value: string; }[]>();
 
