@@ -23,7 +23,7 @@ export class SelectionService {
   private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
 
   // Optional accessor
-  filterSignal$ = this._filterSignal;
+  // filterSignal$ = this._filterSignal;
 
   // ✅ Observable version for traditional RxJS use
   // this is makes a request to character component and provider

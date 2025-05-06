@@ -11,27 +11,22 @@
 
         <mat-card-subtitle>
             <span>Status: </span>
-            <!-- <span [style.color]="character().character.status | color:'status'">
-                {{ character().character.status}}
-            </span> -->
-            <!-- <span [style.color]="character().character.status | color:'status'">
-                {{ character().character.status}}
-            </span> -->
-
             <span [style.color]="character().character.status | color" [innerHTML]="character().character.status | 
           isEmpty:character().character.status:'status'"></span>
-
         </mat-card-subtitle>
+
         <mat-card-subtitle>
             <span>Species: </span>
             <span [style.color]="character().character.species | color:'species'">{{ character().character.species
                 }}</span>
         </mat-card-subtitle>
+
         <mat-card-subtitle>
             <span>Type: </span>
             <span [style.color]="character().character.type | color:'type'">{{ character().character.type |
                 isEmpty:character().character.type }}</span>
         </mat-card-subtitle>
+        
         <mat-card-subtitle>
             <span>Gender: </span>
             <span [style.color]="character().character.gender | gender:character().character.gender">{{

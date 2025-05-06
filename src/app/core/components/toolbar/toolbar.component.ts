@@ -13,7 +13,7 @@ import { IDialogHandler } from '../../../shared/models/dialog.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { LayoutSelectionService } from '../../../shared/providers/layout-selection.service';
-import { LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
+import { DIALOG_TYPE_ENUM, LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { single } from 'rxjs';
 import { UpperCasePipe } from '@angular/common';
 @Component({
@@ -59,9 +59,10 @@ export class ToolbarComponent {
       // console.log(this.layoutIcon())
       // console.log(this.selectedView())
     });
-    // setTimeout(() => {
-    //   this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
-    // }, 1000);
+    setTimeout(() => {
+      // this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
+      this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
+    }, 1000);
   }
 
   toggleView(view: string) {
