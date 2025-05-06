@@ -42,7 +42,7 @@ export class DialogConfigService implements OnDestroy {
         if (dialogValue?.action === 'search') {
           console.log('search filter: ', dialogValue);
           // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
-          this.selectionService.localFilter$.set({ ...dialogValue.query }); // inject and call
+          this.selectionService.localSearchFiltersPayload$.set({ ...dialogValue.query }); // inject and call
         } else {
           return;
         }

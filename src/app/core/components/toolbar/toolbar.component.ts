@@ -53,7 +53,7 @@ export class ToolbarComponent {
   layoutIcon = signal<{ type: LAYOUT_TYPE_ENUM; icon: string; }>({ type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop' });
 
   // clearActive = computed(() => !this.selectionService.getIsFilterDialogFormDirty());
-  clearActive = computed(() => !this.selectionService.getClearFilterBtnState());
+  clearBtnIcon = computed(() => !this.selectionService.getClearFilterBtnState());
 
   constructor() {
     effect(() => {
@@ -61,7 +61,7 @@ export class ToolbarComponent {
       // console.log(this.layoutSelectionService.layoutsOptions[0])
       // console.log(this.layoutIcon())
       // console.log(this.selectedView())
-      console.log(this.selectionService.localFilter$());
+      console.log(this.selectionService.localSearchFiltersPayload$());
 
     });
     setTimeout(() => {
@@ -94,8 +94,8 @@ export class ToolbarComponent {
   }
 
   clearFilters(){
-    this.selectionService.localFilter$.set({name:'',status:''});
-    this.selectionService.getFilterDialogSubmitBtnState.set(false);
+    this.selectionService.localSearchFiltersPayload$.set({name:null,status:null});
+    this.selectionService.getClearFilterBtnState.set(false);
   }
 
 }

@@ -6,9 +6,9 @@
 
     <!-- FORM ACTIVE RESET -->
     <button 
-    [style.color]="clearActive() ? 'gray' : 'red'"
+    [style.color]="clearBtnIcon() ? 'gray' : 'red'"
     (click)="clearFilters()"
-    [disabled]="clearActive()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
+    [disabled]="clearBtnIcon()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
         <mat-icon class="material-icons-outlined">
             clear_all
         </mat-icon>

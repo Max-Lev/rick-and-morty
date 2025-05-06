@@ -72,36 +72,21 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   readonly allCharacters = signal<Character[]>([]);
 
   constructor() {
-    // Create a reactive effect that will run whenever the characters() function is called
-    // effect(() => {
-    //   console.log('characters length: ', this.characters(), this.characters().length)
-    //   console.log(this.selectionService.localFilter$());
-    //   const { name, status } = this.selectionService.localFilter$();
-    //   if (name !== '' || status !== '') {
-    //     // this.prevFilter.set({name, status});
-    //     this.characters().filter((character) => {
-    //       if (character.status === status) {
-    //         console.log(character);
-    //         return character;
-    //       } else {
-    //         return null;
-    //       }
-          
-    //     })
-    //   }
-    // });
+
     effect(() => {
-      const { name, status } = this.selectionService.localFilter$();
+
+      const { name, status } = this.selectionService.localSearchFiltersPayload$();
+      console.log(name, status);
       const fullList = this.allCharacters();
-    
+
       const filtered = fullList.filter(character => {
         const matchesName = !name || character.name.toLowerCase().includes(name.toLowerCase());
         const matchesStatus = !status || character.status.toLocaleLowerCase() === status.toLocaleLowerCase();
         return matchesName && matchesStatus;
-        // return matchesStatus;
       });
-      console.log(filtered)
+
       this.characters.set(filtered);
+      
     });
 
   }
@@ -125,6 +110,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   onScroll(index: number): void {
 
+    const getClearFilterBtnState = this.selectionService.getClearFilterBtnState();
+    if (getClearFilterBtnState) return
+
     const { page, nextPage } = this.paginationSignal$();
 
     const viewportSize = this.getViewportSize();
@@ -133,9 +121,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
       if (!viewportSize) return;
       const { end, total } = viewportSize;
-
-      // console.log('viewportSize ', viewportSize)
-      // console.log('end, total ', end, total)
 
       this.setItemSize(index);
 
@@ -180,6 +165,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
     this.allCharacters.set([...uniq.values()]);
+    console.log('setCharactersData ', this.allCharacters())
     this.isLoadingSignal$.set(false);
   }
 
@@ -237,9 +223,10 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
 
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
-        // console.log('loadCharacters', response)
+        console.log('loadCharactersOnScroll', response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
+        console.log('paginationSignal$ ', this.paginationSignal$())
         this.isLoadingSignal$.set(false);
       });
     }

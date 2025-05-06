@@ -29,7 +29,7 @@ export class SelectionService {
   // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
   // localFilter$ = toObservable(this._filterSignal);
-  localFilter$ = signal<IFilterPayload>({ name: '', status: '' });
+  localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '' });
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
@@ -42,7 +42,7 @@ export class SelectionService {
 
   constructor() {
     effect(() => {
-      console.log('localFilter$: ', this.localFilter$())
+      console.log('localFilter$: ', this.localSearchFiltersPayload$())
     })
   }
 
@@ -67,17 +67,16 @@ export class SelectionService {
     this.selectedRows.set(new Map());
   }
 
-  getFilterDialogSubmitBtnState = signal<boolean>(false);
+  
   
   getClearFilterBtnState = signal<boolean>(false);
-
-  
   setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>):boolean {
     const isDirty = this.filterFormRowData(filterFormVals);
     this.getClearFilterBtnState.set(isDirty);
     return isDirty;
   }
 
+  getFilterDialogSubmitBtnState = signal<boolean>(false);
   filterDialogSubmitBtnState(filterFormVals: Partial<IFilterPayload>): boolean {
     const isDirty = this.filterFormRowData(filterFormVals);
     this.getFilterDialogSubmitBtnState.set(isDirty);
