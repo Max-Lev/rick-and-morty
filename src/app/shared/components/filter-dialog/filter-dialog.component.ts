@@ -7,6 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { SelectionService } from '../../providers/selection.service';
 @Component({
   selector: 'app-filter-dialog',
   imports: [
@@ -28,47 +29,52 @@ export class FilterDialogComponent implements AfterViewInit {
   statusOptions = STATUS_OPTIONS
   incomingData = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<FilterDialogComponent>);
+  selectionService = inject(SelectionService);
 
   form = new FormGroup({
-    name: new FormControl<string>('', 
-      // {validators: [Validators.required, Validators.minLength(3)]}
-    ),
+    name: new FormControl<string>(''),
     status: new FormControl<string | null>(''),
   });
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
 
-  // filterForm$ = signal(this.form);
+  isFilterBtnDisabled = computed(() => !this.selectionService.getFilterDialogSubmitBtnState());
 
-  // charactersService = inject(CharactersService);
-
-  // selectionService = inject(SelectionService);
 
   constructor() {
-    effect(() => {
-      // console.log('incomingData:', this.incomingData);
-      // console.log('statusOptions:', this.statusOptions);
-      // console.log(this.filterFormSignal())
-      // console.log(this.filterForm$())
-    });
+    this.setSubmitBtnState();
+    effect(()=>{
+      console.log(this.isFilterBtnDisabled())
+    })
 
   }
   ngAfterViewInit(): void {
 
-    // this.form.valueChanges.subscribe(val => {
-    //   console.log('val', val)
-    // });
-
   }
 
+  setSubmitBtnState() {
+    effect(() => {
+      const formValues = this.filterFormSignal();
+      this.selectionService.filterDialogSubmitBtnState(formValues);
+    });
+  }
+
+  cancel(){
+    this.form.reset();
+  }
 
   search() {
-    // IFilterPayload
+    console.log(this.form)
     this.dialogRef.close({ action: 'search', query: this.filterFormSignal() });
+    const formValues = this.filterFormSignal();
+    this.selectionService.setClearFilterBtnState(formValues)
   }
 
   onSubmit(form: FormGroup) {
-    // console.log(form.value);
+    console.log(form.value);
+    this.search();
   }
+
+  
 
 }

@@ -1,4 +1,4 @@
-import { computed, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, effect, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { Character, ICharacterColumns, IFilterPayload } from '../models/character.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -28,6 +28,8 @@ export class SelectionService {
   // ✅ Observable version for traditional RxJS use
   // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
+  // localFilter$ = toObservable(this._filterSignal);
+  localFilter$ = signal<IFilterPayload>({ name: '', status: '' });
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
@@ -37,6 +39,12 @@ export class SelectionService {
   //   return this._filterSignal();
   // }
 
+
+  constructor() {
+    effect(() => {
+      console.log('localFilter$: ', this.localFilter$())
+    })
+  }
 
   toggleRow(row: Character) {
     this.selectedRows.update((prevMap) => {
@@ -55,8 +63,31 @@ export class SelectionService {
     console.log(this.selectedRows());
   }
 
-  clearSelection() {
+  clearSelectedCharacters() {
     this.selectedRows.set(new Map());
+  }
+
+  getFilterDialogSubmitBtnState = signal<boolean>(false);
+  
+  getClearFilterBtnState = signal<boolean>(false);
+
+  
+  setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>):boolean {
+    const isDirty = this.filterFormRowData(filterFormVals);
+    this.getClearFilterBtnState.set(isDirty);
+    return isDirty;
+  }
+
+  filterDialogSubmitBtnState(filterFormVals: Partial<IFilterPayload>): boolean {
+    const isDirty = this.filterFormRowData(filterFormVals);
+    this.getFilterDialogSubmitBtnState.set(isDirty);
+    return isDirty;
+  }
+
+  filterFormRowData(filterFormVals: Partial<IFilterPayload>) {
+    const values = Object.values(filterFormVals);
+    const isDirty = values.some(value => value !== '' && value !== null && value !== undefined);
+    return isDirty;
   }
 
 }

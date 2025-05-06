@@ -6,6 +6,7 @@ import { SelectionService } from '../../shared/providers/selection.service';
 import { LiveSearchDialogComponent } from '../../shared/components/live-search-dialog/live-search-dialog.component';
 import { DIALOG_TYPE_ENUM } from '../../shared/models/status.enum';
 import { IDialogHandler } from '../../shared/models/dialog.model';
+import { IFilterPayload } from '../../shared/models/character.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +38,11 @@ export class DialogConfigService implements OnDestroy {
     // Manually restore focus to the menu trigger since the element that
     // opens the dialog won't be in the DOM any more when the dialog closes.
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$))
-      .subscribe((dialogValue: { action: string, query: { name: string, status: string } }) => {
+      .subscribe((dialogValue: { action: string, query: IFilterPayload }) => {
         if (dialogValue?.action === 'search') {
           console.log('search filter: ', dialogValue);
-          this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
+          // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
+          this.selectionService.localFilter$.set({ ...dialogValue.query }); // inject and call
         } else {
           return;
         }

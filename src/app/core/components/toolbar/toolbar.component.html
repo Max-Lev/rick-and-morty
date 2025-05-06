@@ -5,14 +5,17 @@
     <span class="spacer"></span>
 
     <!-- FORM ACTIVE RESET -->
-    <button mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
+    <button 
+    [style.color]="clearActive() ? 'gray' : 'red'"
+    (click)="clearFilters()"
+    [disabled]="clearActive()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
         <mat-icon class="material-icons-outlined">
             clear_all
         </mat-icon>
     </button>
 
     <!-- CLEAR ALL SELECTED -->
-    <button [disabled]="!selectedCount()" mat-icon-button (click)="clearSelection()" matTooltip="CLEAR SELECTED">
+    <button [disabled]="!selectedCount()" mat-icon-button (click)="clearSelectedCharacters()" matTooltip="CLEAR SELECTED">
         <mat-icon [style.color]="(selectedCount() > 0)? 'red':'grey'">
             remove_done
         </mat-icon>

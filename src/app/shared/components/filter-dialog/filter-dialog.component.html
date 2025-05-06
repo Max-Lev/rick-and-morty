@@ -39,6 +39,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions [align]="'center'">
-    <button style="color:white" (click)="search()" mat-button mat-dialog-close>Search</button>
-    <button style="color:white" mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
+    
+    <button
+    [style.color]="isFilterBtnDisabled() ? 'gray' : 'white'"
+    [disabled]="isFilterBtnDisabled()" (click)="search()" mat-button mat-dialog-close>Filter</button>
+    <button (click)="cancel()" style="color:white" mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
 </mat-dialog-actions>

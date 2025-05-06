@@ -68,16 +68,40 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   layoutSelectionService = inject(LayoutSelectionService);
   layout = computed(() => this.layoutSelectionService.getLayoutType());
-  
+
+  readonly allCharacters = signal<Character[]>([]);
 
   constructor() {
     // Create a reactive effect that will run whenever the characters() function is called
+    // effect(() => {
+    //   console.log('characters length: ', this.characters(), this.characters().length)
+    //   console.log(this.selectionService.localFilter$());
+    //   const { name, status } = this.selectionService.localFilter$();
+    //   if (name !== '' || status !== '') {
+    //     // this.prevFilter.set({name, status});
+    //     this.characters().filter((character) => {
+    //       if (character.status === status) {
+    //         console.log(character);
+    //         return character;
+    //       } else {
+    //         return null;
+    //       }
+          
+    //     })
+    //   }
+    // });
     effect(() => {
-      // console.log('characters length: ', this.characters(), this.characters().length)
-      // console.log('currentPageSignal$ ', this.currentPageSignal$())
-      // console.log('scrollIndexSignal$: ', this.scrollIndexSignal$());
-      // console.log(this.layoutSelectionService.getLayoutType())
-      // console.log(this.layout)
+      const { name, status } = this.selectionService.localFilter$();
+      const fullList = this.allCharacters();
+    
+      const filtered = fullList.filter(character => {
+        const matchesName = !name || character.name.toLowerCase().includes(name.toLowerCase());
+        const matchesStatus = !status || character.status.toLocaleLowerCase() === status.toLocaleLowerCase();
+        return matchesName && matchesStatus;
+        // return matchesStatus;
+      });
+      console.log(filtered)
+      this.characters.set(filtered);
     });
 
   }
@@ -155,6 +179,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const merged = [...existing, ...charactersData.characters];
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
+    this.allCharacters.set([...uniq.values()]);
     this.isLoadingSignal$.set(false);
   }
 

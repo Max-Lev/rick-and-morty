@@ -25,7 +25,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
     MatSelectModule,
     SelectComponent,
     NameSearchComponent,
-    
+
   ],
   templateUrl: './live-search-dialog.component.html',
   styleUrl: './live-search-dialog.component.scss'
@@ -48,33 +48,33 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   destroy$ = inject(DestroyRef);
 
   constructor() {
-    
+
     console.log(this.filterFormSignal())
     toObservable(this.filterFormSignal).pipe(
-        debounceTime(250),
-        distinctUntilChanged((prev, curr) =>prev?.name === curr?.name && prev?.status === curr?.status),
-        tap(() => {
-          // console.log('Form validity:', this.form.valid);
-        }),
-        switchMap((val) => {
-          const name = val?.name ?? null;
-          const status = val?.status ?? null;
-          console.log(this.form.valid)
-          if (this.form.valid && this.form.touched) {
+      debounceTime(250),
+      distinctUntilChanged((prev, curr) => prev?.name === curr?.name && prev?.status === curr?.status),
+      tap(() => {
+        // console.log('Form validity:', this.form.valid);
+      }),
+      switchMap((val) => {
+        const name = val?.name ?? null;
+        const status = val?.status ?? null;
+        console.log(this.form.valid)
+        if (this.form.valid && this.form.touched) {
           // if (this.form.valid && name.length >= 3) {
-            // console.log('Request triggered with:', { name, status });
-            this.selectionService.setFilter({ name, status });
-            return this.selectionService.filter$;
-          } else {
-            // console.log('not valid');
-            return EMPTY;
-          }
-        }),
-        takeUntilDestroyed(this.destroy$)
-      ).subscribe(res => {
-        console.log('Request triggered with:', res);
-      })
-  
+          // console.log('Request triggered with:', { name, status });
+          this.selectionService.setFilter({ name, status });
+          return this.selectionService.filter$;
+        } else {
+          // console.log('not valid');
+          return EMPTY;
+        }
+      }),
+      takeUntilDestroyed(this.destroy$)
+    ).subscribe(res => {
+      console.log('Request triggered with:', res);
+    })
+
   }
 
   ngAfterViewInit(): void {

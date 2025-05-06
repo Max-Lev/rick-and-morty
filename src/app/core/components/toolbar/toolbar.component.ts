@@ -52,12 +52,17 @@ export class ToolbarComponent {
   layoutSelectionService = inject(LayoutSelectionService);
   layoutIcon = signal<{ type: LAYOUT_TYPE_ENUM; icon: string; }>({ type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop' });
 
+  // clearActive = computed(() => !this.selectionService.getIsFilterDialogFormDirty());
+  clearActive = computed(() => !this.selectionService.getClearFilterBtnState());
+
   constructor() {
     effect(() => {
       // console.log(this.selectionService.selectedRows())
       // console.log(this.layoutSelectionService.layoutsOptions[0])
       // console.log(this.layoutIcon())
       // console.log(this.selectedView())
+      console.log(this.selectionService.localFilter$());
+
     });
     setTimeout(() => {
       // this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
@@ -73,8 +78,8 @@ export class ToolbarComponent {
     this.dialogService.openDialogAction(dialogAction);
   }
 
-  clearSelection() {
-    this.selectionService.clearSelection();
+  clearSelectedCharacters() {
+    this.selectionService.clearSelectedCharacters();
   }
 
   navigateDetails() {
@@ -88,5 +93,9 @@ export class ToolbarComponent {
     this.layoutIcon.set(layout);
   }
 
+  clearFilters(){
+    this.selectionService.localFilter$.set({name:'',status:''});
+    this.selectionService.getFilterDialogSubmitBtnState.set(false);
+  }
 
 }
