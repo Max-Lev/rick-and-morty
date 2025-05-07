@@ -53,7 +53,7 @@ export class ToolbarComponent {
   layoutIcon = signal<{ type: LAYOUT_TYPE_ENUM; icon: string; }>({ type: LAYOUT_TYPE_ENUM.DESKTOP, icon: 'laptop' });
 
   // clearActive = computed(() => !this.selectionService.getIsFilterDialogFormDirty());
-  clearBtnIcon = computed(() => !this.selectionService.getClearFilterBtnState());
+  clearBtnIconDisabled = computed(() => !this.selectionService.getClearFilterBtnState());
 
   constructor() {
     effect(() => {
@@ -65,8 +65,8 @@ export class ToolbarComponent {
 
     });
     setTimeout(() => {
-      // this.openDialogHandler({ value: 'Search By Name', dialogType: 1 })
-      this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
+      this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
+      // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
     }, 1000);
   }
 
@@ -94,8 +94,14 @@ export class ToolbarComponent {
   }
 
   clearFilters(){
+    //filter dialog
     this.selectionService.localSearchFiltersPayload$.set({name:null,status:null});
+    // search dialog
+    this.selectionService.setFilter({name:null,status:null});
+    // clear button disabled
     this.selectionService.getClearFilterBtnState.set(false);
+    //enable scroll after dialog filter
+    this.selectionService.disableScroll.set(false);
   }
 
 }

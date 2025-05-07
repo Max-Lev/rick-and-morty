@@ -1,6 +1,7 @@
 import { computed, effect, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { Character, ICharacterColumns, IFilterPayload } from '../models/character.model';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { DIALOG_TYPE_ENUM } from '../models/status.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -22,13 +23,11 @@ export class SelectionService {
 
   private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
 
-  // Optional accessor
-  // filterSignal$ = this._filterSignal;
-
   // ✅ Observable version for traditional RxJS use
   // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
-  // localFilter$ = toObservable(this._filterSignal);
+
+  // for filter dialog
   localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '' });
 
   setFilter(value: IFilterPayload) {
@@ -67,12 +66,16 @@ export class SelectionService {
     this.selectedRows.set(new Map());
   }
 
-  
-  
+
+  disableScroll = signal<boolean>(false);
   getClearFilterBtnState = signal<boolean>(false);
-  setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>):boolean {
+  // getClearSearchBtnState = signal<boolean>(false);
+  setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>, dialogType: DIALOG_TYPE_ENUM): boolean {
     const isDirty = this.filterFormRowData(filterFormVals);
     this.getClearFilterBtnState.set(isDirty);
+    if (dialogType===DIALOG_TYPE_ENUM.filter) {
+      this.disableScroll.set(isDirty);
+    }
     return isDirty;
   }
 

@@ -42,6 +42,6 @@
     
     <button
     [style.color]="isFilterBtnDisabled() ? 'gray' : 'white'"
-    [disabled]="isFilterBtnDisabled()" (click)="search()" mat-button mat-dialog-close>Filter</button>
+    [disabled]="isFilterBtnDisabled()" (click)="filter()" mat-button mat-dialog-close>Filter</button>
     <button (click)="cancel()" style="color:white" mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
 </mat-dialog-actions>

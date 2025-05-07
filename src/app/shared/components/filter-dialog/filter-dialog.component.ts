@@ -2,7 +2,7 @@ import { AfterViewInit, Component, computed, effect, inject, signal } from '@ang
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
-import { STATUS_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
+import { DIALOG_TYPE_ENUM, STATUS_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
@@ -44,7 +44,7 @@ export class FilterDialogComponent implements AfterViewInit {
   constructor() {
     this.setSubmitBtnState();
     effect(()=>{
-      console.log(this.isFilterBtnDisabled())
+      // console.log(this.isFilterBtnDisabled())
     })
 
   }
@@ -63,16 +63,17 @@ export class FilterDialogComponent implements AfterViewInit {
     this.form.reset();
   }
 
-  search() {
+  filter() {
     console.log(this.form)
-    this.dialogRef.close({ action: 'search', query: this.filterFormSignal() });
+    this.dialogRef.close({ action: DIALOG_TYPE_ENUM.filter, query: this.filterFormSignal() });
     const formValues = this.filterFormSignal();
-    this.selectionService.setClearFilterBtnState(formValues)
+    this.selectionService.setClearFilterBtnState(formValues,DIALOG_TYPE_ENUM.filter);
+    // this.selectionService.setClearFilterBtnState(formValues,{dialogType:'filter'});
   }
 
   onSubmit(form: FormGroup) {
     console.log(form.value);
-    this.search();
+    this.filter();
   }
 
   

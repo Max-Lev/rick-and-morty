@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, Ma
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { STATUS_OPTIONS } from '../../models/status.enum';
+import { DIALOG_TYPE_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
 import { debounceTime, distinctUntilChanged, EMPTY, switchMap, tap } from 'rxjs';
@@ -63,7 +63,13 @@ export class LiveSearchDialogComponent implements AfterViewInit {
         if (this.form.valid && this.form.touched) {
           // if (this.form.valid && name.length >= 3) {
           // console.log('Request triggered with:', { name, status });
+          
           this.selectionService.setFilter({ name, status });
+          
+          
+          const formValues = this.filterFormSignal();
+          this.selectionService.setClearFilterBtnState(formValues,DIALOG_TYPE_ENUM.search);
+          
           return this.selectionService.filter$;
         } else {
           // console.log('not valid');

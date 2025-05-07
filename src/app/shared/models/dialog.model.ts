@@ -4,3 +4,4 @@ export interface IDialogHandler{
     title: string;
     dialogType: DIALOG_TYPE_ENUM;
 }
+

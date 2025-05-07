@@ -21,7 +21,7 @@ export class DialogConfigService implements OnDestroy {
 
     if (dialogType === DIALOG_TYPE_ENUM.filter) {
       this.openFilterDialog(title);
-    } else if (dialogType === DIALOG_TYPE_ENUM.live) {
+    } else if (dialogType === DIALOG_TYPE_ENUM.search) {
       this.openLiveSearchDialog(title);
     }
   }
@@ -39,8 +39,8 @@ export class DialogConfigService implements OnDestroy {
     // opens the dialog won't be in the DOM any more when the dialog closes.
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$))
       .subscribe((dialogValue: { action: string, query: IFilterPayload }) => {
-        if (dialogValue?.action === 'search') {
-          console.log('search filter: ', dialogValue);
+        if (dialogValue?.action === DIALOG_TYPE_ENUM.filter) {
+          console.log('filter: ', dialogValue);
           // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
           this.selectionService.localSearchFiltersPayload$.set({ ...dialogValue.query }); // inject and call
         } else {

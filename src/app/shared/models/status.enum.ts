@@ -5,8 +5,8 @@ export enum STATUS_ENUM {
 }
 
 export enum DIALOG_TYPE_ENUM {
-  filter = 1,
-  live = 2
+  filter = 'filter',
+  search = 'search'
 }
 
 export const STATUS_OPTIONS = [

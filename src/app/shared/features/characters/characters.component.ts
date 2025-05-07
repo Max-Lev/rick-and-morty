@@ -110,8 +110,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   onScroll(index: number): void {
 
-    const getClearFilterBtnState = this.selectionService.getClearFilterBtnState();
-    if (getClearFilterBtnState) return
+    // const getClearFilterBtnState = this.selectionService.getClearFilterBtnState();
+    const disableScroll = this.selectionService.disableScroll();
+    if (disableScroll) return;
 
     const { page, nextPage } = this.paginationSignal$();
 
@@ -177,14 +178,14 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
     tap((filter: IFilterPayload) => {
       this.newFilterRequest(filter);
-      this.resetFilter(filter)
+      this.resetFilter(filter);
     }),
     switchMap((filter) => {
       const { page } = this.paginationSignal$();
       this.isLoadingSignal$.set(true);
       return this.charactersService.getCharacters(page, filter).pipe(
         tap((response: ICharactersResponse) => {
-          // console.log('charactersResponse', response)
+          // console.log('charactersResponse$', response);
           this.setCharactersData(response);
           this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
           this.isLoadingSignal$.set(false);
@@ -195,6 +196,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   );
 
   newFilterRequest(filter: IFilterPayload) {
+    debugger;
     if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
 
       this.prevFilter.update((v) => ({ ...v, name: filter.name, status: filter.status }));

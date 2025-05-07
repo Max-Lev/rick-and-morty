@@ -32,8 +32,8 @@ export class ToolbarMenuComponent {
     {
       label: 'Search By Name',
       icon: 'search',
-      type:DIALOG_TYPE_ENUM.live,
-      action: (): void => this.openDialog({title:this.menuOptions[1].label,dialogType:DIALOG_TYPE_ENUM.live})
+      type:DIALOG_TYPE_ENUM.search,
+      action: (): void => this.openDialog({title:this.menuOptions[1].label,dialogType:DIALOG_TYPE_ENUM.search})
     }
   ];
 
