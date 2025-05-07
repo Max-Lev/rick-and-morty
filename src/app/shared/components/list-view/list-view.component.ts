@@ -66,15 +66,11 @@ export class ListViewComponent {
   }
 
   isSelected(row: Character): boolean {
-    // if(this.selectionService.getSelectedRows().has(+row.id)){
-    //   console.log(row)
-    // }
     return this.selectionService.getSelectedRows().has(+row.id);
   }
-  selectedRow = (row: Character): void => {
-    // console.log(row)
-    this.selectionService.toggleRow(row);
-  }
+  
+  selectedRow = (row: Character): void => this.selectionService.toggleRow(row);
+  
 
 
 }

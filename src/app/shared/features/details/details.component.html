@@ -28,7 +28,7 @@
 
         <!-- Species Column -->
         <ng-container *ngSwitchCase="'species'">
-          <div [style.color]="row.character['species'] | color">{{ row.character.species }}</div>
+          <div [style.color]="row.character['species'] | color:'species'">{{ row.character.species }}</div>
         </ng-container>
 
         <!-- Type Column -->

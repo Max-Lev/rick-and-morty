@@ -34,15 +34,8 @@ export class SelectionService {
     this._filterSignal.set(value);
   }
 
-  // getFilter(): IFilterPayload {
-  //   return this._filterSignal();
-  // }
-
-
   constructor() {
-    effect(() => {
-      console.log('localFilter$: ', this.localSearchFiltersPayload$())
-    })
+    
   }
 
   toggleRow(row: Character) {
@@ -59,7 +52,6 @@ export class SelectionService {
 
       return newMap; // ✅ signals detect change
     });
-    console.log(this.selectedRows());
   }
 
   clearSelectedCharacters() {

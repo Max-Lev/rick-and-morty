@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DIALOG_TYPE_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
 import { SelectComponent } from '../select/select.component';
 import { NameSearchComponent } from '../name-search/name-search.component';
-import { debounceTime, distinctUntilChanged, EMPTY, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, EMPTY, filter, switchMap, tap } from 'rxjs';
 import { SelectionService } from '../../providers/selection.service';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 
@@ -38,7 +38,6 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   selectionService = inject(SelectionService);
 
   form = new FormGroup({
-    // name: new FormControl<string | null>(null, [Validators.required,Validators.minLength(3)]),
     name: new FormControl<string | null>(null, [Validators.minLength(3)]),
     status: new FormControl<string | null>(null)
   });
@@ -48,39 +47,32 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   destroy$ = inject(DestroyRef);
 
   constructor() {
+    this.setupFilterFormListener();
+  }
 
-    console.log(this.filterFormSignal())
-    toObservable(this.filterFormSignal).pipe(
-      debounceTime(1000),
-      distinctUntilChanged((prev, curr) => prev?.name === curr?.name && prev?.status === curr?.status),
-      tap(() => {
-        // console.log('Form validity:', this.form.valid);
-      }),
-      switchMap((val) => {
-        const name = val?.name ?? null;
-        const status = val?.status ?? null;
-        console.log(this.form.valid)
-        if (this.form.valid && this.form.touched) {
-          // if (this.form.valid && name.length >= 3) {
-          // console.log('Request triggered with:', { name, status });
-          
+  private setupFilterFormListener(): void {
+    toObservable(this.filterFormSignal)
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged((prev, curr) =>prev?.name === curr?.name && prev?.status === curr?.status),
+        filter(() => this.form.valid && this.form.touched),
+        tap((val: Partial<{ name: string | null; status: string | null; }>) => {
+          const name = val?.name ?? null;
+          const status = val?.status ?? null;
           this.selectionService.setFilter({ name, status });
-          
-          
-          const formValues = this.filterFormSignal();
-          this.selectionService.setClearFilterBtnState(formValues,DIALOG_TYPE_ENUM.search);
-          
-          return this.selectionService.filter$;
-        } else {
-          // console.log('not valid');
-          return EMPTY;
-        }
-      }),
-      takeUntilDestroyed(this.destroy$)
-    ).subscribe(res => {
-      console.log('Request triggered with:', res);
-    })
 
+          const formValues = this.filterFormSignal();
+          this.selectionService.setClearFilterBtnState(formValues, DIALOG_TYPE_ENUM.search);
+        }),
+        switchMap(() => this.selectionService.filter$),
+        takeUntilDestroyed(this.destroy$)
+      )
+      .subscribe({
+        next: (res) => {
+          // console.log('Request triggered with:', res);
+        },
+        error: (err) => console.error('Filter subscription error:', err)
+      });
   }
 
   ngAfterViewInit(): void {

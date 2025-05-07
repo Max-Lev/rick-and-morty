@@ -43,10 +43,6 @@ export class FilterDialogComponent implements AfterViewInit {
 
   constructor() {
     this.setSubmitBtnState();
-    effect(()=>{
-      // console.log(this.isFilterBtnDisabled())
-    })
-
   }
   ngAfterViewInit(): void {
 
@@ -64,7 +60,7 @@ export class FilterDialogComponent implements AfterViewInit {
   }
 
   filter() {
-    console.log(this.form)
+    // console.log(this.form)
     this.dialogRef.close({ action: DIALOG_TYPE_ENUM.filter, query: this.filterFormSignal() });
     const formValues = this.filterFormSignal();
     this.selectionService.setClearFilterBtnState(formValues,DIALOG_TYPE_ENUM.filter);
@@ -72,7 +68,7 @@ export class FilterDialogComponent implements AfterViewInit {
   }
 
   onSubmit(form: FormGroup) {
-    console.log(form.value);
+    // console.log(form.value);
     this.filter();
   }
 

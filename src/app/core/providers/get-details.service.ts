@@ -14,7 +14,6 @@ export class GetDetailsService {
   private apollo = inject(Apollo);
 
   getDetailsQuery(characterIDs: string[]): Observable<IDetailsResponse> {
-    console.log(characterIDs)
     return this.apollo.query<IDetailsResponseDTO>({
       query: GET_DETAILS,
       variables: {
@@ -33,8 +32,7 @@ export class GetDetailsService {
         // 2. Return results in the order of requested IDs
         return characterIDs.map(id => characterMap.get(`${id}`)!) as IDetailsResponse;
 
-      }),
-      tap((character) => console.log(character))
+      })
     );
 
   }

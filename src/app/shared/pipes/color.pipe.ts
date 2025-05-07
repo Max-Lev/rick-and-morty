@@ -23,7 +23,6 @@ export class ColorPipe implements PipeTransform {
       return 'red'
     }
     else {
-      // console.log(value,args);
       return value === ''
         || value === null
         || value === undefined

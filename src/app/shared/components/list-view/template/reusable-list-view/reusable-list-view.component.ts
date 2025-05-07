@@ -21,13 +21,9 @@ import { GenderPipe } from '../../../../pipes/gender.pipe';
   templateUrl: './reusable-list-view.component.html',
   styleUrl: './reusable-list-view.component.scss'
 })
-export class ReusableListViewComponent implements OnChanges {
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log(changes)
-  }
+export class ReusableListViewComponent {
   
-  // @Input({ required: true }) columns:ColumnConfig<ICharacterColumns>[] =COLUMNS;
   columns:ColumnConfig<ICharacterColumns>[] =COLUMNS;
   @Input() isSelected = (row: any) => false;
-  // @Input() column!:any;
+
 }

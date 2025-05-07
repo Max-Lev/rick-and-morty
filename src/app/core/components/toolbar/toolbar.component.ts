@@ -60,11 +60,6 @@ export class ToolbarComponent {
 
   constructor() {
     effect(() => {
-      // console.log(this.selectionService.selectedRows())
-      // console.log(this.layoutSelectionService.layoutsOptions[0])
-      // console.log(this.layoutIcon())
-      // console.log(this.selectedView())
-      console.log(this.selectionService.localSearchFiltersPayload$());
 
     });
     // setTimeout(() => {

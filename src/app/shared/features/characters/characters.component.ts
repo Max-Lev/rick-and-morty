@@ -76,7 +76,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     effect(() => {
 
       const { name, status } = this.selectionService.localSearchFiltersPayload$();
-      console.log(name, status);
+      const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
+      console.log(keys)
+      debugger;
       const fullList = this.allCharacters();
 
       const filtered = fullList.filter(character => {
@@ -99,13 +101,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const viewportSize = this.getViewportSize();
     if (!viewportSize) return;
-    // const { end, total } = viewportSize;
-    // console.log('viewportSize ', viewportSize)
-    // console.log('end, total ', end, total);
-    // console.log('toolbar + scroll height container: ', this.viewport.measureBoundingClientRectWithScrollOffset('bottom'))
-    // console.log(this.viewport.checkViewportSize())
-    // console.log(this.viewport.measureViewportOffset('bottom'))
-    // console.log(this.viewport.getViewportSize())
   }
 
   onScroll(index: number): void {
@@ -166,7 +161,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
     this.allCharacters.set([...uniq.values()]);
-    console.log('setCharactersData ', this.allCharacters())
     this.isLoadingSignal$.set(false);
   }
 
@@ -196,7 +190,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   );
 
   newFilterRequest(filter: IFilterPayload) {
-    debugger;
     if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
 
       this.prevFilter.update((v) => ({ ...v, name: filter.name, status: filter.status }));
@@ -225,10 +218,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
 
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
-        console.log('loadCharactersOnScroll', response)
         this.setCharactersData(response);
         this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-        console.log('paginationSignal$ ', this.paginationSignal$())
         this.isLoadingSignal$.set(false);
       });
     }

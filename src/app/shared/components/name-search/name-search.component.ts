@@ -37,8 +37,7 @@ export class NameSearchComponent implements ControlValueAccessor, OnChanges, Aft
     // Trigger reactivity by calling signal
     this.filterFormSignal();
     const ctrl = this.form.get('name');
-    // console.log(this.form)
-    // console.log(ctrl)
+
     if (ctrl?.touched || ctrl?.dirty) {
       if (ctrl.hasError('required')) return 'Name is required';
       if (ctrl.hasError('minlength')) return 'Name min length is 3';
@@ -50,7 +49,6 @@ export class NameSearchComponent implements ControlValueAccessor, OnChanges, Aft
   // ControlValueAccessor
   writeValue(value: any): void {
     this.value = value ?? '';
-    console.log(this.value)
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
