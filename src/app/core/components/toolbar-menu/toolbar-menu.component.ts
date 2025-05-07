@@ -24,13 +24,13 @@ export class ToolbarMenuComponent {
 
   menuOptions = [
     {
-      label: 'Filter By Status & Name',
+      label: 'Filter Characters',
       icon: 'filter_alt',
       type:DIALOG_TYPE_ENUM.filter,
       action: (): void => this.openDialog({title:this.menuOptions[0].label,dialogType:DIALOG_TYPE_ENUM.filter})
     },
     {
-      label: 'Search By Name',
+      label: 'Search Characters',
       icon: 'search',
       type:DIALOG_TYPE_ENUM.search,
       action: (): void => this.openDialog({title:this.menuOptions[1].label,dialogType:DIALOG_TYPE_ENUM.search})

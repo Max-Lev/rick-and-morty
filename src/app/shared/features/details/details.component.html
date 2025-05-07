@@ -13,11 +13,11 @@
       <ng-container [ngSwitch]="column.columnDef">
         <!-- ID Column -->
         <ng-container *ngSwitchCase="'id'">
-          @if (!isSelected(row)) {
+          <!-- @if (!isSelected(row)) {
             {{ row.character?.id }}
-          } @else {
+          } @else { -->
             <div class="selected-id">({{ row.character?.id }})</div>
-          }
+          <!-- } -->
         </ng-container>
 
         <!-- Status Column -->

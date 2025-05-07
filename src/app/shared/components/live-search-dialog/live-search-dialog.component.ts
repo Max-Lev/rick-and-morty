@@ -51,7 +51,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
 
     console.log(this.filterFormSignal())
     toObservable(this.filterFormSignal).pipe(
-      debounceTime(250),
+      debounceTime(1000),
       distinctUntilChanged((prev, curr) => prev?.name === curr?.name && prev?.status === curr?.status),
       tap(() => {
         // console.log('Form validity:', this.form.valid);

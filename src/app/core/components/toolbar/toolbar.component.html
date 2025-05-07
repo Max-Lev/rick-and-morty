@@ -2,37 +2,45 @@
 
     <app-toolbar-menu #menu (openDialogAction)="openDialogHandler($event)"></app-toolbar-menu>
 
+    <button [style.color]="clearBtnIconDisabled() ? 'gray' : 'red'" (click)="clearFilters()"
+        [disabled]="clearBtnIconDisabled()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
+        <mat-icon style="font-size: smaller;">
+            filter_alt_off
+        </mat-icon>
+    </button>
     <span class="spacer"></span>
 
     <!-- FORM ACTIVE RESET -->
-    <button 
-    [style.color]="clearBtnIconDisabled() ? 'gray' : 'red'"
-    (click)="clearFilters()"
-    [disabled]="clearBtnIconDisabled()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
+    <!-- <button [style.color]="clearBtnIconDisabled() ? 'gray' : 'red'" (click)="clearFilters()"
+        [disabled]="clearBtnIconDisabled()" mat-icon-button class="example-icon" matTooltip="CLEAR FILTERS">
         <mat-icon class="material-icons-outlined">
             clear_all
         </mat-icon>
-    </button>
+    </button> -->
 
     <!-- CLEAR ALL SELECTED -->
-    <button [disabled]="!selectedCount()" mat-icon-button (click)="clearSelectedCharacters()" matTooltip="CLEAR SELECTED">
+    <button [disabled]="!selectedCount()" mat-icon-button (click)="clearSelectedCharacters()"
+        matTooltip="CLEAR SELECTED">
         <mat-icon [style.color]="(selectedCount() > 0)? 'red':'grey'">
             remove_done
         </mat-icon>
     </button>
 
     <!-- SELECTED ITEMS COUNT -->
-    <button mat-icon-button [disabled]="!selectedCount()" matTooltip="SHOW SELECTED"
-    (click)="navigateDetails()">
+    <button mat-icon-button [disabled]="!selectedCount()" matTooltip="SHOW SELECTED" (click)="navigateDetails()">
         <mat-icon matBadge="{{(selectedCount()===0)? null:selectedCount()}}"
             [style.color]="(selectedCount() > 0)? 'white':'grey'"
             [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
     </button>
 
+    <button (click)="navigateCharacters()" [disabled]="backIconDisabled()" mat-icon-button class="example-icon" matTooltip="BACK TO CHARACTERS">
+        <mat-icon class="material-icons-outlined">
+            undo
+        </mat-icon>
+    </button>
 
-    @if(selectedViewSignal()==='list'){
-    <button (click)="toggleView('grid')" mat-icon-button class="example-icon" matTooltip="LIST VIEW"
-        aria-label="Example icon-button with share icon">
+    <!-- @if(selectedViewSignal()==='list'){
+    <button (click)="toggleView('grid')" mat-icon-button class="example-icon" matTooltip="LIST VIEW">
         <mat-icon>
             <span class="material-icons-outlined">
                 format_list_numbered
@@ -40,15 +48,31 @@
         </mat-icon>
     </button>
     }@else {
-    <button (click)="toggleView('list')" mat-icon-button class="example-icon" matTooltip="GRID VIEW"
-        aria-label="Example icon-button with share icon">
+    <button (click)="toggleView('list')" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
         <mat-icon>grid_view</mat-icon>
     </button>
-    }
+    } -->
+
+
 
     <span class="spacer"></span>
 
-    <button (click)="cycleLayout()" mat-icon-button class="example-icon" matTooltip="{{layoutIcon().type | uppercase}} VIEW">
+    @if(selectedViewSignal()==='list'){
+        <button (click)="toggleView('grid')" mat-icon-button class="example-icon" matTooltip="LIST VIEW">
+            <mat-icon>
+                <span class="material-icons-outlined">
+                    format_list_numbered
+                </span>
+            </mat-icon>
+        </button>
+        }@else {
+        <button (click)="toggleView('list')" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
+            <mat-icon>grid_view</mat-icon>
+        </button>
+        }
+
+    <button (click)="cycleLayout()" mat-icon-button class="example-icon"
+        matTooltip="{{layoutIcon().type | uppercase}} VIEW">
         <mat-icon>{{layoutIcon().icon}}</mat-icon>
     </button>
 

@@ -16,6 +16,7 @@ import { LayoutSelectionService } from "../../providers/layout-selection.service
 import { SelectionService } from "../../providers/selection.service";
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { GenderPipe } from "../../pipes/gender.pipe";
+import { FormatCharacterUtilService } from "./format-character-util.service";
 
 
 @Component({
@@ -66,6 +67,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   cdr = inject(ChangeDetectorRef);
 
+  formatCharacterUtilService = inject(FormatCharacterUtilService);
+
   constructor() { 
     effect(() => {
       if (this.selectedViewSignal$() === 'list') {
@@ -86,21 +89,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   formatCharacterData() {
-    console.log(this.charactersDetails)
-    const combinedData = this.charactersDetails.map(({ character, location, origin, episodes }) => ({
-      character: {
-        ...character,
-        locationId: location?.id ?? null,
-        locationName: location?.name,
-        locationDimension: location?.dimension,
-        originId: origin?.id ?? null,
-        originName: origin?.name,
-        originDimension: origin?.dimension
-      },
-      episodes,
-    }));
+    const combinedData = this.formatCharacterUtilService.formateCharacterModel(this.charactersDetails);
     this.combineDataList.set(combinedData);
-    // console.log('combinedData',this.combineDataList());
     return combinedData;
   }
 
@@ -140,9 +130,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   }
 
-  isSelected(row: Character): boolean {
-    return false;
-  }
+  // isSelected(row: Character): boolean {
+  //   return false;
+  // }
 
 
 
