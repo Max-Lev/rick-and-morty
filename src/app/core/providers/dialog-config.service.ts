@@ -58,7 +58,7 @@ export class DialogConfigService implements OnDestroy {
       restoreFocus: false,
       data: { title: title },
       width: '40%',
-      height: '45%'
+      // height: '45%'
     });
   }
 

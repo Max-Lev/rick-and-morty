@@ -3,7 +3,7 @@ import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-
 import { MatSelectModule } from '@angular/material/select';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { STATUS_ENUM } from '../../../models/status.enum';
+import { GENDER_OPTIONS, STATUS_ENUM,STATUS_OPTIONS,Option } from '../../../models/status.enum';
 
 @Component({
   selector: 'app-select',
@@ -31,6 +31,8 @@ import { STATUS_ENUM } from '../../../models/status.enum';
 export class SelectComponent implements ControlValueAccessor {
 
   @Input() control!: FormControl;
+
+  @Input({required:true}) title!: string;
 
   private _value: any;
 
@@ -74,6 +76,7 @@ export class SelectComponent implements ControlValueAccessor {
   //   this.onChange(value); // Notify the form control of the change
   // }
 
-  statusOptions = input.required<{ key: STATUS_ENUM; value: string; }[]>();
+  // statusOptions = input.required<{ key: STATUS_ENUM; value: string; }[]>();
+  statusOptions = input.required<Option[]>();
 
 }

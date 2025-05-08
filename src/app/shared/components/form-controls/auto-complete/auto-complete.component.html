@@ -17,10 +17,10 @@
     </mat-autocomplete>
   </mat-form-field>
 </form> -->
-<form class="example-form" [formGroup]="stateForm">
-  <mat-form-field class="example-full-width">
-    <mat-label>Number</mat-label>
-    <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="stateGroup"
+<!-- <form class="example-form"> -->
+  <mat-form-field >
+    <mat-label>{{title}}</mat-label>
+    <input type="text" [placeholder]="placeholder" aria-label="Number" matInput [formControl]="inputControl"
       [matAutocomplete]="auto">
     <mat-autocomplete (optionSelected)="onSelected($event)" #auto="matAutocomplete">
       @for (option of filteredOptions | async; track option) {
@@ -28,4 +28,20 @@
       }
     </mat-autocomplete>
   </mat-form-field>
-</form>
+<!-- </form> -->
+
+<!-- <mat-form-field class="example-full-width">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    type="text"
+    [placeholder]="placeholder"
+    matInput
+    [formControl]="inputControl"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelected($event)">
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value">
+      {{ option.value }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field> -->

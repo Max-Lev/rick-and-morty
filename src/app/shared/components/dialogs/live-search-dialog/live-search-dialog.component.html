@@ -9,11 +9,21 @@
 
             <app-name-search [form]="form" formControlName="name"></app-name-search>
 
-            <app-select formControlName="status" [control]="form.controls['status']"
+            <app-select [title]="'Status'" formControlName="status" [control]="form.controls['status']"
                 [statusOptions]="statusOptions"></app-select>
 
                 <!-- [options]="speciesOptions" -->
-                <app-auto-complete formControlName="species"></app-auto-complete>
+                <!-- <app-auto-complete [placeholder]="'Species list'" [title]="'Species'" 
+                formControlName="species" [options]="speciesOptions"></app-auto-complete> -->
+
+                <app-select [title]="'Species'" formControlName="species"
+                [statusOptions]="speciesOptions"></app-select>
+
+                <app-select [title]="'Gender'" formControlName="gender" formControlName="gender"
+                [statusOptions]="genderOptions"></app-select>
+
+                <app-auto-complete [placeholder]="'Ex. Anim...'" [title]="'Type'" 
+                formControlName="type" [options]="typeOptions"></app-auto-complete>
 
         </form>
     </section>
