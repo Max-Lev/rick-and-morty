@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators, } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
-import { DIALOG_TYPE_ENUM, STATUS_ENUM, STATUS_OPTIONS } from '../../models/status.enum';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { SelectComponent } from '../select/select.component';
-import { NameSearchComponent } from '../name-search/name-search.component';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { SelectionService } from '../../providers/selection.service';
+import { Component, AfterViewInit, inject, computed, effect } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { ReactiveFormsModule, FormGroup, FormControl } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialogActions, MatDialogClose, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { STATUS_OPTIONS, DIALOG_TYPE_ENUM } from "../../../models/status.enum";
+import { SelectionService } from "../../../providers/selection.service";
+import { SelectComponent } from "../../form-controls/select/select.component";
+import { NameSearchComponent } from "../../form-controls/name-search/name-search.component";
+
 @Component({
   selector: 'app-filter-dialog',
   imports: [

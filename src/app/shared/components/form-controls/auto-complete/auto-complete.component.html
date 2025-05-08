@@ -1,0 +1,31 @@
+<!-- <form [formGroup]="stateForm">
+  <mat-form-field>
+    <mat-label>States Group</mat-label>
+    <input type="text"
+           matInput
+           formControlName="stateGroup"
+           required
+           [matAutocomplete]="autoGroup">
+      <mat-autocomplete #autoGroup="matAutocomplete">
+        @for (group of stateGroupOptions | async; track group) {
+          <mat-optgroup [label]="group.letter">
+            @for (name of group.names; track name) {
+              <mat-option [value]="name">{{name}}</mat-option>
+            }
+          </mat-optgroup>
+        }
+    </mat-autocomplete>
+  </mat-form-field>
+</form> -->
+<form class="example-form" [formGroup]="stateForm">
+  <mat-form-field class="example-full-width">
+    <mat-label>Number</mat-label>
+    <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="stateGroup"
+      [matAutocomplete]="auto">
+    <mat-autocomplete (optionSelected)="onSelected($event)" #auto="matAutocomplete">
+      @for (option of filteredOptions | async; track option) {
+      <mat-option [value]="option.value">{{option.value}}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

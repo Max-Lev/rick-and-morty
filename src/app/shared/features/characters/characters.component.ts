@@ -74,11 +74,11 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   constructor() {
 
     effect(() => {
-
+      // search live hitting and no api search
       const { name, status } = this.selectionService.localSearchFiltersPayload$();
       const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
       console.log(keys)
-      debugger;
+      console.log('this.allCharacters()', this.allCharacters())
       const fullList = this.allCharacters();
 
       const filtered = fullList.filter(character => {
@@ -86,9 +86,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         const matchesStatus = !status || character.status.toLocaleLowerCase() === status.toLocaleLowerCase();
         return matchesName && matchesStatus;
       });
-
+      console.log('filtered', filtered)
       this.characters.set(filtered);
-      
+
     });
 
   }

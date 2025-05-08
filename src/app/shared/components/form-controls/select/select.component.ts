@@ -1,9 +1,9 @@
 import { Component, forwardRef, Input, input } from '@angular/core';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { STATUS_ENUM } from '../../models/status.enum';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { STATUS_ENUM } from '../../../models/status.enum';
 
 @Component({
   selector: 'app-select',
