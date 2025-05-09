@@ -51,8 +51,11 @@ export interface IPagination {
   nextPage: number | null;
   filterPayload?: IFilterPayload
 }
-export interface IFilterPayload {
-  name: string | null,
-  status: string | null
-}
 
+export interface IFilterPayload {
+  name: string | null;
+  status: string | null;
+  species?: string | null;
+  gender?: string | null;
+  type?: string | null;
+}

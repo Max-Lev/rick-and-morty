@@ -21,7 +21,10 @@ export class SelectionService {
   // selectedViewSignal$ = signal<string>('grid');
   selectedViewSignal$ = signal<string>('list');
 
-  private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
+  // private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
+  private _filterSignal = signal<IFilterPayload>({
+    name: '', status: '', gender: '', species: '', type: ''
+  });
 
   // ✅ Observable version for traditional RxJS use
   // this is makes a request to character component and provider
@@ -35,7 +38,7 @@ export class SelectionService {
   }
 
   constructor() {
-    
+
   }
 
   toggleRow(row: Character) {
@@ -65,7 +68,7 @@ export class SelectionService {
   setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>, dialogType: DIALOG_TYPE_ENUM): boolean {
     const isDirty = this.filterFormRowData(filterFormVals);
     this.getClearFilterBtnState.set(isDirty);
-    if (dialogType===DIALOG_TYPE_ENUM.filter) {
+    if (dialogType === DIALOG_TYPE_ENUM.filter) {
       this.disableScroll.set(isDirty);
     }
     return isDirty;

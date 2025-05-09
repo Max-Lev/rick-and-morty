@@ -12,6 +12,7 @@ import { SelectionService } from "../../../providers/selection.service";
 import { SelectComponent } from "../../form-controls/select/select.component";
 import { NameSearchComponent } from "../../form-controls/name-search/name-search.component";
 import { AutoCompleteComponent } from "../../form-controls/auto-complete/auto-complete.component";
+import { IFilterPayload } from "../../../models/character.model";
 
 
 @Component({
@@ -45,7 +46,6 @@ export class LiveSearchDialogComponent implements AfterViewInit {
     species: new FormControl<string | null>(null),
     gender: new FormControl<string | null>(null),
     type: new FormControl<string | null>(null)
-
   });
 
   filterFormSignal = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
@@ -67,24 +67,34 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   private setupFilterFormListener(): void {
     toObservable(this.filterFormSignal).pipe(
       debounceTime(1000),
-      distinctUntilChanged((prev, curr) => prev?.name === curr?.name && prev?.status === curr?.status),
+      // distinctUntilChanged((prev, curr) => prev?.name === curr?.name && prev?.status === curr?.status),
+      // distinctUntilChanged(areFiltersEqual),
       filter(() => this.form.valid && this.form.touched),
-      tap((val: Partial<{ name: string | null; status: string | null; }>) => {
-        const name = val?.name ?? null;
-        const status = val?.status ?? null;
-        this.selectionService.setFilter({ name, status });
+      tap((filters: Partial<IFilterPayload> | null) => {
+      
+        const safeFilters: IFilterPayload = {
+          name: filters?.name ?? null,
+          status: filters?.status ?? null,
+          gender: filters?.gender ?? null,
+          species: filters?.species ?? null,
+          type: filters?.type ?? null,
+        };
+
+        this.selectionService.setFilter(safeFilters);
 
         const formValues = this.filterFormSignal();
+        console.log('formValues ', formValues)
         this.selectionService.setClearFilterBtnState(formValues, DIALOG_TYPE_ENUM.search);
       }),
       switchMap(() => this.selectionService.filter$),
       takeUntilDestroyed(this.destroy$)
-    ).subscribe({
-      next: (res) => {
-        // console.log('Request triggered with:', res);
-      },
-      error: (err) => console.error('Filter subscription error:', err)
-    });
+    )
+      .subscribe({
+        next: (res) => {
+          console.log('Request triggered with:', res);
+        },
+        error: (err) => console.error('Filter subscription error:', err)
+      });
   }
 
   ngAfterViewInit(): void {
@@ -106,4 +116,11 @@ export class LiveSearchDialogComponent implements AfterViewInit {
     // console.log(form.value);
   }
 
+}
+
+function areFiltersEqual(
+  a: Partial<IFilterPayload> | null,
+  b: Partial<IFilterPayload> | null
+): boolean {
+  return (a?.name ?? '') === (b?.name ?? '') && (a?.status ?? '') === (b?.status ?? '');
 }

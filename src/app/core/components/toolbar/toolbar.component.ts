@@ -62,10 +62,10 @@ export class ToolbarComponent {
     effect(() => {
 
     });
-    setTimeout(() => {
-      this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
-      // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
-    }, 1000);
+    // setTimeout(() => {
+    //   this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
+    //   // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
+    // }, 1000);
 
     this.router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => this.currentUrl.set(event.url));
@@ -96,6 +96,7 @@ export class ToolbarComponent {
   }
 
   clearFilters() {
+    debugger;
     //filter dialog
     this.selectionService.localSearchFiltersPayload$.set({ name: null, status: null });
     // search dialog

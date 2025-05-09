@@ -1,29 +1,24 @@
 import {
   Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit, Signal, Input, AfterViewInit
+  ChangeDetectorRef, OnInit, Input, AfterViewInit
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
 import { COLUMNS } from './columns.config';
 import { Character, ColumnConfig, ICharacterColumns, ICharactersResponse, IFilterPayload, IPagination } from '../../models/character.model';
 import { SelectionService } from '../../providers/selection.service';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { ListViewComponent } from '../../components/list-view/list-view.component';
 import { LayoutSelectionService } from '../../providers/layout-selection.service';
 import { NgClass } from '@angular/common';
-
+import { EMPTY_FILTER } from '../../models/filter.model';
 @Component({
   selector: 'app-characters',
   standalone: true,
   imports: [
-    ScrollingModule,
-    ListViewComponent,
-    GridViewComponent,
-    NgClass
-
-  ],
+    ScrollingModule, ListViewComponent,
+    GridViewComponent, NgClass],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -57,14 +52,11 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   scrollIndexSignal$ = signal<number>(0);
   setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1)
 
-  paginationSignal$ = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { name: '', status: '' } });
-  readonly currentPageSignal$ = computed(() => {
-    return this.paginationSignal$().page;
-  });
+  paginationSignal$ = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
 
-  // filterSignal$ = this.selectionService.filterSignal$;
+  readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
 
-  prevFilter = signal<IFilterPayload>({ name: '', status: '' });
+  prevFilter = signal<IFilterPayload>({ ...EMPTY_FILTER });
 
   layoutSelectionService = inject(LayoutSelectionService);
   layout = computed(() => this.layoutSelectionService.getLayoutType());
@@ -74,24 +66,29 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   constructor() {
 
     effect(() => {
-      // search live hitting and no api search
-      const { name, status } = this.selectionService.localSearchFiltersPayload$();
-      const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
-      console.log(keys)
-      console.log('this.allCharacters()', this.allCharacters())
-      const fullList = this.allCharacters();
-
-      const filtered = fullList.filter(character => {
-        const matchesName = !name || character.name.toLowerCase().includes(name.toLowerCase());
-        const matchesStatus = !status || character.status.toLocaleLowerCase() === status.toLocaleLowerCase();
-        return matchesName && matchesStatus;
-      });
+      debugger;
+      const filtered = this.filteredCharacters();
       console.log('filtered', filtered)
       this.characters.set(filtered);
 
     });
 
   }
+  /**
+   * search live hitting and no api search
+   */
+  readonly filteredCharacters = computed(() => {
+    debugger;
+    const { name, status } = this.selectionService.localSearchFiltersPayload$();
+    const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
+    console.log('computed filteredCharacters allCharacters()', this.allCharacters())
+    return this.allCharacters().filter(character => {
+      const matchName = !name || character.name.toLowerCase().includes(name.toLowerCase());
+      const matchStatus = !status || character.status.toLowerCase() === status.toLowerCase();
+      console.log('matchName: ', matchName, 'matchStatus:', matchStatus)
+      return matchName && matchStatus;
+    });
+  });
 
   ngOnInit(): void {
     this.getResolvedData();
@@ -190,9 +187,20 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   );
 
   newFilterRequest(filter: IFilterPayload) {
-    if (filter.name !== this.prevFilter().name || filter.status !== this.prevFilter().status) {
+    if (filter.name !== this.prevFilter().name ||
+      filter.status !== this.prevFilter().status ||
+      filter.gender !== this.prevFilter().gender ||
+      filter.species !== this.prevFilter().species ||
+      filter.type !== this.prevFilter().type) {
 
-      this.prevFilter.update((v) => ({ ...v, name: filter.name, status: filter.status }));
+      this.prevFilter.update((v) => ({
+        ...v,
+        name: filter.name,
+        status: filter.status,
+        gender: filter.gender,
+        species: filter.species,
+        type: filter.type
+      }));
 
       this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
 
@@ -203,7 +211,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     }
   }
   resetFilter(filter: IFilterPayload) {
-    if (filter.name == '' || filter.status == '') {
+    if (filter.name == '' || filter.status == '' || filter.gender == '' || filter.species == '' ||
+      filter.type == '') {
       const { page, nextPage } = this.paginationSignal$();
       this.paginationSignal$.set({ page: page, nextPage: nextPage, filterPayload: filter });
     }

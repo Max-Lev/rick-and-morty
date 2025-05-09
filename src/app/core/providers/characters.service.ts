@@ -20,12 +20,15 @@ export class CharactersService {
     return this.apollo
       .query<CharacterQueryResponseDTO>({
         query: GET_CHARACTERS,
-        variables: {
+        variables: <IFilterPayload>{
           page,
           name: filter?.name,
-          status: filter?.status
+          status: filter?.status,
+          gender:filter?.gender,
+          species:filter?.species,
+          type:filter?.type,
         },
-        // fetchPolicy: 'cache-first' 
+        fetchPolicy: 'cache-first' 
       })
       .pipe(
         // auditTime(1000),

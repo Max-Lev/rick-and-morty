@@ -41,6 +41,7 @@ export class DialogConfigService implements OnDestroy {
       .subscribe((dialogValue: { action: string, query: IFilterPayload }) => {
         if (dialogValue?.action === DIALOG_TYPE_ENUM.filter) {
           console.log('filter: ', dialogValue);
+          debugger;
           // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
           this.selectionService.localSearchFiltersPayload$.set({ ...dialogValue.query }); // inject and call
         } else {
