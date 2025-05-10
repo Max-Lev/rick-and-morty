@@ -1,8 +1,9 @@
-import { Injectable, signal, inject } from "@angular/core";
+import { Injectable, signal, inject, effect } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { Observable, map, tap } from "rxjs";
-import { Character, CharacterQueryResponseDTO, IFilterPayload } from "../../shared/models/character.model";
+import { Observable, map, share, shareReplay, tap } from "rxjs";
+import { Character, CharacterQueryResponseDTO, IFilterPayload, IPagination } from "../../shared/models/character.model";
 import { GET_CHARACTERS } from "../schema/characters.schema";
+import { EMPTY_FILTER } from "../../shared/models/filter.model";
 
 
 @Injectable({
@@ -14,22 +15,30 @@ export class CharactersService {
 
   private apollo = inject(Apollo);
 
-  constructor() { }
+  pageSignal = signal<number | null>(0);
+  paginationSignal$ = signal<IPagination>({ page: 0, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
+
+  constructor() {
+    // effect(() => {
+    //   console.log('pageSignal ', this.pageSignal());
+    //   console.log('paginationSignal$ ', this.paginationSignal$());
+    // })
+  }
+
 
   getCharacters(page: number, filter?: IFilterPayload): Observable<{ characters: Character[]; nextPage: number | null }> {
-    return this.apollo
-      .query<CharacterQueryResponseDTO>({
-        query: GET_CHARACTERS,
-        variables: <IFilterPayload>{
-          page,
-          name: filter?.name,
-          status: filter?.status,
-          gender:filter?.gender,
-          species:filter?.species,
-          type:filter?.type,
-        },
-        fetchPolicy: 'cache-first' 
-      })
+    return this.apollo.query<CharacterQueryResponseDTO>({
+      query: GET_CHARACTERS,
+      variables: <IFilterPayload>{
+        page,
+        name: filter?.name,
+        status: filter?.status,
+        gender: filter?.gender,
+        species: filter?.species,
+        type: filter?.type,
+      },
+      fetchPolicy: 'cache-first'
+    })
       .pipe(
         // auditTime(1000),
         // debounceTime(1000),
@@ -39,10 +48,32 @@ export class CharactersService {
             ...character,
           })),
           nextPage: res.data.characters.info.next,
+
         })),
-        tap(() => this.isLoaded.set(true))
+        tap((res) => {
+          this.isLoaded.set(true);
+
+          this.pageSignal.set(page);
+
+          this.paginationSignal$.set({ page, nextPage: res.nextPage, filterPayload: { ...filter } });
+
+        }),
+        share()
       );
   }
+
+  // scrollNext(){
+  //   console.log('scrollNext')
+  //   this.getCharacters(this.paginationSignal$().nextPage!,this.paginationSignal$().filterPayload)
+  //   .pipe(
+  //     tap((res) => {
+  //       console.log(res);
+  //       // this.paginationSignal$.set({ page: this.paginationSignal$().page + 1, nextPage: res.nextPage, filterPayload: { ...this.paginationSignal$().filterPayload } });
+  //     })
+  //   ).subscribe((res)=>{
+  //     console.log(res);
+  //   })
+  // }
 
 
 }

@@ -8,6 +8,16 @@
             filter_alt_off
         </mat-icon>
     </button>
+    <!-- [style.color]="clearBtnIconDisabled() ? 'gray' : 'red'" -->
+    <button  (click)="nextPage()" class="scrollbtn"
+    
+         mat-icon-button matTooltip="SCROLL NEXT">
+        <mat-icon  style="font-size: smaller;" 
+        matBadge="{{activePage()}}"
+        [matBadgePosition]="'above after'">
+            unfold_more_double
+        </mat-icon>
+    </button>
     <span class="spacer"></span>
 
     <!-- FORM ACTIVE RESET -->

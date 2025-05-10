@@ -53,8 +53,8 @@ export interface IPagination {
 }
 
 export interface IFilterPayload {
-  name: string | null;
-  status: string | null;
+  name?: string | null;
+  status?: string | null;
   species?: string | null;
   gender?: string | null;
   type?: string | null;

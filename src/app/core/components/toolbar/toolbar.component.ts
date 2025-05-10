@@ -14,6 +14,7 @@ import { LayoutSelectionService } from '../../../shared/providers/layout-selecti
 import { DIALOG_TYPE_ENUM, LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { filter, single } from 'rxjs';
 import { UpperCasePipe } from '@angular/common';
+import { CharactersService } from '../../providers/characters.service';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -58,10 +59,17 @@ export class ToolbarComponent {
 
   backIconDisabled = computed(() => this.currentUrl() !== '/details');
 
-  constructor() {
-    effect(() => {
+  charactersService = inject(CharactersService);
 
-    });
+  activePage = computed(()=>{
+    return (this.selectionService.activePage()!==null)?this.selectionService.activePage(): 'x';
+  });
+
+  constructor() {
+    // effect(() => {
+    //   console.log((this.selectionService.activePage()!==null)?this.selectionService.activePage(): 'x');
+    //   console.log(this.selectionService.activePage());
+    // });
     // setTimeout(() => {
     //   this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
     //   // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
@@ -96,7 +104,6 @@ export class ToolbarComponent {
   }
 
   clearFilters() {
-    debugger;
     //filter dialog
     this.selectionService.localSearchFiltersPayload$.set({ name: null, status: null });
     // search dialog
@@ -109,6 +116,10 @@ export class ToolbarComponent {
 
   navigateCharacters() {
     this.router.navigateByUrl('/characters');
+  }
+
+  nextPage(){
+    this.selectionService.scrollNextActive.set(true);
   }
 
 }

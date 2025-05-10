@@ -10,4 +10,11 @@
         color: white;
         background-color: red;
     }
+
+    .scrollbtn {
+        .mat-badge-content,
+        .mat-badge-medium.mat-badge-overlap .mat-badge-content {
+            margin-left: -6px;
+        }
+    }
 }

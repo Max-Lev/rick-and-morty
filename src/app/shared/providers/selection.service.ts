@@ -1,7 +1,8 @@
 import { computed, effect, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { Character, ICharacterColumns, IFilterPayload } from '../models/character.model';
+import { Character, ICharacterColumns, IFilterPayload, IPagination } from '../models/character.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { DIALOG_TYPE_ENUM } from '../models/status.enum';
+import { EMPTY_FILTER } from '../models/filter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,13 @@ export class SelectionService {
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
+  }
+
+  scrollNextPage = signal<IPagination>({ page: 0, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
+  scrollNextActive = signal<boolean>(false);
+  activePage = signal<number | null>(0);
+  setScrollNextPage(value: IPagination) {
+    this.scrollNextPage.set(value);
   }
 
   constructor() {
