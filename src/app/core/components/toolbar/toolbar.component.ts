@@ -15,6 +15,7 @@ import { DIALOG_TYPE_ENUM, LAYOUT_TYPE_ENUM } from '../../../shared/models/statu
 import { filter, single } from 'rxjs';
 import { UpperCasePipe } from '@angular/common';
 import { CharactersService } from '../../providers/characters.service';
+import { EMPTY_FILTER } from '../../../shared/models/filter.model';
 @Component({
   selector: 'app-toolbar',
   imports: [
@@ -61,8 +62,8 @@ export class ToolbarComponent {
 
   charactersService = inject(CharactersService);
 
-  activePage = computed(()=>{
-    return (this.selectionService.activePage()!==null)?this.selectionService.activePage(): 'x';
+  activePage = computed(() => {
+    return (this.selectionService.activePage() !== null) ? this.selectionService.activePage() : 'x';
   });
 
   constructor() {
@@ -82,6 +83,8 @@ export class ToolbarComponent {
 
   toggleView(view: string) {
     this.selectionService.selectedViewSignal$.set(view);
+    // this.selectionService.setView$(view);
+    // this.selectionService.viewChangeActive.set(true);
   }
 
   openDialogHandler(dialogAction: IDialogHandler) {
@@ -105,20 +108,24 @@ export class ToolbarComponent {
 
   clearFilters() {
     //filter dialog
-    this.selectionService.localSearchFiltersPayload$.set({ name: null, status: null });
+    // this.selectionService.localSearchFiltersPayload$.set({ name: null, status: null });
+    this.selectionService.localSearchFiltersPayload$.set({ ...EMPTY_FILTER });
     // search dialog
-    this.selectionService.setFilter({ name: null, status: null });
+    // this.selectionService.setFilter({ name: null, status: null });
+    this.selectionService.setFilter({ ...EMPTY_FILTER });
     // clear button disabled
     this.selectionService.getClearFilterBtnState.set(false);
     //enable scroll after dialog filter
-    this.selectionService.disableScroll.set(false);
+    this.selectionService.disableFilterNextScroll.set(false);
+
+    this.selectionService.resetFilters.set(true);
   }
 
   navigateCharacters() {
     this.router.navigateByUrl('/characters');
   }
 
-  nextPage(){
+  nextPage() {
     this.selectionService.scrollNextActive.set(true);
   }
 

@@ -19,7 +19,6 @@ import { IFilterPayload } from "../../../models/character.model";
   selector: 'app-live-search-dialog',
   imports: [
     MatDialogActions,
-    MatDialogClose,
     MatDialogContent,
     MatButtonModule,
     ReactiveFormsModule,
@@ -59,8 +58,8 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   constructor() {
     this.setupFilterFormListener();
     effect(() => {
-      console.log(this.form.valid, this.form.touched)
-      console.log('filterFormSignal ', this.filterFormSignal())
+      // console.log(this.form.valid, this.form.touched)
+      // console.log('filterFormSignal ', this.filterFormSignal())
     })
   }
 
@@ -83,7 +82,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
         this.selectionService.setFilter(safeFilters);
 
         const formValues = this.filterFormSignal();
-        console.log('formValues ', formValues)
+        // console.log('formValues ', formValues)
         this.selectionService.setClearFilterBtnState(formValues, DIALOG_TYPE_ENUM.search);
       }),
       switchMap(() => this.selectionService.filter$),
@@ -91,7 +90,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
     )
       .subscribe({
         next: (res) => {
-          console.log('Request triggered with:', res);
+          // console.log('Request triggered with:', res);
         },
         error: (err) => console.error('Filter subscription error:', err)
       });
@@ -99,18 +98,19 @@ export class LiveSearchDialogComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
 
-    this.form.valueChanges.subscribe({
-      next: (val) => {
-        console.log('Form changed:', val);
-      }
-    });
+    // this.form.valueChanges.subscribe({
+    //   next: (val) => {
+    //     console.log('Form changed:', val);
+    //   }
+    // });
 
   }
 
 
-  search() {
-    this.dialogRef.close()
+  close() {
+    this.dialogRef.close({ action: DIALOG_TYPE_ENUM.search, query: this.filterFormSignal() });
   }
+  
 
   onSubmit(form: FormGroup) {
     // console.log(form.value);

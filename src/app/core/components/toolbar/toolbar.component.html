@@ -12,7 +12,7 @@
     <button  (click)="nextPage()" class="scrollbtn"
     
          mat-icon-button matTooltip="SCROLL NEXT">
-        <mat-icon  style="font-size: smaller;" 
+        <mat-icon  style="font-size: smaller;" aria-hidden="false"
         matBadge="{{activePage()}}"
         [matBadgePosition]="'above after'">
             unfold_more_double
@@ -38,7 +38,7 @@
 
     <!-- SELECTED ITEMS COUNT -->
     <button mat-icon-button [disabled]="!selectedCount()" matTooltip="SHOW SELECTED" (click)="navigateDetails()">
-        <mat-icon matBadge="{{(selectedCount()===0)? null:selectedCount()}}"
+        <mat-icon matBadge="{{(selectedCount()===0)? null:selectedCount()}}" aria-hidden="false"
             [style.color]="(selectedCount() > 0)? 'white':'grey'"
             [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
     </button>

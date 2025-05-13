@@ -1,7 +1,7 @@
 import { Component, effect, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { DetailsCharacterList, IDetail, IDetailsResponse } from '../../models/details.model';
+import { DetailsCharacterList, EPISODE_COLUMNS, IDetail, IDetailsResponse, LOCATION_COLUMNS, ORIGIN_COLUMNS } from '../../models/details.model';
 import { JsonPipe, NgStyle } from '@angular/common';
 import { ColorPipe } from '../../pipes/color.pipe';
 import { IsEmptyPipe } from '../../pipes/is-empty.pipe';
@@ -25,19 +25,16 @@ import { GenderPipe } from '../../pipes/gender.pipe';
 })
 export class DetailsCardComponent {
 
-  locationColumns = ['id', 'name', 'dimension'];
-  originColumns = ['id', 'name', 'dimension'];
-  episodeColumns = ['id','episode', 'name'];
+  locationColumns = LOCATION_COLUMNS;
+  originColumns = ORIGIN_COLUMNS;
+  episodeColumns = EPISODE_COLUMNS;
 
-  // character = input.required<IDetail>();
   character = input.required<DetailsCharacterList>();
 
   readonly panelOpenState = signal(true);
 
   constructor(){
-    effect(()=>{
-      console.log(this.character())
-    })
+ 
   }
 
 }

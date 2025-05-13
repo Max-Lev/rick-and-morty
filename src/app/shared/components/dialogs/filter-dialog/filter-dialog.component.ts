@@ -69,7 +69,6 @@ export class FilterDialogComponent implements AfterViewInit {
   }
 
   onSubmit(form: FormGroup) {
-    // console.log(form.value);
     this.filter();
   }
 

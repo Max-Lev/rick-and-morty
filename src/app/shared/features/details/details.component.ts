@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, Input, OnInit, QueryList, signal, ViewChild, ViewChildren } from "@angular/core";
 import { GetDetailsService } from "../../../core/providers/get-details.service";
-import { DetailsCharacterList, IDetail, IDetailsResponse } from "../../models/details.model";
+import { DetailsCharacterList, EPISODE_COLUMNS, IDetail, IDetailsResponse, LOCATION_COLUMNS, ORIGIN_COLUMNS } from "../../models/details.model";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule, NgSwitch, NgSwitchCase } from "@angular/common";
@@ -44,9 +44,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   // details$ = computed(() => this.charactersDetails);
 
-  locationColumns = ['id', 'name', 'dimension'];
-  originColumns = ['id', 'name', 'dimension'];
-  episodeColumns = ['id','episode', 'name'];
+  locationColumns = LOCATION_COLUMNS;
+  originColumns = ORIGIN_COLUMNS;
+  episodeColumns = EPISODE_COLUMNS;
 
   expandedRows: { [key: number]: boolean } = {};
 
@@ -62,14 +62,14 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   episodeDataSources: { [id: number]: MatTableDataSource<any> } = {};
   paginators: { [id: number]: MatPaginator } = {};
   @ViewChildren('paginator') paginatorsViewChildren!: QueryList<MatPaginator>;
-  
+
   combineDataList = signal<DetailsCharacterList[]>([]);
 
   cdr = inject(ChangeDetectorRef);
 
   formatCharacterUtilService = inject(FormatCharacterUtilService);
 
-  constructor() { 
+  constructor() {
     effect(() => {
       if (this.selectedViewSignal$() === 'list') {
         this.bindPaginators();

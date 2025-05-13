@@ -1,4 +1,6 @@
-import { Character } from "./character.model"
+import { Character } from "./character.model";
+
+
 
 export interface ILocation {
     id: string,
@@ -71,3 +73,7 @@ export type DetailsCharacterList = {
     },
     episodes: IEpisode[];
   }
+
+  export const LOCATION_COLUMNS = ['id', 'name', 'dimension'];
+  export const ORIGIN_COLUMNS = ['id', 'name', 'dimension'];
+  export const EPISODE_COLUMNS = ['id','episode', 'name'];

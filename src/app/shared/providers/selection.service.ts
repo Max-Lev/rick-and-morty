@@ -3,6 +3,7 @@ import { Character, ICharacterColumns, IFilterPayload, IPagination } from '../mo
 import { toObservable } from '@angular/core/rxjs-interop';
 import { DIALOG_TYPE_ENUM } from '../models/status.enum';
 import { EMPTY_FILTER } from '../models/filter.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +24,14 @@ export class SelectionService {
   selectedViewSignal$ = signal<string>('list');
 
   // private _filterSignal = signal<IFilterPayload>({ name: '', status: '' });
-  private _filterSignal = signal<IFilterPayload>({
-    name: '', status: '', gender: '', species: '', type: ''
-  });
+  private _filterSignal = signal<IFilterPayload>({...EMPTY_FILTER});
 
   // ✅ Observable version for traditional RxJS use
   // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
 
   // for filter dialog
-  localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '' });
+  localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '',gender:'' });
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
@@ -41,6 +40,7 @@ export class SelectionService {
   scrollNextPage = signal<IPagination>({ page: 0, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
   scrollNextActive = signal<boolean>(false);
   activePage = signal<number | null>(0);
+  viewChangeActive = signal<boolean>(false);
   setScrollNextPage(value: IPagination) {
     this.scrollNextPage.set(value);
   }
@@ -70,14 +70,14 @@ export class SelectionService {
   }
 
 
-  disableScroll = signal<boolean>(false);
+  disableFilterNextScroll = signal<boolean>(false);
   getClearFilterBtnState = signal<boolean>(false);
-  // getClearSearchBtnState = signal<boolean>(false);
+  resetFilters = signal<boolean>(false);
   setClearFilterBtnState(filterFormVals: Partial<IFilterPayload>, dialogType: DIALOG_TYPE_ENUM): boolean {
     const isDirty = this.filterFormRowData(filterFormVals);
     this.getClearFilterBtnState.set(isDirty);
     if (dialogType === DIALOG_TYPE_ENUM.filter) {
-      this.disableScroll.set(isDirty);
+      this.disableFilterNextScroll.set(isDirty);
     }
     return isDirty;
   }
@@ -94,5 +94,15 @@ export class SelectionService {
     const isDirty = values.some(value => value !== '' && value !== null && value !== undefined);
     return isDirty;
   }
+
+  // _listScrollState = signal<number>(0)
+  // _gridScrollState = signal<number>(0)
+
+  // private viewChanged = new BehaviorSubject(<string>('list'));
+  // viewChanged$ = this.viewChanged.asObservable();
+  // setView$(view: string) {
+  //   this.viewChanged.next(view);
+  // }
+
 
 }

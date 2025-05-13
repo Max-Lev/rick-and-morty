@@ -16,6 +16,7 @@ export class CharactersService {
   private apollo = inject(Apollo);
 
   pageSignal = signal<number | null>(0);
+  
   paginationSignal$ = signal<IPagination>({ page: 0, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
 
   constructor() {
@@ -26,7 +27,7 @@ export class CharactersService {
   }
 
 
-  getCharacters(page: number, filter?: IFilterPayload): Observable<{ characters: Character[]; nextPage: number | null }> {
+  getCharacters(page: number, filter?: IFilterPayload): Observable<{ characters: Character[]; nextPage: number | null, page: number }> {
     return this.apollo.query<CharacterQueryResponseDTO>({
       query: GET_CHARACTERS,
       variables: <IFilterPayload>{
@@ -43,14 +44,13 @@ export class CharactersService {
         // auditTime(1000),
         // debounceTime(1000),
         map((res) => ({
-          characters: res.data.characters.results.map((character) => ({
-            selected: false,
-            ...character,
-          })),
+          characters: res.data.characters.results.map((character) => ({ selected: false, ...character, })),
           nextPage: res.data.characters.info.next,
+          page: res.data.characters.info.prev
 
         })),
         tap((res) => {
+
           this.isLoaded.set(true);
 
           this.pageSignal.set(page);
@@ -58,7 +58,7 @@ export class CharactersService {
           this.paginationSignal$.set({ page, nextPage: res.nextPage, filterPayload: { ...filter } });
 
         }),
-        share()
+        shareReplay()
       );
   }
 

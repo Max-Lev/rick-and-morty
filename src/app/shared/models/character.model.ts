@@ -35,6 +35,7 @@ export interface CharacterQueryResponseDTO {
     info: {
       next: number | null;
       pages: number;
+      prev:number;
     };
     results: Character[];
   };
@@ -43,6 +44,7 @@ export interface CharacterQueryResponseDTO {
 export interface ICharactersResponse {
   characters: Character[];
   nextPage: number | null;
+  page: number;
 }
 
 
