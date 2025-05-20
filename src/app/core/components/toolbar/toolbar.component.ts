@@ -63,31 +63,28 @@ export class ToolbarComponent {
 
   charactersService = inject(CharactersService);
 
-  pageIndicator = computed(() => {
-    const { activePage, count } = this.selectionService.pageIndicator();
-    // console.log(activePage, count);
-    const pageCalc = count && Math.ceil(count / 20);
-    return {
-      count,
-      activePage:(activePage===null) ? pageCalc : activePage,
-      pageCalc
-    }
-  });
+  // pageIndicator = computed(() => {
+  //   const { activePage, count } = this.selectionService.pageIndicator();
+  //   const pageCalc = count && Math.ceil(count / 20);
+  //   return {
+  //     count,
+  //     activePage: (activePage === null) ? pageCalc : activePage,
+  //     pageCalc
+  //   }
+  // });
   characterIndicator = computed(() => {
-    // { loaded: number; count: number; }
-    const {count,loaded} = this.selectionService.characterIndicator();
-    // console.log(count,loaded,this.selectionService.characterIndicator());
-    return{
-      count,loaded
+    const { count, loaded } = this.selectionService.characterIndicator();
+    return {
+      count, loaded
     }
   });
 
   constructor() {
 
-    effect(() => {
-      // console.log(this.pageIndicator())
-      // console.log(this.characterIndicator())
-    })
+    // effect(() => {
+    //   console.log(this.pageIndicator())
+    //   console.log(this.characterIndicator())
+    // })
 
     // setTimeout(() => {
     //   this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
@@ -144,7 +141,24 @@ export class ToolbarComponent {
   }
 
   nextPage() {
+    if(this.selectionService.disableFilterNextScroll()) return;
     this.selectionService.scrollNextActive.set(true);
   }
+
+  matBageIndicator = computed(() => {
+    const isFilterActive = this.selectionService.disableFilterNextScroll();
+    
+    if (isFilterActive) {
+      const lenght = this.selectionService.filteredCount();
+      return lenght;
+    } else {
+      const { activePage, count } = this.selectionService.pageIndicator();
+      const pageCalc = count && Math.ceil(count / 20);
+      const active = (activePage === null) ? pageCalc : activePage;
+      const formate = `${active + "/" + pageCalc}`
+      return formate;
+
+    }
+  });
 
 }

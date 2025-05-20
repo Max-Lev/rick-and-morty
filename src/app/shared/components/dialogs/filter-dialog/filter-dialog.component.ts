@@ -44,6 +44,10 @@ export class FilterDialogComponent implements AfterViewInit {
 
   constructor() {
     this.setSubmitBtnState();
+    // effect(()=>{
+    //   console.log(this.filterFormSignal());
+    //   console.log(this.isFilterBtnDisabled());
+    // })
   }
   ngAfterViewInit(): void {
 

@@ -55,6 +55,8 @@ export class SelectionService {
     this.scrollNextPage.set(value);
   }
 
+  filteredCount = signal<number>(0);
+
   constructor() {
 
   }

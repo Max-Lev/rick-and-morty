@@ -14,15 +14,15 @@
     <!-- {{pageIndicator().activePage}}/{{pageIndicator().pageCalc}} -->
 
     <!-- matBadge="{{characterIndicator().loaded}}/{{characterIndicator().count}}" -->
-    <button [disabled]="this.selectionService.getClearFilterBtnState()" (click)="nextPage()" class="scrollbtn"
-        mat-icon-button matTooltip="SCROLL NEXT">
-        <!-- <mat-icon style="font-size: smaller;" aria-hidden="false" matBadge="{{activePage()}}" -->
-        <!-- matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}" -->
-        <!-- matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}" -->
-        <!-- matBadge="{{pageIndicator().activePage}}" -->
+    <!-- [disabled]="this.selectionService.getClearFilterBtnState()" -->
+    <!-- [ngClass]="(this.selectionService.getClearFilterBtnState()) ? 'disable-icon':''" -->
+
+    <!-- {{pageIndicator().pageCalc && pageIndicator().activePage + '/'}}{{pageIndicator().pageCalc && pageIndicator().pageCalc}} -->
+
+    <button (click)="nextPage()" class="scrollbtn" mat-icon-button matTooltip="SCROLL NEXT">
         <mat-icon style="font-size: smaller;" aria-hidden="false"
-        matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}"
-            [ngClass]="(this.selectionService.getClearFilterBtnState()) ? 'disable-icon':''"
+            matBadge="{{selectionService.pageIndicator().count && matBageIndicator()}}"
+            [ngClass]="(this.selectionService.disableFilterNextScroll()) ? 'disable-icon':''"
             [matBadgePosition]="'above after'">
             unfold_more_double
         </mat-icon>

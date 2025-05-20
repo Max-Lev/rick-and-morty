@@ -71,8 +71,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       return matchName && matchStatus && matchGender;
     });
 
-    // console.log('_allCharacters: ', _allCharacters.length,_allCharacters);
-    // console.log('filtered characters: ', this.allCharacters().length);
+    console.log('_allCharacters: ', _allCharacters.length, _allCharacters);
+    console.log('filtered characters: ', this.allCharacters().length);
     return _allCharacters;
   });
 
@@ -131,12 +131,21 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   setFilteredCharactersHandler() {
     effect(() => {
-      const filtered = this.filteredCharacters();
-      this.characters.set(filtered);
+      // console.log('filtered getClearFilterBtnState: ', this.selectionService.getClearFilterBtnState());
+      //   console.log('filtered disableFilterNextScroll: ', this.selectionService.disableFilterNextScroll());
+      if (this.selectionService.getClearFilterBtnState()) {
+        const filtered = this.filteredCharacters();
+        this.selectionService.filteredCount.set(filtered.length);
+        // console.log('filtered: ', filtered);
+        // console.log('filtered getClearFilterBtnState: ', this.selectionService.getClearFilterBtnState());
+        // console.log('filtered disableFilterNextScroll: ', this.selectionService.disableFilterNextScroll());
+        this.characters.set(filtered);
+      }else{
+        this.characters.set(this.allCharacters());
+      }
     });
   }
 
-  p = 1;
   onScroll(index: number): void {
 
     const disableScroll = this.selectionService.disableFilterNextScroll();
@@ -156,11 +165,11 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         this.gridScrollState.set(index);
       }
       if (nextPage && index > 0 && nextPage > page) {
-        this.p++;
+
         if (!viewportSize) return;
         const { end, total } = viewportSize;
-        console.log('index ', index, 'page ', page);
-        console.log(this.selectionService.characterIndicator());
+        // console.log('index ', index, 'page ', page);
+        // console.log(this.selectionService.characterIndicator());
         const { loaded, count } = this.selectionService.characterIndicator();
         this.setItemSize(index);
         // (page * 20 - loaded <= 20) &&
@@ -298,8 +307,8 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     const { page, nextPage, filterPayload } = this.pagination();
     if (nextPage && !this.isLoading()) {
       this.isLoading.set(true);
-      console.log('nextPage ', nextPage);
-      console.log(this.pagination());
+      // console.log('nextPage ', nextPage);
+      // console.log(this.pagination());
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
         this.processCharactersData(response, 'scroll');
         this.pagination.update(p => ({
