@@ -40,9 +40,6 @@ import { FormatCharacterUtilService } from "./format-character-util.service";
 export class DetailsComponent implements OnInit, AfterViewInit {
 
   @Input() charactersDetails!: IDetailsResponse;
-  // getDetailsService = inject(GetDetailsService);
-
-  // details$ = computed(() => this.charactersDetails);
 
   locationColumns = LOCATION_COLUMNS;
   originColumns = ORIGIN_COLUMNS;
@@ -130,9 +127,6 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   }
 
-  // isSelected(row: Character): boolean {
-  //   return false;
-  // }
 
 
 

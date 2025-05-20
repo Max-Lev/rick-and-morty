@@ -13,11 +13,7 @@
       <ng-container [ngSwitch]="column.columnDef">
         <!-- ID Column -->
         <ng-container *ngSwitchCase="'id'">
-          <!-- @if (!isSelected(row)) {
-            {{ row.character?.id }}
-          } @else { -->
-            <div class="selected-id">({{ row.character?.id }})</div>
-          <!-- } -->
+          <div class="selected-id">({{ row.character?.id }})</div>
         </ng-container>
 
         <!-- Status Column -->
@@ -152,8 +148,8 @@
             <tr mat-row *matRowDef="let row; columns: episodeColumns;"></tr>
           </table>
           @if(element.episodes.length > 5){
-            <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
-            </mat-paginator>
+          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+          </mat-paginator>
           }
         </div>
         }
@@ -166,8 +162,8 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
   <tr mat-row *matRowDef="let element; columns: displayedColumns;" (click)="toggle(element)"></tr>
   <tr mat-row *matRowDef="let element; columns: ['expandedDetail']; when: isExpandedRow"
-  [class.hidden-row]="!expandedRows[element.character.id]">
-</tr>
+    [class.hidden-row]="!expandedRows[element.character.id]">
+  </tr>
 
 </table>
 }@else{

@@ -1,9 +1,6 @@
 <mat-form-field class="example-full-width">
     <mat-label>{{title}}</mat-label>
-    <!-- <mat-select formControlName={{control}}> -->
-    <!-- <mat-select  (selectionChange)="onChange($event.value)"> -->
     <mat-select  (selectionChange)="onSelect($event.value)">
-    <!-- <mat-select  (selectionChange)="_onChange($event.value)"> -->
         <mat-option>None</mat-option>
         @for (status of statusOptions(); track $index;) {
         <mat-option [value]="status.value">{{status.value}}</mat-option>

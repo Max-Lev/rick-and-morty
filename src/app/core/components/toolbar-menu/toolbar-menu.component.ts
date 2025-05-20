@@ -24,16 +24,16 @@ export class ToolbarMenuComponent {
 
   menuOptions = [
     {
-      label: 'Filter Characters',
-      icon: 'filter_alt',
-      type:DIALOG_TYPE_ENUM.filter,
-      action: (): void => this.openDialog({title:this.menuOptions[0].label,dialogType:DIALOG_TYPE_ENUM.filter})
-    },
-    {
       label: 'Search Characters',
       icon: 'search',
       type:DIALOG_TYPE_ENUM.search,
-      action: (): void => this.openDialog({title:this.menuOptions[1].label,dialogType:DIALOG_TYPE_ENUM.search})
+      action: (): void => this.openDialog({title:'Search Characters',dialogType:DIALOG_TYPE_ENUM.search})
+    },
+    {
+      label: 'Filter Characters',
+      icon: 'filter_alt',
+      type:DIALOG_TYPE_ENUM.filter,
+      action: (): void => this.openDialog({title:'Filter Characters',dialogType:DIALOG_TYPE_ENUM.filter})
     }
   ];
 

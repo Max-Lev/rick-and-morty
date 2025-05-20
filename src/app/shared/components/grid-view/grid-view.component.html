@@ -16,7 +16,6 @@
                 <span [style.marginTop]="(character.status==='Alive' || character.status==='Dead') ? '-5px' :'0px'"
                     [style.color]="character.status | color"
                     [innerHTML]="character.status | isEmpty:character.status:'status'"></span>
-                <!-- <div class="status-indicator" [style.background]="character.status | color:'status'"></div> -->
             </div>
 
             <div class="section">
@@ -35,10 +34,6 @@
                     {{character.type | isEmpty:character['type']}}
                 </span>
             </div>
-            <!-- <div class="section">
-                <ng-content origin></ng-content>
-                <ng-content location></ng-content>
-            </div> -->
         </div>
 
     </article>

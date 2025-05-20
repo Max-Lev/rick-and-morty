@@ -63,15 +63,6 @@ export class ToolbarComponent {
 
   charactersService = inject(CharactersService);
 
-  // pageIndicator = computed(() => {
-  //   const { activePage, count } = this.selectionService.pageIndicator();
-  //   const pageCalc = count && Math.ceil(count / 20);
-  //   return {
-  //     count,
-  //     activePage: (activePage === null) ? pageCalc : activePage,
-  //     pageCalc
-  //   }
-  // });
   characterIndicator = computed(() => {
     const { count, loaded } = this.selectionService.characterIndicator();
     return {
@@ -81,16 +72,6 @@ export class ToolbarComponent {
 
   constructor() {
 
-    // effect(() => {
-    //   console.log(this.pageIndicator())
-    //   console.log(this.characterIndicator())
-    // })
-
-    // setTimeout(() => {
-    //   this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
-    //   // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});
-    // }, 1000);
-
     this.router.events.pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => this.currentUrl.set(event.url));
 
@@ -98,8 +79,7 @@ export class ToolbarComponent {
 
   toggleView(view: string) {
     this.selectionService.selectedViewSignal$.set(view);
-    // this.selectionService.setView$(view);
-    // this.selectionService.viewChangeActive.set(true);
+    
   }
 
   openDialogHandler(dialogAction: IDialogHandler) {
@@ -123,10 +103,8 @@ export class ToolbarComponent {
 
   clearFilters() {
     //filter dialog
-    // this.selectionService.localSearchFiltersPayload$.set({ name: null, status: null });
     this.selectionService.localSearchFiltersPayload$.set({ ...EMPTY_FILTER });
     // search dialog
-    // this.selectionService.setFilter({ name: null, status: null });
     this.selectionService.setFilter({ ...EMPTY_FILTER });
     // clear button disabled
     this.selectionService.getClearFilterBtnState.set(false);
