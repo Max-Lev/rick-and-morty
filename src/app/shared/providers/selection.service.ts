@@ -1,9 +1,9 @@
 import { computed, effect, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { Character, ICharacterColumns, IFilterPayload, IPagination } from '../models/character.model';
+import { Character, ICharacterColumns, IFilterPayload, IPagination, PageIndicator } from '../models/character.model';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { DIALOG_TYPE_ENUM } from '../models/status.enum';
 import { EMPTY_FILTER } from '../models/filter.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,11 @@ export class SelectionService {
   // this is makes a request to character component and provider
   filter$ = toObservable(this._filterSignal);
 
+  // Add getFilterStream method to solve the error
+  getFilterStream(): Observable<IFilterPayload> {
+    return this.filter$;
+  }
+
   // for filter dialog
   localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '',gender:'' });
 
@@ -37,9 +42,14 @@ export class SelectionService {
     this._filterSignal.set(value);
   }
 
-  scrollNextPage = signal<IPagination>({ page: 0, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
+  scrollNextPage = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
   scrollNextActive = signal<boolean>(false);
-  activePage = signal<number | null>(0);
+  // activePage = signal<number | null>(1);
+  // totalPages = signal<number | null>(null);
+  pageIndicator = signal<PageIndicator>({activePage:1,count:null});
+
+  characterIndicator = signal<{loaded:number, count:number}>({loaded:20,count:0});
+
   viewChangeActive = signal<boolean>(false);
   setScrollNextPage(value: IPagination) {
     this.scrollNextPage.set(value);
@@ -94,15 +104,6 @@ export class SelectionService {
     const isDirty = values.some(value => value !== '' && value !== null && value !== undefined);
     return isDirty;
   }
-
-  // _listScrollState = signal<number>(0)
-  // _gridScrollState = signal<number>(0)
-
-  // private viewChanged = new BehaviorSubject(<string>('list'));
-  // viewChanged$ = this.viewChanged.asObservable();
-  // setView$(view: string) {
-  //   this.viewChanged.next(view);
-  // }
 
 
 }

@@ -40,7 +40,6 @@ export class DialogConfigService implements OnDestroy {
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$))
       .subscribe((dialogValue: { action: string, query: IFilterPayload }) => {
         if (dialogValue?.action === DIALOG_TYPE_ENUM.filter) {
-          // console.log('filter: ', dialogValue);
           // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
           this.selectionService.localSearchFiltersPayload$.set({ ...dialogValue.query }); // inject and call
         } else {
@@ -58,14 +57,12 @@ export class DialogConfigService implements OnDestroy {
       restoreFocus: false,
       data: { title: title },
       width: '40%',
-      // height: '45%'
     });
 
 
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroy$))
     .subscribe((dialogValue: { action: string, query: IFilterPayload }) => {
       if (dialogValue?.action === DIALOG_TYPE_ENUM.search) {
-        // console.log('search: ', dialogValue);
         // this.selectionService.setFilter({ ...dialogValue.query }); // inject and call
         this.selectionService.localSearchFiltersPayload$.set({ ...dialogValue.query }); // inject and call
       } else {

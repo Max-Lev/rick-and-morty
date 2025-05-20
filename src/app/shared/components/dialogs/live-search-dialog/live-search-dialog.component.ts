@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, inject, DestroyRef, effect } from "@angular/core";
 import { toSignal, toObservable, takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogActions, MatDialogClose, MatDialogContent, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -14,7 +14,6 @@ import { NameSearchComponent } from "../../form-controls/name-search/name-search
 import { AutoCompleteComponent } from "../../form-controls/auto-complete/auto-complete.component";
 import { IFilterPayload } from "../../../models/character.model";
 
-
 @Component({
   selector: 'app-live-search-dialog',
   imports: [
@@ -27,7 +26,8 @@ import { IFilterPayload } from "../../../models/character.model";
     MatSelectModule,
     SelectComponent,
     NameSearchComponent,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    
   ],
   templateUrl: './live-search-dialog.component.html',
   styleUrl: './live-search-dialog.component.scss'
@@ -57,10 +57,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
 
   constructor() {
     this.setupFilterFormListener();
-    effect(() => {
-      // console.log(this.form.valid, this.form.touched)
-      // console.log('filterFormSignal ', this.filterFormSignal())
-    })
+
   }
 
   private setupFilterFormListener(): void {
@@ -82,7 +79,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
         this.selectionService.setFilter(safeFilters);
 
         const formValues = this.filterFormSignal();
-        // console.log('formValues ', formValues)
+        
         this.selectionService.setClearFilterBtnState(formValues, DIALOG_TYPE_ENUM.search);
       }),
       switchMap(() => this.selectionService.filter$),
@@ -90,19 +87,13 @@ export class LiveSearchDialogComponent implements AfterViewInit {
     )
       .subscribe({
         next: (res) => {
-          // console.log('Request triggered with:', res);
+          
         },
         error: (err) => console.error('Filter subscription error:', err)
       });
   }
 
   ngAfterViewInit(): void {
-
-    // this.form.valueChanges.subscribe({
-    //   next: (val) => {
-    //     console.log('Form changed:', val);
-    //   }
-    // });
 
   }
 
@@ -113,14 +104,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
   
 
   onSubmit(form: FormGroup) {
-    // console.log(form.value);
+    
   }
 
-}
-
-function areFiltersEqual(
-  a: Partial<IFilterPayload> | null,
-  b: Partial<IFilterPayload> | null
-): boolean {
-  return (a?.name ?? '') === (b?.name ?? '') && (a?.status ?? '') === (b?.status ?? '');
 }

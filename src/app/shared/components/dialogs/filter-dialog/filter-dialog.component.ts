@@ -61,11 +61,9 @@ export class FilterDialogComponent implements AfterViewInit {
   }
 
   filter() {
-    // console.log(this.form)
     this.dialogRef.close({ action: DIALOG_TYPE_ENUM.filter, query: this.filterFormSignal() });
     const formValues = this.filterFormSignal();
     this.selectionService.setClearFilterBtnState(formValues,DIALOG_TYPE_ENUM.filter);
-    // this.selectionService.setClearFilterBtnState(formValues,{dialogType:'filter'});
   }
 
   onSubmit(form: FormGroup) {

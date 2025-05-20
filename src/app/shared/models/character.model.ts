@@ -35,7 +35,8 @@ export interface CharacterQueryResponseDTO {
     info: {
       next: number | null;
       pages: number;
-      prev:number;
+      prev: number;
+      count: number | null;
     };
     results: Character[];
   };
@@ -45,12 +46,14 @@ export interface ICharactersResponse {
   characters: Character[];
   nextPage: number | null;
   page: number;
+  count?: number | null;
 }
 
 
 export interface IPagination {
   page: number;
   nextPage: number | null;
+  count?: number | null;
   filterPayload?: IFilterPayload
 }
 
@@ -60,4 +63,9 @@ export interface IFilterPayload {
   species?: string | null;
   gender?: string | null;
   type?: string | null;
+}
+
+export type PageIndicator = {
+  activePage: number | null;
+  count: number | null | undefined;
 }

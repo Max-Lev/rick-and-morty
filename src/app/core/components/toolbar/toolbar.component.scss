@@ -9,12 +9,22 @@
     .mat-badge-medium.mat-badge-overlap .mat-badge-content {
         color: white;
         background-color: red;
+
     }
 
     .scrollbtn {
+
         .mat-badge-content,
         .mat-badge-medium.mat-badge-overlap .mat-badge-content {
             margin-left: -6px;
+        }
+        // Badge styling will only apply when the disable-icon class is present
+        .mat-icon.disable-icon {
+
+            // Direct targeting of the badge content inside a disabled icon
+            .mat-badge-content {
+                background-color: grey !important; // !important to override Angular Material's default styling
+            }
         }
     }
 }

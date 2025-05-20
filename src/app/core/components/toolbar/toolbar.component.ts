@@ -13,7 +13,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/ro
 import { LayoutSelectionService } from '../../../shared/providers/layout-selection.service';
 import { DIALOG_TYPE_ENUM, LAYOUT_TYPE_ENUM } from '../../../shared/models/status.enum';
 import { filter, single } from 'rxjs';
-import { UpperCasePipe } from '@angular/common';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import { CharactersService } from '../../providers/characters.service';
 import { EMPTY_FILTER } from '../../../shared/models/filter.model';
 @Component({
@@ -26,7 +26,8 @@ import { EMPTY_FILTER } from '../../../shared/models/filter.model';
     MatBadgeModule,
     MatTooltipModule,
     RouterModule,
-    UpperCasePipe
+    UpperCasePipe,
+    NgClass
   ],
   standalone: true,
   templateUrl: './toolbar.component.html',
@@ -62,15 +63,32 @@ export class ToolbarComponent {
 
   charactersService = inject(CharactersService);
 
-  activePage = computed(() => {
-    return (this.selectionService.activePage() !== null) ? this.selectionService.activePage() : 'x';
+  pageIndicator = computed(() => {
+    const { activePage, count } = this.selectionService.pageIndicator();
+    // console.log(activePage, count);
+    const pageCalc = count && Math.ceil(count / 20);
+    return {
+      count,
+      activePage:(activePage===null) ? pageCalc : activePage,
+      pageCalc
+    }
+  });
+  characterIndicator = computed(() => {
+    // { loaded: number; count: number; }
+    const {count,loaded} = this.selectionService.characterIndicator();
+    // console.log(count,loaded,this.selectionService.characterIndicator());
+    return{
+      count,loaded
+    }
   });
 
   constructor() {
-    // effect(() => {
-    //   console.log((this.selectionService.activePage()!==null)?this.selectionService.activePage(): 'x');
-    //   console.log(this.selectionService.activePage());
-    // });
+
+    effect(() => {
+      // console.log(this.pageIndicator())
+      // console.log(this.characterIndicator())
+    })
+
     // setTimeout(() => {
     //   this.openDialogHandler({ title: 'Search By Name', dialogType: DIALOG_TYPE_ENUM.search });
     //   // this.openDialogHandler({title:'Filter By Status & Name',dialogType:DIALOG_TYPE_ENUM.filter});

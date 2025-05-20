@@ -1,6 +1,7 @@
 import {
   Component, ViewChild, signal, computed, effect, inject, ChangeDetectionStrategy,
-  ChangeDetectorRef, OnInit, Input, AfterViewInit
+  ChangeDetectorRef, OnInit, Input, AfterViewInit,
+  ElementRef
 } from '@angular/core';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { CharactersService } from '../../../core/providers/characters.service';
@@ -11,8 +12,9 @@ import { debounceTime, distinctUntilChanged, shareReplay, switchMap, tap } from 
 import { GridViewComponent } from '../../components/grid-view/grid-view.component';
 import { ListViewComponent } from '../../components/list-view/list-view.component';
 import { LayoutSelectionService } from '../../providers/layout-selection.service';
-import { NgClass } from '@angular/common';
+import { NgClass, ViewportScroller } from '@angular/common';
 import { EMPTY_FILTER } from '../../models/filter.model';
+import { _ } from '@angular/cdk/number-property.d-1067cb21';
 @Component({
   selector: 'app-characters',
   standalone: true,
@@ -25,172 +27,157 @@ import { EMPTY_FILTER } from '../../models/filter.model';
 })
 export class CharactersComponent implements OnInit, AfterViewInit {
   @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
+  @Input() charactersResolver!: ICharactersResponse;
 
-  characters = signal<Character[]>([]);
-
-  isLoadingSignal$ = signal(false);
-
+  // Services
   charactersService = inject(CharactersService);
-
   selectionService = inject(SelectionService);
-
   cdr = inject(ChangeDetectorRef);
+  layoutSelectionService = inject(LayoutSelectionService);
 
   lastScrollOffset = 0;
 
-  columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
+  // State signals
+  characters = signal<Character[]>([]);
+  isLoading = signal(false);
+  // DYNAMIC SCROLL HIGHT
+  itemSize = signal<number>(150);
+  pagination = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
+  prevFilter = signal<IFilterPayload>({ ...EMPTY_FILTER });
+  readonly allCharacters = signal<Character[]>([]);
+  gridScrollState = signal<number>(0);
 
+  // Columns def
+  columns: ColumnConfig<ICharacterColumns>[] = COLUMNS;
   displayedColumns = computed(() => this.columns.map(c => c.columnDef));
 
-  @Input() charactersResolver!: ICharactersResponse;
-
+  // Computed values
   //INITIAL VIEW LOAD CONFIG
   selectedViewSignal$ = this.selectionService.selectedViewSignal$;
-  // DYNAMIC SCROLL HIGHT
-  itemSizeSignal$ = signal<number>(150);
-
-  paginationSignal$ = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
-
-  readonly currentPageSignal$ = computed(() => this.paginationSignal$().page);
-
-  prevFilter = signal<IFilterPayload>({ ...EMPTY_FILTER });
-
-  layoutSelectionService = inject(LayoutSelectionService);
+  readonly currentPageSignal$ = computed(() => this.pagination().page);
   layout = computed(() => this.layoutSelectionService.getLayoutType());
-
-  readonly allCharacters = signal<Character[]>([]);
-
-  // @ViewChild('vlist') vlist!: CdkVirtualScrollViewport;
-  // @ViewChild('vgrid') vgrid!: CdkVirtualScrollViewport;
-
   isScrollActive = this.selectionService.scrollNextActive;
+  /**
+ * search live hitting and no api search
+ */
+  readonly filteredCharacters = computed(() => {
+    const { name, status, gender } = this.selectionService.localSearchFiltersPayload$();
+    const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
 
-  // scrollIndexSignal$ = signal<number>(0);
-  // setScrollIndex = () => this.scrollIndexSignal$.update(index => index + 1);
+    const _allCharacters = this.allCharacters().filter(character => {
+      const matchName = !name || character.name.toLowerCase().includes(name.toLowerCase());
+      const matchStatus = !status || character.status.toLowerCase() === status.toLowerCase();
+      const matchGender = !gender || character.gender.toLowerCase() === gender.toLowerCase();
+      return matchName && matchStatus && matchGender;
+    });
+
+    // console.log('_allCharacters: ', _allCharacters.length,_allCharacters);
+    // console.log('filtered characters: ', this.allCharacters().length);
+    return _allCharacters;
+  });
 
 
   constructor() {
 
-    effect(() => {
-      const filtered = this.filteredCharacters();
-      this.characters.set(filtered);
-    });
-
-    effect(() => {
-      const page = this.paginationSignal$().page;
-      this.selectionService.activePage.set(page);
-    });
+    this.setFilteredCharactersHandler();
 
     effect(() => {
 
-      const page = this.paginationSignal$().page;
+      const { page, nextPage, count } = this.pagination();
+      // if (nextPage === null) {
+      //   // this.selectionService.activePage.set(nextPage);
+      //   this.selectionService.pageIndicator.set({ activePage: page, count: count });
+      // } else {
+      //   // this.selectionService.activePage.set(page);
+      //   this.selectionService.pageIndicator.set({ activePage: page, count: count });
+      // }
+
       if (this.isScrollActive()) {
-
-        this.selectionService.activePage.set(page);
-
+        // console.log(this.selectionService.characterIndicator());
+        // const { loaded, count } = this.selectionService.characterIndicator();
         if (this.selectedViewSignal$() === 'list') {
           this.viewport.scrollToIndex(page, 'smooth');
+          // this.viewport.scrollToIndex(this.p, 'smooth');
         }
         else {
           const gridIndex = this.gridScrollState();
-          // this.viewport.scrollToIndex(gridIndex + 20, 'smooth');
           if (page !== 1) {
+            //grid
             this.viewport.scrollToIndex(page * 20, 'smooth');
+            // this.viewport.scrollToIndex(this.p, 'smooth');
           } else {
+            //list
             this.viewport.scrollToIndex(gridIndex + 20, 'smooth');
           }
         }
+        // reset so effect will be active
         this.selectionService.scrollNextActive.update((v) => false);
       }
+
     });
+
 
   }
-  /**
-   * search live hitting and no api search
-   */
-  readonly filteredCharacters = computed(() => {
-    const { name, status, gender } = this.selectionService.localSearchFiltersPayload$();
-    const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
-    // console.log('computed filteredCharacters allCharacters()', this.allCharacters())
-    return this.allCharacters().filter(character => {
-      const matchName = !name || character.name.toLowerCase().includes(name.toLowerCase());
-      const matchStatus = !status || character.status.toLowerCase() === status.toLowerCase();
-      const matchGender = !gender || character.gender.toLowerCase() === gender.toLowerCase();
-      // console.log('matchName: ', matchName, 'matchStatus:', matchStatus, 'matchGender:', matchGender);
-      return matchName && matchStatus && matchGender;
-    });
-  });
 
   ngOnInit(): void {
-    this.getResolvedData();
+    this.initializeData();
     this.charactersResponse$.pipe().subscribe();
   }
 
   ngAfterViewInit() {
-    const viewportSize = this.getViewportSize();
-    if (!viewportSize) return;
 
-    // this.selectionService.viewChanged$.subscribe((view: string) => {
-    //   if (view === 'list' && this.selectionService.viewChangeActive()) {
-    //     this.selectionService._listScrollState.set(this.listScrollState());
-    //     // console.log('list viewChanged, using saved position:', this.selectionService._listScrollState());
-    //     // Use the previously saved list scroll state
-    //     setTimeout(() => {
-    //       this.viewport.scrollToIndex(this.selectionService._listScrollState(),'smooth');
-    //     },1000);
-
-    //   } 
-    //   if (view === 'grid' && this.selectionService.viewChangeActive()) {
-    //     this.selectionService._gridScrollState.set(this.gridScrollState());
-    //     // console.log('grid viewChanged, using saved position:', this.selectionService._gridScrollState());
-    //     // Use the previously saved grid scroll state
-    //     setTimeout(() => {
-    //       this.viewport.scrollToIndex(this.selectionService._gridScrollState(),'smooth');
-    //     },1000);
-
-    //   }
-
-    // });
-
-    // this.viewport.elementScrolled().subscribe(e=>console.log(e))
 
   }
 
-  // listScrollState = signal<number>(0);
-  gridScrollState = signal<number>(0);
+  setFilteredCharactersHandler() {
+    effect(() => {
+      const filtered = this.filteredCharacters();
+      this.characters.set(filtered);
+    });
+  }
+
+  p = 1;
   onScroll(index: number): void {
 
     const disableScroll = this.selectionService.disableFilterNextScroll();
     if (disableScroll) return;
 
-    const { page, nextPage } = this.paginationSignal$();
+    const isLoaded = this.isLoading();
 
-    const viewportSize = this.getViewportSize();
-    const currentView = this.selectedViewSignal$();
+    if (!isLoaded) {
 
-    // if (currentView === 'list') {
-    //   // console.log('list index', index);
-    //   this.listScrollState.set(index);
-    // } else 
-    if (currentView === 'grid') {
-      this.gridScrollState.set(index);
-    }
+      const { page, nextPage } = this.pagination();
 
-    if (nextPage && index > 0 && nextPage > page) {
+      const viewportSize = this.getViewportSize();
 
-      if (!viewportSize) return;
-      const { end, total } = viewportSize;
+      const currentView = this.selectedViewSignal$();
 
-      this.setItemSize(index);
-      // console.log('index', index, 'page ', page);
-      // console.log('this.isScrollActive()', this.isScrollActive());
-      // console.log('this.isLoadingSignal$()', this.isLoadingSignal$());
-      if (index === page && end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoadingSignal$()) {
-        this.loadCharactersOnScroll();
-      } else if (end >= total * 0.9 && nextPage && page && currentView === 'grid' && !this.isLoadingSignal$()) {
-        this.loadCharactersOnScroll();
+      if (currentView === 'grid') {
+        this.gridScrollState.set(index);
       }
+      if (nextPage && index > 0 && nextPage > page) {
+        this.p++;
+        if (!viewportSize) return;
+        const { end, total } = viewportSize;
+        console.log('index ', index, 'page ', page);
+        console.log(this.selectionService.characterIndicator());
+        const { loaded, count } = this.selectionService.characterIndicator();
+        this.setItemSize(index);
+        // (page * 20 - loaded <= 20) &&
+        if (end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
+          // if (index === page && end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
+          // if (end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
+          this.loadCharactersOnScroll();
+          // this.viewport.scrollToIndex(this.p, 'smooth');
+          // this.disableScrollWhenLoading();
 
+        } else if (end >= total * 0.9 && nextPage && page && currentView === 'grid' && !this.isLoading()) {
+          this.loadCharactersOnScroll();
+          // this.viewport.scrollToIndex(this.p, 'smooth');
+          // this.disableScrollWhenLoading();
+
+        }
+      }
     }
   }
 
@@ -211,56 +198,63 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   setItemSize(index: number) {
     if (index > 0) {
-      this.itemSizeSignal$.set(1100);
+      this.itemSize.set(1100);
     }
   }
 
-  getResolvedData(): void {
-    if (!this.charactersResolver) return;
-    this.setCharactersData(this.charactersResolver);
+  /**
+ * Initialize data from resolver
+ */
+  private initializeData(): void {
+    if (this.charactersResolver) {
+      this.processCharactersData(this.charactersResolver, 'scroll');
+    }
   }
 
-  setCharactersData = (charactersData: ICharactersResponse) => {
+  processCharactersData = (charactersData: ICharactersResponse, actionType: 'filter' | 'search' | 'scroll') => {
+
     const existing = this.characters();
     const merged = [...existing, ...charactersData.characters];
+    merged.sort((a, b) => Number(a.id) - Number(b.id));
     const uniq = new Map(merged.map(c => [c.id, c]));
     this.characters.set([...uniq.values()]);
     this.allCharacters.set([...uniq.values()]);
-    console.info('total:', this.characters().length, 'characters ', this.characters());
-    this.isLoadingSignal$.set(false);
+    this.selectionService.characterIndicator.set({
+      loaded: this.characters().length,
+      count: charactersData.count!
+    });
+
   }
 
   /**
    * initial load & filter response
    */
   charactersResponse$ = this.selectionService.filter$.pipe(
-    debounceTime(250), // Optional debounce
+    debounceTime(100),
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
     tap((filter: IFilterPayload) => {
       this.newFilterRequest(filter);
       // this.resetFilter(filter);
     }),
     switchMap((filter) => {
-      const { page } = this.paginationSignal$();
-      // console.log('page', page);
-      this.isLoadingSignal$.set(true);
+      const { page, count } = this.pagination();
+      this.isLoading.set(true);
       return this.charactersService.getCharacters(page, filter).pipe(
         tap((response: ICharactersResponse) => {
-          console.log('charactersResponse$', response);
-          this.setCharactersData(response);
-          this.paginationSignal$.update(p => ({ ...p, nextPage: response.nextPage ?? null }));
-          // console.log(this.paginationSignal$());
-          this.isLoadingSignal$.set(false);
+          this.processCharactersData(response, 'filter');
+          this.pagination.update(p => ({ ...p, nextPage: response.nextPage ?? null, count: response.count }));
+          this.selectionService.pageIndicator.set({ activePage: response.nextPage, count: response.count });
+          // console.log(this.pagination())
+          this.isLoading.set(false);
 
-          this.resetFilterHandler();
-
+          this.handleResetFilter();
         })
       );
     }),
-    // shareReplay(1) // optional, to avoid unnecessary re-fetching
+    shareReplay(1) // optional, to avoid unnecessary re-fetching
   );
 
-  resetFilterHandler() {
+  handleResetFilter() {
     if (this.selectionService.resetFilters()) {
       this.onScroll(0);
       this.viewport.scrollToIndex(0);
@@ -282,11 +276,9 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         species: filter.species, type: filter.type
       }));
 
-      this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
-      // this.paginationSignal$.update(page => ({ ...page, filterPayload: filter, nextPage: null }));
-      // console.log('newFilterRequest ', this.paginationSignal$());
+      this.pagination.update(page => ({ ...page, filterPayload: filter, page: 1, nextPage: null }));
 
-      this.itemSizeSignal$.set(150);
+      this.itemSize.set(150);
 
       this.characters.set([]);
     }
@@ -303,24 +295,25 @@ export class CharactersComponent implements OnInit, AfterViewInit {
    * on scroll event as pagination
    */
   loadCharactersOnScroll(): void {
-    const { page, nextPage, filterPayload } = this.paginationSignal$();
-    // console.log('filterPayload', filterPayload)
-    if (nextPage) {
-      this.isLoadingSignal$.set(true);
-      // this.paginationSignal$.update(p => ({ ...p, page: nextPage }));
-      this.paginationSignal$.update(p => ({ ...p, page: page }));
-      // console.log(this.paginationSignal$());
-      // console.log('filterPayload', filterPayload)
+    const { page, nextPage, filterPayload } = this.pagination();
+    if (nextPage && !this.isLoading()) {
+      this.isLoading.set(true);
+      console.log('nextPage ', nextPage);
+      console.log(this.pagination());
       this.charactersService.getCharacters(nextPage, filterPayload).subscribe(response => {
-        this.setCharactersData(response);
-        // console.log('loadCharactersOnScroll$', response);
-        this.paginationSignal$.update(p => ({ ...p, page: response.page, nextPage: response.nextPage ?? null }));
-        // console.log(this.paginationSignal$());
-        // this.paginationSignal$.update(p => ({ page:response. nextPage: response.nextPage ?? null }));
-        this.isLoadingSignal$.set(false);
+        this.processCharactersData(response, 'scroll');
+        this.pagination.update(p => ({
+          ...p, page: response.page,
+          nextPage: response.nextPage ?? null,
+          count: response.count
+        }));
+        this.selectionService.pageIndicator.set({ activePage: response.nextPage, count: response.count });
+        this.isLoading.set(false);
+
       });
     }
   }
+
 
 
 

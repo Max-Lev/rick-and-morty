@@ -9,12 +9,21 @@
         </mat-icon>
     </button>
     <!-- [style.color]="clearBtnIconDisabled() ? 'gray' : 'red'" -->
-    <button  (click)="nextPage()" class="scrollbtn"
-    
-         mat-icon-button matTooltip="SCROLL NEXT">
-        <mat-icon  style="font-size: smaller;" aria-hidden="false"
-        matBadge="{{activePage()}}"
-        [matBadgePosition]="'above after'">
+    <!-- [disabled]="this.selectionService.getClearFilterBtnState()" -->
+    <!-- TODO: FIX ONLY FOR FILTER DISABLED -->
+    <!-- {{pageIndicator().activePage}}/{{pageIndicator().pageCalc}} -->
+
+    <!-- matBadge="{{characterIndicator().loaded}}/{{characterIndicator().count}}" -->
+    <button [disabled]="this.selectionService.getClearFilterBtnState()" (click)="nextPage()" class="scrollbtn"
+        mat-icon-button matTooltip="SCROLL NEXT">
+        <!-- <mat-icon style="font-size: smaller;" aria-hidden="false" matBadge="{{activePage()}}" -->
+        <!-- matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}" -->
+        <!-- matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}" -->
+        <!-- matBadge="{{pageIndicator().activePage}}" -->
+        <mat-icon style="font-size: smaller;" aria-hidden="false"
+        matBadge="{{pageIndicator().activePage}}/{{pageIndicator().pageCalc}}"
+            [ngClass]="(this.selectionService.getClearFilterBtnState()) ? 'disable-icon':''"
+            [matBadgePosition]="'above after'">
             unfold_more_double
         </mat-icon>
     </button>
@@ -43,7 +52,8 @@
             [matBadgePosition]="'below before'">person_add_alt_1</mat-icon>
     </button>
 
-    <button (click)="navigateCharacters()" [disabled]="backIconDisabled()" mat-icon-button class="example-icon" matTooltip="BACK TO CHARACTERS">
+    <button (click)="navigateCharacters()" [disabled]="backIconDisabled()" mat-icon-button class="example-icon"
+        matTooltip="BACK TO CHARACTERS">
         <mat-icon class="material-icons-outlined">
             undo
         </mat-icon>
@@ -68,18 +78,18 @@
     <span class="spacer"></span>
 
     @if(selectedViewSignal()==='list'){
-        <button (click)="toggleView('grid')" mat-icon-button class="example-icon" matTooltip="LIST VIEW">
-            <mat-icon>
-                <span class="material-icons-outlined">
-                    format_list_numbered
-                </span>
-            </mat-icon>
-        </button>
-        }@else {
-        <button (click)="toggleView('list')" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
-            <mat-icon>grid_view</mat-icon>
-        </button>
-        }
+    <button (click)="toggleView('grid')" mat-icon-button class="example-icon" matTooltip="LIST VIEW">
+        <mat-icon>
+            <span class="material-icons-outlined">
+                format_list_numbered
+            </span>
+        </mat-icon>
+    </button>
+    }@else {
+    <button (click)="toggleView('list')" mat-icon-button class="example-icon" matTooltip="GRID VIEW">
+        <mat-icon>grid_view</mat-icon>
+    </button>
+    }
 
     <button (click)="cycleLayout()" mat-icon-button class="example-icon"
         matTooltip="{{layoutIcon().type | uppercase}} VIEW">
