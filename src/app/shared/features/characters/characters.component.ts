@@ -14,13 +14,17 @@ import { ListViewComponent } from '../../components/list-view/list-view.componen
 import { LayoutSelectionService } from '../../providers/layout-selection.service';
 import { NgClass, ViewportScroller } from '@angular/common';
 import { EMPTY_FILTER } from '../../models/filter.model';
-import { _ } from '@angular/cdk/number-property.d-1067cb21';
+import { CharactersFilterPipe, filterCharacters } from './characters-filter.pipe';
+// import { _ } from '@angular/cdk/number-property.d-1067cb21';
 @Component({
   selector: 'app-characters',
   standalone: true,
   imports: [
     ScrollingModule, ListViewComponent,
-    GridViewComponent, NgClass],
+    GridViewComponent, NgClass,
+
+  ],
+  providers: [CharactersFilterPipe],
   templateUrl: './characters.component.html',
   styleUrl: './characters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -34,6 +38,7 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   selectionService = inject(SelectionService);
   cdr = inject(ChangeDetectorRef);
   layoutSelectionService = inject(LayoutSelectionService);
+  filter = inject(CharactersFilterPipe);
 
   lastScrollOffset = 0;
 
@@ -57,24 +62,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
   readonly currentPageSignal$ = computed(() => this.pagination().page);
   layout = computed(() => this.layoutSelectionService.getLayoutType());
   isScrollActive = this.selectionService.scrollNextActive;
-  /**
- * search live hitting and no api search
- */
-  readonly filteredCharacters = computed(() => {
-    const { name, status, gender } = this.selectionService.localSearchFiltersPayload$();
-    const keys = Object.keys(this.selectionService.localSearchFiltersPayload$());
-
-    const _allCharacters = this.allCharacters().filter(character => {
-      const matchName = !name || character.name.toLowerCase().includes(name.toLowerCase());
-      const matchStatus = !status || character.status.toLowerCase() === status.toLowerCase();
-      const matchGender = !gender || character.gender.toLowerCase() === gender.toLowerCase();
-      return matchName && matchStatus && matchGender;
-    });
-
-    console.log('_allCharacters: ', _allCharacters.length, _allCharacters);
-    console.log('filtered characters: ', this.allCharacters().length);
-    return _allCharacters;
-  });
 
 
   constructor() {
@@ -82,29 +69,17 @@ export class CharactersComponent implements OnInit, AfterViewInit {
     this.setFilteredCharactersHandler();
 
     effect(() => {
-
       const { page, nextPage, count } = this.pagination();
-      // if (nextPage === null) {
-      //   // this.selectionService.activePage.set(nextPage);
-      //   this.selectionService.pageIndicator.set({ activePage: page, count: count });
-      // } else {
-      //   // this.selectionService.activePage.set(page);
-      //   this.selectionService.pageIndicator.set({ activePage: page, count: count });
-      // }
-
       if (this.isScrollActive()) {
-        // console.log(this.selectionService.characterIndicator());
-        // const { loaded, count } = this.selectionService.characterIndicator();
+
         if (this.selectedViewSignal$() === 'list') {
           this.viewport.scrollToIndex(page, 'smooth');
-          // this.viewport.scrollToIndex(this.p, 'smooth');
         }
         else {
           const gridIndex = this.gridScrollState();
           if (page !== 1) {
             //grid
             this.viewport.scrollToIndex(page * 20, 'smooth');
-            // this.viewport.scrollToIndex(this.p, 'smooth');
           } else {
             //list
             this.viewport.scrollToIndex(gridIndex + 20, 'smooth');
@@ -113,7 +88,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
         // reset so effect will be active
         this.selectionService.scrollNextActive.update((v) => false);
       }
-
     });
 
 
@@ -126,24 +100,6 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-
-  }
-
-  setFilteredCharactersHandler() {
-    effect(() => {
-      // console.log('filtered getClearFilterBtnState: ', this.selectionService.getClearFilterBtnState());
-      //   console.log('filtered disableFilterNextScroll: ', this.selectionService.disableFilterNextScroll());
-      if (this.selectionService.getClearFilterBtnState()) {
-        const filtered = this.filteredCharacters();
-        this.selectionService.filteredCount.set(filtered.length);
-        // console.log('filtered: ', filtered);
-        // console.log('filtered getClearFilterBtnState: ', this.selectionService.getClearFilterBtnState());
-        // console.log('filtered disableFilterNextScroll: ', this.selectionService.disableFilterNextScroll());
-        this.characters.set(filtered);
-      }else{
-        this.characters.set(this.allCharacters());
-      }
-    });
   }
 
   onScroll(index: number): void {
@@ -168,23 +124,13 @@ export class CharactersComponent implements OnInit, AfterViewInit {
 
         if (!viewportSize) return;
         const { end, total } = viewportSize;
-        // console.log('index ', index, 'page ', page);
-        // console.log(this.selectionService.characterIndicator());
-        const { loaded, count } = this.selectionService.characterIndicator();
-        this.setItemSize(index);
-        // (page * 20 - loaded <= 20) &&
-        if (end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
-          // if (index === page && end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
-          // if (end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
-          this.loadCharactersOnScroll();
-          // this.viewport.scrollToIndex(this.p, 'smooth');
-          // this.disableScrollWhenLoading();
 
+        this.setItemSize(index);
+
+        if (end >= total * 0.9 && nextPage && page && currentView === 'list' && !this.isLoading()) {
+          this.loadCharactersOnScroll();
         } else if (end >= total * 0.9 && nextPage && page && currentView === 'grid' && !this.isLoading()) {
           this.loadCharactersOnScroll();
-          // this.viewport.scrollToIndex(this.p, 'smooth');
-          // this.disableScrollWhenLoading();
-
         }
       }
     }
@@ -322,6 +268,30 @@ export class CharactersComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
+
+  setFilteredCharactersHandler() {
+    effect(() => {
+      // Get all characters
+      const allChars = this.allCharacters();
+
+      // If filter is active (clearFilterBtnState is true), use filtered list
+      if (this.selectionService.getClearFilterBtnState()) {
+        // Get the current filter state
+        const currentFilter = this.selectionService.localSearchFiltersPayload$();
+        // Apply filtered characters to the view
+        const filtered = this.filter.transform(allChars, currentFilter);
+        // Set the filtered count in the selection service
+        this.selectionService.filteredCount.set(filtered.length);
+        this.characters.set(filtered);
+        this.viewport.scrollToIndex(0);
+      } else {
+        // Otherwise use all characters
+        this.characters.set(allChars);
+      }
+    });
+  }
+
 
 
 

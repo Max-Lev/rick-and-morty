@@ -35,6 +35,9 @@ import { IFilterPayload } from "../../../models/character.model";
 export class LiveSearchDialogComponent implements AfterViewInit {
 
   statusOptions = STATUS_OPTIONS;
+  speciesOptions = SPICIES_OPTIONS;
+  genderOptions = GENDER_OPTIONS;
+  typeOptions = CHARACTER_TYPES;
   incomingData = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<LiveSearchDialogComponent>);
   selectionService = inject(SelectionService);
@@ -51,9 +54,7 @@ export class LiveSearchDialogComponent implements AfterViewInit {
 
   destroy$ = inject(DestroyRef);
 
-  speciesOptions = SPICIES_OPTIONS;
-  genderOptions = GENDER_OPTIONS;
-  typeOptions = CHARACTER_TYPES;
+  
 
   constructor() {
     this.setupFilterFormListener();

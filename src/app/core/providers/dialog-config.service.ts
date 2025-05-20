@@ -31,8 +31,7 @@ export class DialogConfigService implements OnDestroy {
     const dialogRef = this.dialog.open(FilterDialogComponent, {
       restoreFocus: false,
       data: { title: title },
-      width: '25%',
-      height: '35%'
+      width: '40%',
     });
 
     // Manually restore focus to the menu trigger since the element that

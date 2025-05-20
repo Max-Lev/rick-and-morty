@@ -36,7 +36,7 @@ export class SelectionService {
   }
 
   // for filter dialog
-  localSearchFiltersPayload$ = signal<IFilterPayload>({ name: '', status: '',gender:'' });
+  localSearchFiltersPayload$ = signal<IFilterPayload>({ ...EMPTY_FILTER});
 
   setFilter(value: IFilterPayload) {
     this._filterSignal.set(value);
@@ -44,8 +44,7 @@ export class SelectionService {
 
   scrollNextPage = signal<IPagination>({ page: 1, nextPage: null, filterPayload: { ...EMPTY_FILTER } });
   scrollNextActive = signal<boolean>(false);
-  // activePage = signal<number | null>(1);
-  // totalPages = signal<number | null>(null);
+  
   pageIndicator = signal<PageIndicator>({activePage:1,count:null});
 
   characterIndicator = signal<{loaded:number, count:number}>({loaded:20,count:0});

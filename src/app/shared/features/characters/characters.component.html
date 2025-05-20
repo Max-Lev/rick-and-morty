@@ -1,15 +1,18 @@
-
 @if(selectedViewSignal$()==='list'){
-  
+
 <cdk-virtual-scroll-viewport #vlist (scrolledIndexChange)="onScroll($event)" itemSize="{{itemSize()}}"
   class="list-viewport">
-  <app-list-view [columns]="columns" [characters]="characters()" [displayedColumns]="displayedColumns()">
+  <app-list-view [columns]="columns"
+    [characters]="characters()"
+    [displayedColumns]="displayedColumns()">
   </app-list-view>
 </cdk-virtual-scroll-viewport>
-
+<!-- | charactersFilter:selectionService.localSearchFiltersPayload$() -->
 }@else{
-<cdk-virtual-scroll-viewport #gview (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view" [ngClass]="layout().type">
-  <div *cdkVirtualFor="let character of characters()" class="grid-item" [ngClass]="layout().type">
+<cdk-virtual-scroll-viewport #gview (scrolledIndexChange)="onScroll($event)" itemSize="75" class="grid-view"
+  [ngClass]="layout().type">
+  <div *cdkVirtualFor="let character of characters()"
+    class="grid-item" [ngClass]="layout().type">
     <app-grid-view [character]="character"></app-grid-view>
   </div>
 </cdk-virtual-scroll-viewport>

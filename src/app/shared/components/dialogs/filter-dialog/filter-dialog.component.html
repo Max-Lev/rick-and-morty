@@ -7,30 +7,18 @@
     <section style="display: flex;justify-content: center;">
         <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
             <app-name-search [form]="form" formControlName="name"></app-name-search>
-            <!-- @if(nameError() && form.controls.name.touched){
-            <mat-hint>{{nameError()}}</mat-hint>
-            } -->
-            <!-- @if(form.controls.name.touched && form.controls.name.hasError('minlength')){
-                <mat-hint>{{nameError()}}</mat-hint>
-                }
-            @if(form.controls.name.touched && form.controls.name.hasError('required')){
-                <mat-hint>{{nameError()}}</mat-hint>
-                } -->
-            <!-- <mat-form-field class="example-full-width">
-            </mat-form-field> -->
 
             <app-select [title]="'Status'" formControlName="status" [control]="form.controls['status']"
                 [statusOptions]="statusOptions"></app-select>
 
 
-            <!-- <mat-form-field class="example-full-width">
-                <mat-label>Live Search</mat-label>
-                <input formControlName="liveSearch" matInput placeholder="Ex. Rick">
+            <app-select [title]="'Species'" formControlName="species" [statusOptions]="speciesOptions"></app-select>
 
-                @if (liveSearchValue()?.length && liveSearchValue()!.length < 3 ){ <mat-hint>Type at least 3
-                    characters to search</mat-hint>
-                    }
-            </mat-form-field> -->
+            <app-select [title]="'Gender'" formControlName="gender" formControlName="gender"
+                [statusOptions]="genderOptions"></app-select>
+
+            <app-auto-complete [placeholder]="'Ex. Anim...'" [title]="'Type'" formControlName="type"
+                [options]="typeOptions"></app-auto-complete>
 
 
         </form>
@@ -39,9 +27,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions [align]="'center'">
-    
-    <button
-    [style.color]="isFilterBtnDisabled() ? 'gray' : 'white'"
-    [disabled]="isFilterBtnDisabled()" (click)="filter()" mat-button mat-dialog-close>Filter</button>
+
+    <button [style.color]="isFilterBtnDisabled() ? 'gray' : 'white'" [disabled]="isFilterBtnDisabled()"
+        (click)="filter()" mat-button mat-dialog-close>Filter</button>
     <button (click)="cancel()" style="color:white" mat-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
 </mat-dialog-actions>
